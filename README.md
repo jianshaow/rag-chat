@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 ### Run
 ~~~ shell
-# run with fastchat's OpenAI-Compatible API
+# run with local OpenAI-Compatible API
 export OPENAI_API_KEY=EMPTY
 export OPENAI_API_BASE=http://localhost:8000/v1
 ~~~
