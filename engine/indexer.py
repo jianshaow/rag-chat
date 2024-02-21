@@ -60,4 +60,5 @@ if __name__ == "__main__":
     retriever = get_index(data_name=data_name).as_retriever()
     nodes = retriever.retrieve(question)
     for node in nodes:
+        print("---------------------------------------------")
         print(node)
