@@ -163,4 +163,4 @@ cython_debug/
 .vscode
 
 data
-chroma_db
+*chroma_db
