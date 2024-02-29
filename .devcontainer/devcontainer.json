@@ -7,6 +7,9 @@
 	"remoteEnv": {
 		"PYTHONPATH": "."
 	},
+	"mounts": [
+		{"source": "${localEnv:HOME}/.ssh", "target": "/home/devel/.ssh", "type": "bind"}
+	],
 	"customizations": {
 		"vscode": {
 			"extensions": [
