@@ -22,6 +22,12 @@ def get_data_path(data_name):
     return __data_dir_dict[data_name]
 
 
+def get_all_data_path():
+    if __data_dir_dict is None:
+        scan_data_root_dir()
+    return __data_dir_dict
+
+
 if __name__ == "__main__":
-    scan_data_root_dir()
-    print(__data_dir_dict)
+    data_path = get_all_data_path()
+    print(data_path)
