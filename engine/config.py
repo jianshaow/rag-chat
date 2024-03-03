@@ -2,8 +2,8 @@ import os
 from llama_index.embeddings.openai import OpenAIEmbedding, OpenAIEmbeddingModelType
 from llama_index.llms.openai import OpenAI
 
-ZH_EMBED_MODEL = "bge-large-zh-v1.5"
-EN_EMBED_MODEL = "bge-large-en-v1.5"
+EN_EMBED_MODEL = OpenAIEmbeddingModelType.TEXT_EMBED_ADA_002
+ZH_EMBED_MODEL = OpenAIEmbeddingModelType.TEXT_EMBED_3_LARGE
 
 data_root_dir = os.environ.get("DATA_ROOT_DIR", "data")
 chroma_db_dir = os.environ.get("CHROMA_DB_DIR", "chroma_db")
