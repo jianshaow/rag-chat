@@ -3,6 +3,7 @@ import './Common.css';
 import './Home.css';
 
 interface HomeState {
+  dataList: string[];
   data: string;
   request: string;
   response: string;
@@ -11,37 +12,42 @@ interface HomeState {
 class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
-    this.state = { data: "__root", request: "", response: "" }
+    this.state = { dataList: [], data: "__root", request: "", response: "" }
+    this.getData()
+  }
+
+  async fetchData() {
+    return fetch('http://localhost:5000/data').then(response => response.json());
+  }
+
+  async query(data: string, text: string) {
+    return fetch(`http://localhost:5000/query?data=${data}&text=${text}`).then(response => response.text());
   }
 
   getData() {
-    const data_path = {
-      __root: "data",
-      en_novel1: "data/en_novel1",
-      en_novel2: "data/en_novel2",
-      zh_novel1: "data/zh_novel1",
-      zh_novel2: "data/zh_novel2"
-    };
-
-    const keys = Object.keys(data_path).map((data) => {
-      if (data === "__root") {
-        return "ROOT";
-      }
-      return data;
+    this.fetchData().then(dataList => {
+      const keys = Object.keys(dataList).map((data) => {
+        console.info(dataList)
+        if (data === "__root") {
+          return "ROOT";
+        }
+        return data;
+      });
+      this.setState({ dataList: keys })
     });
-
-    return keys;
   }
 
   handleSubmitRequest = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const { request } = this.state;
+    const { data, request } = this.state;
 
-    this.setState({ response: request });
+    this.query(data, request).then(response => {
+      this.setState({ response: response });
+    });
   }
 
   render() {
-    const { data, request, response } = this.state;
+    const { dataList, data, request, response } = this.state;
     return (
       <div className="container">
         <div className="center">
@@ -51,12 +57,16 @@ class Home extends Component<{}, HomeState> {
               <label>Docs: </label>
               <select value={data} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                 this.setState({ data: e.target.value })
-              }}>{this.getData().map(data => (
+              }}>{dataList.map(data => (
                 <option key={data} value={data}>{data}</option>
               ))}
               </select>
             </div>
-            <div style={{ width: '80%' }}>
+            <label>Answer</label>
+            <div>
+              <textarea value={response} readOnly rows={10} />
+            </div>
+            <div className="center">
               <label>Question: </label>
               <input type="text"
                 value={request}
@@ -66,10 +76,6 @@ class Home extends Component<{}, HomeState> {
                 style={{ width: '70%' }}
               />
               <button onClick={this.handleSubmitRequest}>Submit</button>
-            </div>
-            <label>Answer</label>
-            <div>
-              <textarea value={response} readOnly rows={10} />
             </div>
           </div>
         </div>
