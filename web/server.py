@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import request
 
-from engine import config, queryer
+from engine import data_store, config, queryer
 
 app = Flask(__name__)
 
@@ -16,6 +16,11 @@ def query_index():
             400,
         )
     return queryer.query(data_name, query_text), 200
+
+
+@app.route("/data", methods=["GET"])
+def query_data():
+    return data_store.get_all_data_path(), 200
 
 
 if __name__ == "__main__":
