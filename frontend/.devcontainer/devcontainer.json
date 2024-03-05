@@ -1,5 +1,5 @@
 {
-	"name": "RAG-NODE",
+	"name": "RAG-FE",
 	"image": "jianshao/node-dev:lts-slim",
 	"features": {
 		"ghcr.io/devcontainers/features/git:1": {}
