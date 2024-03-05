@@ -13,7 +13,7 @@ class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
     this.state = { dataList: [], data: "__root", request: "", response: "" }
-    this.getData()
+    this.initData()
   }
 
   async fetchData() {
@@ -24,13 +24,9 @@ class Home extends Component<{}, HomeState> {
     return fetch(`http://localhost:5000/query?data=${data}&text=${text}`).then(response => response.text());
   }
 
-  getData() {
+  initData() {
     this.fetchData().then(dataList => {
       const keys = Object.keys(dataList).map((data) => {
-        console.info(dataList)
-        if (data === "__root") {
-          return "ROOT";
-        }
         return data;
       });
       this.setState({ dataList: keys })
