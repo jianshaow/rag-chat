@@ -25,7 +25,11 @@ def get_data_path(data_name):
 def get_all_data_path():
     if __data_dir_dict is None:
         scan_data_root_dir()
-    return __data_dir_dict
+    return {
+        key: value
+        for key, value in __data_dir_dict.items()
+        if key != config.default_data_name
+    }
 
 
 if __name__ == "__main__":
