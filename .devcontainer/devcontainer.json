@@ -1,6 +1,6 @@
 {
 	"name": "RAG-BE",
-	"image": "jianshao/rag-chat-dev:0.0.1",
+	"image": "jianshao/rag-chat-dev:0.0.2",
 	"features": {
 		"ghcr.io/devcontainers/features/git:1": {}
 	},
