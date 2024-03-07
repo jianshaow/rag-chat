@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent, MouseEvent } from 'react';
+import React, { Component, ChangeEvent, FormEvent } from 'react';
 import './Common.css';
 import './Home.css';
 
@@ -33,7 +33,7 @@ class Home extends Component<{}, HomeState> {
     });
   }
 
-  handleSubmitRequest = async (e: MouseEvent<HTMLButtonElement>) => {
+  handleSubmitRequest = async (e: FormEvent) => {
     e.preventDefault();
     const { data, request } = this.state;
 
@@ -64,14 +64,16 @@ class Home extends Component<{}, HomeState> {
             </div>
             <div className="center">
               <label>Question: </label>
-              <input type="text"
-                value={request}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  this.setState({ request: e.target.value });
-                }}
-                style={{ width: '70%' }}
-              />
-              <button onClick={this.handleSubmitRequest}>Submit</button>
+              <form onSubmit={this.handleSubmitRequest}>
+                <input type="text"
+                  value={request}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    this.setState({ request: e.target.value });
+                  }}
+                  style={{ width: '70%' }}
+                />
+                <button type="submit">Submit</button>
+              </form>
             </div>
           </div>
         </div>
