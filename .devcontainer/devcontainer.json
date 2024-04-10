@@ -4,6 +4,9 @@
 	"remoteEnv": {
 		"PYTHONPATH": "."
 	},
+	"runArgs": [
+		"--add-host=host.docker.internal:host-gateway"
+	],
 	"mounts": [
 		{"source": "${localEnv:HOME}/.ssh", "target": "/home/devel/.ssh", "type": "bind"}
 	],
