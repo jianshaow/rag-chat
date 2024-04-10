@@ -19,8 +19,24 @@ plt.show()
 image_documents = load_image_urls(image_urls)
 gemini_pro = GeminiMultiModal(model_name="models/gemini-pro-vision")
 
+print("-----------------------------------")
+prompt = "Identify the city where this photo was taken."
+# prompt = "识别出这张照片是在哪个城市拍摄的."
+print("Question:", prompt)
 complete_response = gemini_pro.complete(
-    prompt="Identify the city where this photo was taken.",
+    prompt=prompt,
     image_documents=image_documents,
 )
-print(complete_response)
+print("Answer:", complete_response)
+
+prompt = "Give me more context for this image"
+# prompt = "给我更多有关这张照片的信息"
+print("Question:", prompt)
+print("Answer:", end="")
+stream_complete_response = gemini_pro.stream_complete(
+    prompt=prompt,
+    image_documents=image_documents,
+)
+for r in stream_complete_response:
+    print(r.text, end="")
+print("\n-----------------------------------")
