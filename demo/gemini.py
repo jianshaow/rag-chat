@@ -8,6 +8,7 @@ from llama_index.core.multi_modal_llms.generic_utils import load_image_urls
 
 image_urls = [
     "https://storage.googleapis.com/generativeai-downloads/data/scene.jpg",
+    # "",
 ]
 
 img_response = requests.get(image_urls[0])
@@ -20,8 +21,8 @@ image_documents = load_image_urls(image_urls)
 gemini_pro = GeminiMultiModal(model_name="models/gemini-pro-vision")
 
 print("-----------------------------------")
-prompt = "Identify the city where this photo was taken."
-# prompt = "识别出这张照片是在哪个城市拍摄的."
+# prompt = "Identify the city where this photo was taken."
+prompt = "这张照片是在哪个城市拍摄的."
 print("Question:", prompt)
 complete_response = gemini_pro.complete(
     prompt=prompt,
@@ -29,8 +30,8 @@ complete_response = gemini_pro.complete(
 )
 print("Answer:", complete_response)
 
-prompt = "Give me more context for this image"
-# prompt = "给我更多有关这张照片的信息"
+# prompt = "Give me more context for this image"
+prompt = "给我更多这张照片的上下文"
 print("Question:", prompt)
 print("Answer:", end="")
 stream_complete_response = gemini_pro.stream_complete(
