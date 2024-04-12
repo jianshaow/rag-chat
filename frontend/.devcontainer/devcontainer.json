@@ -1,9 +1,6 @@
 {
 	"name": "RAG-FE",
 	"image": "jianshao/node-dev:lts-slim",
-	"features": {
-		"ghcr.io/devcontainers/features/git:1": {}
-	},
 	"mounts": [
 		{"source": "${localEnv:HOME}/.ssh", "target": "/home/node/.ssh", "type": "bind"},
 		{"source": "${localEnv:HOME}/.npm", "target": "/home/node/.npm", "type": "bind"}
