@@ -9,4 +9,5 @@ llama-index-llms-openai
 llama-index-llms-gemini
 llama-index-llms-ollama
 llama-index-multi-modal-llms-gemini
+llama-index-multi-modal-llms-ollama
 flask
