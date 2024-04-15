@@ -18,16 +18,13 @@ __model_config = {
             "EN_EMBED_MODEL", OpenAIEmbeddingModelType.TEXT_EMBED_ADA_002
         ),
         "zh_embed_model": os.environ.get(
-            "ZH_EMBED_MODEL", OpenAIEmbeddingModelType.TEXT_EMBED_3_LARGE
+            "ZH_EMBED_MODEL", OpenAIEmbeddingModelType.TEXT_EMBED_ADA_002
         ),
         "default_embed_model": OpenAIEmbeddingModelType.TEXT_EMBED_ADA_002,
         "embed_model_class": OpenAIEmbedding,
         "llm_model_class": OpenAI,
     },
     "gemini": {
-        "en_embed_model": "znbang/bge:large-en-v1.5-f16",
-        "zh_embed_model": "znbang/bge:large-en-v1.5-f16",
-        "default_embed_model": "znbang/bge:large-en-v1.5-f16",
         "embed_model_class": GeminiEmbedding,
         "llm_model_class": Gemini,
     },
@@ -44,14 +41,18 @@ def get_model_config():
 
 def embed_model(data_name=default_data_name):
     model_config = get_model_config()
-    if data_name.startswith("en"):
-        model = model_config["en_embed_model"]
-    elif data_name.startswith("zh"):
-        model = model_config["zh_embed_model"]
-    else:
-        model = model_config["default_embed_model"]
     model_class = model_config["embed_model_class"]
-    return model_class(model=model)
+
+    if model_class == OpenAIEmbedding:
+        if data_name.startswith("en"):
+            model = model_config["en_embed_model"]
+        elif data_name.startswith("zh"):
+            model = model_config["zh_embed_model"]
+        else:
+            model = model_config["default_embed_model"]
+        return model_class(model=model)
+
+    return model_class()
 
 
 def chat_model():
