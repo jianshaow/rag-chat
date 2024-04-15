@@ -7,7 +7,7 @@ from engine import config
 __db = None
 
 
-def get_db(path=config.chroma_db_dir):
+def get_db(path=config.get_db_path()):
     global __db
     if __db is None:
         __db = chromadb.PersistentClient(path)
