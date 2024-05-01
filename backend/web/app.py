@@ -18,16 +18,11 @@ def main(path):
         return send_from_directory(frontend, path)
 
 
-@app.route("/query", methods=["GET"])
-def query_index():
-    data_name = request.args.get("data", config.default_data_name)
-    query_text = request.args.get("text", None)
-    if query_text is None:
-        return (
-            "No text found, please include a ?text=blah parameter in the URL",
-            400,
-        )
-    return queryer.query(data_name, query_text), 200
+@app.route("/<data>/query", methods=["POST"])
+def query_index(data):
+    raw_data = request.get_data()
+    query = raw_data.decode("utf-8")
+    return queryer.query(data, query), 200
 
 
 @app.route("/data", methods=["GET"])

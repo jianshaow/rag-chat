@@ -16,9 +16,13 @@ async function fetchData() {
     return fetch(url).then(response => response.json());
 }
 
-async function query(data: string, text: string) {
-    const url = `${getBeBaseUrl()}/query?data=${data}&text=${text}`;
-    return fetch(url).then(response => response.text());
+async function query(data: string, query: string) {
+    const url = `${getBeBaseUrl()}/${data}/query`;
+    return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'plain/text' },
+        body: query,
+    }).then(response => response.text());
 }
 
 export { getBeBaseUrl, setBeBaseUrl, fetchData, query }
