@@ -1,4 +1,5 @@
-import React, { Component, ChangeEvent, FormEvent } from 'react';
+import { Component, ChangeEvent, FormEvent } from 'react';
+import { fetchData, query } from '../services/backend'
 import './Common.css';
 import './Home.css';
 
@@ -16,16 +17,8 @@ class Home extends Component<{}, HomeState> {
     this.initData()
   }
 
-  async fetchData() {
-    return fetch('http://localhost:5000/data').then(response => response.json());
-  }
-
-  async query(data: string, text: string) {
-    return fetch(`http://localhost:5000/query?data=${data}&text=${text}`).then(response => response.text());
-  }
-
   initData() {
-    this.fetchData().then(dataList => {
+    fetchData().then(dataList => {
       const keys = Object.keys(dataList).map((data) => {
         return data;
       });
@@ -37,7 +30,7 @@ class Home extends Component<{}, HomeState> {
     e.preventDefault();
     const { data, request } = this.state;
 
-    this.query(data, request).then(response => {
+    query(data, request).then(response => {
       this.setState({ response: response });
     });
   }
