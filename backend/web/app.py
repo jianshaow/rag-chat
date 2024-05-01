@@ -1,10 +1,21 @@
-from flask import Flask, request
-from flask_cors import CORS
-
+import os
+from flask import Flask, request, send_from_directory
 from engine import data_store, config, queryer
 
-app = Flask(__name__)
-CORS(app)
+frontend = os.path.abspath(os.path.join("../frontend", "build"))
+frontend = os.environ.get("FRONTEND_DIR", frontend)
+static_folder = os.path.join(frontend, "static")
+
+app = Flask(__name__, static_folder=static_folder)
+
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path>")
+def main(path):
+    if path == "" or path == "setting":
+        return send_from_directory(frontend, "index.html")
+    else:
+        return send_from_directory(frontend, path)
 
 
 @app.route("/query", methods=["GET"])
