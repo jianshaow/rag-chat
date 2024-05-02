@@ -31,7 +31,7 @@ def create_or_load_index(data_name, data_path):
     return index
 
 
-def get_index(data_name=config.default_data_name):
+def get_index(data_name):
     global __indexes
     index = __indexes.get(data_name)
     if index is None:
@@ -45,7 +45,7 @@ def get_index(data_name=config.default_data_name):
 if __name__ == "__main__":
     import sys
 
-    data_name = len(sys.argv) >= 2 and sys.argv[1] or config.default_data_name
+    data_name = len(sys.argv) >= 2 and sys.argv[1] or data_store.get_data_names()[0]
     question = len(sys.argv) >= 3 and sys.argv[2] or config.default_question
     retriever = get_index(data_name=data_name).as_retriever()
     nodes = retriever.retrieve(question)

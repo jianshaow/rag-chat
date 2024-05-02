@@ -4,15 +4,14 @@ from llama_index.embeddings.gemini import GeminiEmbedding
 from llama_index.llms.openai import OpenAI
 from llama_index.llms.gemini import Gemini
 
-data_root_dir = os.environ.get("DATA_ROOT_DIR", "data")
+data_base_dir = os.environ.get("DATA_ROOT_DIR", "data")
 chroma_db_dir = os.environ.get("CHROMA_DB_DIR", "chroma")
-model_config_name = os.environ.get("RAG_MODEL_CONFIG", "openai")
+model_spec = os.environ.get("MODEL_SPEC", "openai")
 
-default_data_name = "__root"
 default_question = "What did the author do growing up?"
 
 
-__model_config = {
+__model_spec = {
     "openai": {
         "en_embed_model": os.environ.get(
             "EN_EMBED_MODEL", OpenAIEmbeddingModelType.TEXT_EMBED_ADA_002
@@ -32,14 +31,14 @@ __model_config = {
 
 
 def get_db_path():
-    return os.path.join(chroma_db_dir, model_config_name)
+    return os.path.join(chroma_db_dir, model_spec)
 
 
 def get_model_config():
-    return __model_config[model_config_name]
+    return __model_spec[model_spec]
 
 
-def embed_model(data_name=default_data_name):
+def embed_model(data_name):
     model_config = get_model_config()
     model_class = model_config["embed_model_class"]
 
@@ -59,3 +58,21 @@ def chat_model():
     model_config = get_model_config()
     model_class = model_config["llm_model_class"]
     return model_class()
+
+
+def get_config():
+    return {
+        "data_base_dir": data_base_dir,
+        "chroma_db_dir": chroma_db_dir,
+        "api_spec": model_spec,
+    }
+
+
+def update_config(conf: dict):
+    global data_base_dir, model_spec
+    data_base_dir = conf.get("data_base_dir", data_base_dir)
+    model_spec = conf.get("api_spec", model_spec)
+
+
+if __name__ == "__main__":
+    print(get_config())
