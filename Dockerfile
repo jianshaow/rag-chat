@@ -1,7 +1,8 @@
 FROM jianshao/flask-base:3
 
 COPY --chown=devel:devel requirements.txt ./
-COPY --chown=devel:devel backend/engine backend/web ./backend/
+COPY --chown=devel:devel backend/engine ./backend/engine
+COPY --chown=devel:devel backend/web ./backend/web
 COPY --chown=devel:devel frontend/build ./frontend
 
 RUN pip install --no-cache-dir --upgrade pip && \

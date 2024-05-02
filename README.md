@@ -23,7 +23,8 @@ docker push jianshao/rag-chat-demo:$image_tag
 
 ### Test image
 ~~~ shell
-docker run -v $PWD/chroma:/home/devel/chroma -p 5000:5000 \
+docker run -v $PWD/backend/chroma:/home/devel/chroma \
+       -v $PWD/backend/data:/home/devel/data -p 5000:5000 \
        --add-host=host.docker.internal:host-gateway \
        --rm jianshao/rag-chat-demo:$image_tag
 ~~~
