@@ -19,10 +19,7 @@ class Home extends Component<{}, HomeState> {
 
   initData() {
     fetchData().then(dataList => {
-      const keys = Object.keys(dataList).map((data) => {
-        return data;
-      });
-      this.setState({ dataList: keys })
+      this.setState({ dataList: dataList })
     });
   }
 
