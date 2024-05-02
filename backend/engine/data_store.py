@@ -4,29 +4,43 @@ from engine import config
 
 __data_dir_dict: dict = None
 
+__data_config = {
+    "en_novel": {
+        "data_dir": "en_novel",
+        "default_question": "What did the author do growing up?",
+    },
+    "zh_novel": {
+        "data_dir": "zh_novel",
+        "default_question": "地球发动机都安装在哪里？",
+    },
+}
 
-def scan_data_base_dir():
+
+def scan_data_dirs():
     global __data_dir_dict
     __data_dir_dict = {}
-    root = config.data_base_dir
-    for entry in os.listdir(config.data_base_dir):
-        path = os.path.join(root, entry)
+    base_dir = config.data_base_dir
+    for key, value in __data_config.items():
+        data_dir = value["data_dir"]
+        path = os.path.join(base_dir, data_dir)
         if os.path.isdir(path):
-            __data_dir_dict[entry] = path
+            __data_dir_dict[key] = path
 
 
 def get_data_path(data_name):
     if __data_dir_dict is None:
-        scan_data_base_dir()
+        scan_data_dirs()
     return __data_dir_dict[data_name]
 
 
+def get_default_question(data_name):
+    return __data_config[data_name]["default_question"]
+
+
 def get_data_names():
-    if __data_dir_dict is None:
-        scan_data_base_dir()
-    return list(__data_dir_dict.keys())
+    return list(__data_config.keys())
 
 
 if __name__ == "__main__":
-    data_path = get_data_names()
-    print(data_path)
+    data_names = get_data_names()
+    print(data_names)

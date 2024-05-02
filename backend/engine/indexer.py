@@ -46,7 +46,9 @@ if __name__ == "__main__":
     import sys
 
     data_name = len(sys.argv) >= 2 and sys.argv[1] or data_store.get_data_names()[0]
-    question = len(sys.argv) >= 3 and sys.argv[2] or config.default_question
+    question = (
+        len(sys.argv) >= 3 and sys.argv[2] or data_store.get_default_question(data_name)
+    )
     retriever = get_index(data_name=data_name).as_retriever()
     nodes = retriever.retrieve(question)
     for node in nodes:
