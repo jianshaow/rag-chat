@@ -1,0 +1,12 @@
+chromadb
+llama-index-core
+llama-index-readers-file
+llama-index-vector-stores-chroma
+llama-index-embeddings-openai
+llama-index-embeddings-gemini
+llama-index-embeddings-ollama
+llama-index-llms-openai
+llama-index-llms-gemini
+llama-index-llms-ollama
+llama-index-multi-modal-llms-gemini
+llama-index-multi-modal-llms-ollama
