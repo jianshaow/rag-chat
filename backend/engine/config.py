@@ -8,9 +8,6 @@ data_base_dir = os.environ.get("DATA_BASE_DIR", "data")
 chroma_base_dir = os.environ.get("CHROMA_BASE_DIR", "chroma")
 model_spec = os.environ.get("MODEL_SPEC", "openai")
 
-default_question = "What did the author do growing up?"
-
-
 __model_spec = {
     "openai": {
         "en_embed_model": os.environ.get(
@@ -34,12 +31,12 @@ def get_db_path():
     return os.path.join(chroma_base_dir, model_spec)
 
 
-def get_model_config():
+def get_model_spec():
     return __model_spec[model_spec]
 
 
 def embed_model(data_name: str):
-    model_config = get_model_config()
+    model_config = get_model_spec()
     model_class = model_config["embed_model_class"]
 
     if model_class == OpenAIEmbedding:
@@ -55,8 +52,8 @@ def embed_model(data_name: str):
 
 
 def chat_model():
-    model_config = get_model_config()
-    model_class = model_config["llm_model_class"]
+    model_spec = get_model_spec()
+    model_class = model_spec["llm_model_class"]
     return model_class()
 
 

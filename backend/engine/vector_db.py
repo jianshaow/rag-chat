@@ -4,14 +4,18 @@ from llama_index.core.vector_stores import VectorStoreQuery
 
 from engine import config
 
-__db = None
+__dbs: dict = {}
 
 
-def get_db(path=config.get_db_path()):
-    global __db
-    if __db is None:
-        __db = chromadb.PersistentClient(path)
-    return __db
+def get_db():
+    global __dbs
+    model_spec = config.model_spec
+    db = __dbs.get(model_spec)
+    if db is None:
+        path=config.get_db_path()
+        db = chromadb.PersistentClient(path)
+        __dbs[model_spec] = db
+    return db
 
 
 def get_collection(collection_name):

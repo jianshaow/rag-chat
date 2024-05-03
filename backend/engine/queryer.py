@@ -1,7 +1,7 @@
 from engine import config, indexer
 
 
-def query(data_name, query_text=config.default_question):
+def query(data_name, query_text):
     query_engine = indexer.get_index(data_name).as_query_engine()
     response = query_engine.query(query_text)
     return str(response)
