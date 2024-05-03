@@ -5,13 +5,13 @@ services:
     container_name: rag-chat
     restart: unless-stopped
     environment:
-      - CHROMA_DB_DIR=/home/devel/chroma
-      - DATA_ROOT_DIR=/home/devel/data
+      - CHROMA_BASE_DIR=/home/devel/chroma
+      - DATA_BASE_DIR=/home/devel/data
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_API_BASE=${OPENAI_API_BASE}
     volumes:
-      - ${CHROMA_DB_DIR}:/home/devel/chroma
-      - ${DATA_ROOT_DIR}:/home/devel/data
+      - ${CHROMA_BASE_DIR}:/home/devel/chroma
+      - ${DATA_BASE_DIR}:/home/devel/data
     ports:
       - 5000:5000
     extra_hosts:
