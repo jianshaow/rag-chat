@@ -1,4 +1,5 @@
 import { Component, ChangeEvent, FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchData, query } from '../services/backend'
 import './Common.css';
 import './Home.css';
@@ -36,6 +37,9 @@ class Home extends Component<{}, HomeState> {
     const { dataList, data, request, response } = this.state;
     return (
       <div className="container">
+      <div className='header'>
+        <Link to='/setting'>Setting</Link>
+      </div>
         <div className="center">
           <div>
             <h1>RAG Chat</h1>

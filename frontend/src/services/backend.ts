@@ -11,6 +11,22 @@ function getBeBaseUrl() {
     return beBaseUrl;
 }
 
+
+async function fetchConfig() {
+    const url = `${getBeBaseUrl()}/config`;
+    return fetch(url).then(response => response.json());
+}
+
+async function updateConfig(config: string) {
+    const url = `${getBeBaseUrl()}/config`;
+    fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: config,
+    })
+}
+
+
 async function fetchData() {
     const url = `${getBeBaseUrl()}/data`;
     return fetch(url).then(response => response.json());
@@ -25,4 +41,4 @@ async function query(data: string, query: string) {
     }).then(response => response.text());
 }
 
-export { getBeBaseUrl, setBeBaseUrl, fetchData, query }
+export { getBeBaseUrl, setBeBaseUrl, fetchConfig, updateConfig, fetchData, query }

@@ -1,0 +1,12 @@
+.setting {
+    display: flex;
+    flex-direction: column;
+    margin: 5px 20px;
+}
+
+.setting-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 20px;
+    border: 1px solid #000;
+}
