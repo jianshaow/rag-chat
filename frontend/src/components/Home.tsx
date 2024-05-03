@@ -1,10 +1,11 @@
 import { Component, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchData, query } from '../services/backend'
+import { fetchConfig, fetchData, query } from '../services/backend'
 import './Common.css';
 import './Home.css';
 
 interface HomeState {
+  modelSpec: string;
   dataList: string[];
   data: string;
   request: string;
@@ -14,13 +15,22 @@ interface HomeState {
 class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
-    this.state = { dataList: [], data: "__root", request: "", response: "" }
-    this.initData()
+    this.state = { modelSpec: "", dataList: [], data: '', request: '', response: '' };
+    this.initConfig()
+    this.initData();
+  }
+
+  initConfig() {
+    fetchConfig().then(config => {
+      this.setState({
+        modelSpec: config.model_spec,
+      });
+    });
   }
 
   initData() {
     fetchData().then(dataList => {
-      this.setState({ dataList: dataList })
+      this.setState({ dataList: dataList, data: dataList[0] });
     });
   }
 
@@ -34,44 +44,44 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { dataList, data, request, response } = this.state;
+    const { modelSpec, dataList, data, request, response } = this.state;
     return (
-      <div className="container">
-      <div className='header'>
-        <Link to='/setting'>Setting</Link>
-      </div>
-        <div className="center">
-          <div>
-            <h1>RAG Chat</h1>
-            <div>
-              <label>Docs: </label>
-              <select value={data} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                this.setState({ data: e.target.value })
-              }}>{dataList.map(data => (
-                <option key={data} value={data}>{data}</option>
-              ))}
-              </select>
-            </div>
+      <div className='container-column'>
+        <div className='header'>
+          <Link to='/setting'>Setting</Link>
+        </div>
+        <h1 className='title'>RAG Chat</h1>
+        <div className='container'>
+          <label className='config-lable'>Model Spec: </label>
+          <input value={modelSpec} readOnly style={{ marginRight: '5px' }} />
+          <label className='config-lable'>Data: </label>
+          <select value={data} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+            this.setState({ data: e.target.value });
+          }}>{dataList.map(data => (
+            <option key={data} value={data}>{data}</option>
+          ))}
+          </select>
+        </div>
+        <div className='container-column'>
+          <div className='question-block'>
+            <label>Question</label>
+            <form onSubmit={this.handleSubmitRequest}>
+              <input type='text' value={request}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  this.setState({ request: e.target.value });
+                }}
+                style={{ width: '100%' }} />
+              <button type='submit'>Submit</button>
+            </form>
+          </div>
+          <div className='answer-block'>
             <label>Answer</label>
             <div>
-              <textarea value={response} readOnly rows={10} />
-            </div>
-            <div className="center">
-              <label>Question: </label>
-              <form onSubmit={this.handleSubmitRequest}>
-                <input type="text"
-                  value={request}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    this.setState({ request: e.target.value });
-                  }}
-                  style={{ width: '70%' }}
-                />
-                <button type="submit">Submit</button>
-              </form>
+              <textarea value={response} readOnly rows={20} style={{ width: '100%' }} />
             </div>
           </div>
         </div>
-      </div >
+      </div>
     );
   }
 }

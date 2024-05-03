@@ -4,24 +4,30 @@
   margin: 0 auto;
 }
 
+.title {
+  margin: 10px 20px;
+  text-align: left;
+}
+
 .container {
+  display: flex;
+  margin: 0 20px;
+}
+
+.container-column {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: top;
-  margin: 20px 0;
+  margin: 10px 0;
+}
+
+.config-lable {
+  margin-right: 5px;
 }
 
 .center {
   text-align: center;
-}
-
-.left {
-  text-align: left;
-}
-
-.right {
-  text-align: right;
 }
 
 .block {

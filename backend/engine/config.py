@@ -71,7 +71,7 @@ def get_config():
 def update_config(conf: dict):
     global data_base_dir, chroma_base_dir, model_spec
     data_base_dir = conf.get("data_base_dir", data_base_dir)
-    chroma_base_dir = conf.get("chroma_db_dir", chroma_base_dir)
+    chroma_base_dir = conf.get("chroma_base_dir", chroma_base_dir)
     model_spec = conf.get("model_spec", model_spec)
 
 
