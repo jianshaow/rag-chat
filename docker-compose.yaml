@@ -5,11 +5,14 @@ services:
     container_name: rag-chat
     restart: unless-stopped
     environment:
+      - https_proxy=${https_proxy}
       - CHROMA_BASE_DIR=/home/devel/chroma
       - DATA_BASE_DIR=/home/devel/data
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_API_BASE=${OPENAI_API_BASE}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
     volumes:
+      - ${HOME}/.config:/home/devel/.config
       - ${CHROMA_BASE_DIR}:/home/devel/chroma
       - ${DATA_BASE_DIR}:/home/devel/data
     ports:
