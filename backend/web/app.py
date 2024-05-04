@@ -30,6 +30,18 @@ def query_data():
     return data_store.get_data_names(), 200
 
 
+@app.route("/data_config", methods=["GET"])
+def get_data_config():
+    return data_store.get_data_config(), 200
+
+
+@app.route("/data_config", methods=["PUT"])
+def update_data_config():
+    data_config = request.get_json()
+    data_store.update_data_config(data_config)
+    return "", 204
+
+
 @app.route("/config", methods=["GET"])
 def get_config():
     return config.get_config(), 200

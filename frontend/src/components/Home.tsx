@@ -1,12 +1,13 @@
 import { Component, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchConfig, fetchData, query } from '../services/backend'
+import { fetchConfig, fetchDataConfig, query } from '../services/backend'
 import './Common.css';
 import './Home.css';
 
 interface HomeState {
   modelSpec: string;
   dataList: string[];
+  dataConfig: any;
   data: string;
   request: string;
   response: string;
@@ -15,7 +16,7 @@ interface HomeState {
 class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
-    this.state = { modelSpec: "", dataList: [], data: '', request: '', response: '' };
+    this.state = { modelSpec: "", dataConfig: {}, dataList: [], data: '', request: '', response: '' };
     this.initConfig()
     this.initData();
   }
@@ -29,8 +30,13 @@ class Home extends Component<{}, HomeState> {
   }
 
   initData() {
-    fetchData().then(dataList => {
-      this.setState({ dataList: dataList, data: dataList[0] });
+    fetchDataConfig().then(dataConfig => {
+      const dataList = Object.keys(dataConfig).map((data) => {
+        return data;
+      });
+      const defaultName = dataList[0];
+      const defaultQuestion = dataConfig[defaultName].default_question;
+      this.setState({ dataConfig: dataConfig, dataList: dataList, data: defaultName, request: defaultQuestion });
     });
   }
 
@@ -44,7 +50,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { modelSpec, dataList, data, request, response } = this.state;
+    const { modelSpec, dataConfig, dataList, data, request, response } = this.state;
     return (
       <div className='container-column'>
         <div className='header'>
@@ -52,11 +58,11 @@ class Home extends Component<{}, HomeState> {
         </div>
         <h1 className='title'>RAG Chat</h1>
         <div className='container'>
-          <label className='config-lable'>Model Spec: </label>
+          <label className='config-lable'>Model Spec:</label>
           <input value={modelSpec} readOnly style={{ marginRight: '5px' }} />
-          <label className='config-lable'>Data: </label>
+          <label className='config-lable'>Data:</label>
           <select value={data} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-            this.setState({ data: e.target.value });
+            this.setState({ data: e.target.value, request: dataConfig[e.target.value].default_question });
           }}>{dataList.map(data => (
             <option key={data} value={data}>{data}</option>
           ))}

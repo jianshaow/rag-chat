@@ -4,7 +4,7 @@ from engine import config
 
 __data_dir_dict: dict = None
 
-__default_data_config = {
+__default_data_config: dict = {
     "en_novel": {
         "data_dir": "en_novel",
         "default_question": "What did the author do growing up?",
@@ -29,6 +29,11 @@ def get_data_config():
         else:
             __data_config = __default_data_config
     return __data_config
+
+
+def update_data_config(data_config: dict):
+    global __data_config
+    __data_config = data_config
 
 
 def scan_data_dirs():

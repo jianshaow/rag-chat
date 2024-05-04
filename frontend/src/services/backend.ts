@@ -32,6 +32,20 @@ async function fetchData() {
     return fetch(url).then(response => response.json());
 }
 
+async function fetchDataConfig() {
+    const url = `${getBeBaseUrl()}/data_config`;
+    return fetch(url).then(response => response.json());
+}
+
+async function updateDataConfig(data_config: string) {
+    const url = `${getBeBaseUrl()}/config`;
+    fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: data_config,
+    })
+}
+
 async function query(data: string, query: string) {
     const url = `${getBeBaseUrl()}/${data}/query`;
     return fetch(url, {
@@ -41,4 +55,6 @@ async function query(data: string, query: string) {
     }).then(response => response.text());
 }
 
-export { getBeBaseUrl, setBeBaseUrl, fetchConfig, updateConfig, fetchData, query }
+export {
+    getBeBaseUrl, setBeBaseUrl, fetchConfig, updateConfig, fetchDataConfig, updateDataConfig, fetchData, query
+}

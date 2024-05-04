@@ -1,4 +1,5 @@
-import os, config
+import os
+from engine import config
 from llama_index.embeddings.openai import OpenAIEmbedding, OpenAIEmbeddingModelType
 from llama_index.embeddings.gemini import GeminiEmbedding
 from llama_index.llms.openai import OpenAI
