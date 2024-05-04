@@ -4,14 +4,14 @@ from llama_index.core import (
     SimpleDirectoryReader,
 )
 
-from engine import config, vector_db, data_store
+from engine import config, models, vector_db, data_store
 
 __indexes = {}
 
 
 def create_or_load_index(data_name, data_dir):
     vector_store = vector_db.get_vector_store(data_name)
-    embed_model = config.embed_model(data_name)
+    embed_model = models.embed_model(data_name)
     print("model_spec:", config.model_spec)
     print("data_name:", data_name)
     print("embed_model:", embed_model.model_name)
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     question = (
         len(sys.argv) >= 3 and sys.argv[2] or data_store.get_default_question(data_name)
     )
-    retriever = get_index(data_name=data_name).as_retriever()
+    retriever = get_index(data_name).as_retriever()
     nodes = retriever.retrieve(question)
     for node in nodes:
         print("---------------------------------------------")

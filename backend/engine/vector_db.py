@@ -12,7 +12,7 @@ def get_db():
     model_spec = config.model_spec
     db = __dbs.get(model_spec)
     if db is None:
-        path=config.get_db_path()
+        path = config.get_db_path()
         db = chromadb.PersistentClient(path)
         __dbs[model_spec] = db
     return db
@@ -29,7 +29,7 @@ def get_vector_store(data_name):
     return ChromaVectorStore(chroma_collection=chroma_collection)
 
 
-def has_data(vector_store):
+def has_data(vector_store: ChromaVectorStore):
     ids = vector_store.query(VectorStoreQuery()).ids
     return len(ids) != 0
 

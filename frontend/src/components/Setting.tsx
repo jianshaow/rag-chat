@@ -32,13 +32,13 @@ class Setting extends Component<{}, SettingState> {
     this.initConfig();
   }
 
-  saveBeBaseUrl = async (e: MouseEvent) => {
+  handleSaveBeBaseUrl = async (e: MouseEvent) => {
     const { beBaseUrl } = this.state;
     setBeBaseUrl(beBaseUrl);
     this.initSetting();
   };
 
-  detectBeBaseUrl = async (e: MouseEvent) => {
+  handleDetectBeBaseUrl = async (e: MouseEvent) => {
     const protocol = window.location.protocol;
     const host = window.location.host;
     const url = `${protocol}//${host}`;
@@ -55,7 +55,7 @@ class Setting extends Component<{}, SettingState> {
     });
   }
 
-  saveConfig = async (e: MouseEvent) => {
+  handleSaveConfig = async (e: MouseEvent) => {
     const { modelSpec, dataBaseDir, chromaBaseDir } = this.state
     const config = {
       'model_spec': modelSpec,
@@ -86,8 +86,8 @@ class Setting extends Component<{}, SettingState> {
                 this.setState({ beBaseUrl: e.target.value });
               }}
             />
-            <button onClick={this.saveBeBaseUrl}>Save</button>
-            <button onClick={this.detectBeBaseUrl}>Detect</button>
+            <button onClick={this.handleSaveBeBaseUrl}>Save</button>
+            <button onClick={this.handleDetectBeBaseUrl}>Detect</button>
           </div>
         </div>
         <label className='title'>Backend</label>
@@ -130,7 +130,7 @@ class Setting extends Component<{}, SettingState> {
           </div>
           <div className='setting'>
             <div>
-              <button onClick={this.saveConfig}>Save Setting</button>
+              <button onClick={this.handleSaveConfig}>Save Setting</button>
             </div>
           </div>
         </div>

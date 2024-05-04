@@ -34,7 +34,7 @@ class Home extends Component<{}, HomeState> {
     });
   }
 
-  handleSubmitRequest = async (e: FormEvent) => {
+  handleQuestion = async (e: FormEvent) => {
     e.preventDefault();
     const { data, request } = this.state;
 
@@ -65,7 +65,7 @@ class Home extends Component<{}, HomeState> {
         <div className='container-column'>
           <div className='question-block'>
             <label>Question</label>
-            <form onSubmit={this.handleSubmitRequest}>
+            <form onSubmit={this.handleQuestion}>
               <input type='text' value={request}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   this.setState({ request: e.target.value });

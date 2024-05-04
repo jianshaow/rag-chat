@@ -15,5 +15,5 @@ if __name__ == "__main__":
     question = (
         len(sys.argv) >= 3 and sys.argv[2] or data_store.get_default_question(data_name)
     )
-    answer = query(data_name=data_name, query_text=question)
+    answer = query(data_name, question)
     print(answer)
