@@ -1,0 +1,14 @@
+{
+    "en_novel": {
+        "data_dir": "en_novel",
+        "default_question": "What did the author do growing up?"
+    },
+    "en_novel1": {
+        "data_dir": "en_novel1",
+        "default_question": "Why does the old man go fishing?"
+    },
+    "zh_novel": {
+        "data_dir": "zh_novel",
+        "default_question": "地球发动机都安装在哪里？"
+    }
+}

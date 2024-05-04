@@ -9,7 +9,7 @@ from engine import config, vector_db, data_store
 __indexes = {}
 
 
-def create_or_load_index(data_name, data_path):
+def create_or_load_index(data_name, data_dir):
     vector_store = vector_db.get_vector_store(data_name)
     embed_model = config.embed_model(data_name)
     print("model_spec:", config.model_spec)
@@ -21,7 +21,7 @@ def create_or_load_index(data_name, data_path):
             embed_model,
         )
     else:
-        documents = SimpleDirectoryReader(data_path).load_data(show_progress=True)
+        documents = SimpleDirectoryReader(data_dir).load_data(show_progress=True)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(
             documents,
@@ -39,9 +39,9 @@ def get_index(data_name):
     )
     index = __indexes.get(index_key)
     if index is None:
-        data_path = data_store.get_data_path(data_name)
-        if data_path is not None:
-            index = create_or_load_index(data_name, data_path)
+        data_dir = data_store.get_data_dir(data_name)
+        if data_dir is not None:
+            index = create_or_load_index(data_name, data_dir)
             __indexes[index_key] = index
     return index
 

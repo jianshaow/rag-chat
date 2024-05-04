@@ -1,4 +1,4 @@
-from engine import config, indexer
+from engine import indexer
 
 
 def query(data_name, query_text):
