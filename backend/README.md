@@ -23,7 +23,7 @@ export OPENAI_API_BASE=http://host.docker.internal:8000/v1
 
 ### Build
 ~~~ shell
-export image_ver=0.0.5
+export image_ver=0.0.6
 docker build -t jianshao/rag-chat-dev:$image_ver .
 docker push jianshao/rag-chat-dev:$image_ver
 ~~~

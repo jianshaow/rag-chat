@@ -16,7 +16,7 @@ docker run -v $PWD/frontend:/home/node/frontend \
 
 ## buld docker
 ~~~shell
-export image_tag=0.0.3
+export image_tag=0.0.4
 docker build -t jianshao/rag-chat-demo:$image_tag .
 docker push jianshao/rag-chat-demo:$image_tag
 ~~~
