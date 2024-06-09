@@ -8,7 +8,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"alphabotsec.vscode-eclipse-keybindings"
+				"dbaeumer.vscode-eslint"
 			]
 		}
 	}
