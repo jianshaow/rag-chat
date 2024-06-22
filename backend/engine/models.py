@@ -33,9 +33,7 @@ def embed_model():
 
     if model_class == OllamaEmbedding:
         return OllamaEmbedding(
-            base_url=os.environ.get(
-                "OLLAMA_BASE_URL", "http://host.docker.internal:11434"
-            ),
+            base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
             model_name=os.environ.get("OLLAMA_EMBED_MODEL", "nomic-embed-text:v1.5"),
         )
 
@@ -48,9 +46,7 @@ def chat_model():
 
     if model_class == Ollama:
         return Ollama(
-            base_url=os.environ.get(
-                "OLLAMA_BASE_URL", "http://host.docker.internal:11434"
-            ),
+            base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
             model_name=os.environ.get("OLLAMA_CHAT_MODEL", "vicuna:13b"),
         )
     return model_class()
