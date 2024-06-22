@@ -1,8 +1,19 @@
-from engine import indexer
+from engine import config, indexer, models
+
+__engines = {}
 
 
 def query(data_name, query_text):
-    query_engine = indexer.get_index(data_name).as_query_engine()
+    engine_key = "{data_name}@{model_spec}".format(
+        data_name=data_name, model_spec=config.model_spec
+    )
+    query_engine = __engines.get(engine_key)
+    if query_engine is None:
+        chat_model = models.chat_model()
+        query_engine = indexer.get_index(data_name).as_query_engine(llm=chat_model)
+        print("chat_model:", chat_model.model)
+        __engines[engine_key] = query_engine
+
     response = query_engine.query(query_text)
     return str(response)
 

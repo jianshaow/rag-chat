@@ -46,16 +46,16 @@ def __get_collection_name(data_name):
 def __show_db():
     collections = get_db().list_collections()
     print("collections size:", len(collections))
-    print("===================")
+    print("=" * 80)
     for collection in collections:
-        print(collection)
+        print(collection.get_model())
         count = collection.count()
         print("record count:", count)
         vectors = collection.peek(1)
         for embeddings in vectors["embeddings"]:
             print("embeddings dimension:", len(embeddings))
             print(embeddings[:4])
-        print("-------------------")
+        print("-" * 80)
 
 
 if __name__ == "__main__":
