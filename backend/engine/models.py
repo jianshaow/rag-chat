@@ -51,7 +51,7 @@ def chat_model():
     if model_class == Ollama:
         return Ollama(
             base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
-            model=os.environ.get("OLLAMA_CHAT_MODEL", "vicuna:13b"),
+            model=os.environ.get("OLLAMA_CHAT_MODEL", "vicuna:7b"),
         )
     return model_class()
 
