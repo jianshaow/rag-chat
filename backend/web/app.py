@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, send_from_directory
-from engine import data_store, config, queryer
+from engine import data_store, config, models, queryer
 
 frontend = os.path.abspath(os.path.join("../frontend", "build"))
 frontend = os.environ.get("FRONTEND_DIR", frontend)
@@ -52,6 +52,11 @@ def update_config():
     conf = request.get_json()
     config.update_config(conf)
     return "", 204
+
+
+@app.route("/api_spec", methods=["GET"])
+def get_api_specs():
+    return models.get_api_specs(), 200
 
 
 if __name__ == "__main__":

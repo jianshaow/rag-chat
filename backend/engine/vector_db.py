@@ -9,7 +9,7 @@ __dbs: dict = {}
 
 def get_db():
     global __dbs
-    model_spec = config.model_spec
+    model_spec = config.api_spec
     db = __dbs.get(model_spec)
     if db is None:
         path = config.get_db_path()

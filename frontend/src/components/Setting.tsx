@@ -5,6 +5,7 @@ import {
   setBeBaseUrl,
   fetchConfig,
   updateConfig,
+  fetchApiSpecs,
 } from '../services/backend'
 import './Common.css';
 import './Setting.css';
@@ -13,7 +14,8 @@ interface SettingState {
   beBaseUrl: string;
   dataBaseDir: string;
   chromaBaseDir: string;
-  modelSpec: string;
+  apiSpecs: string[];
+  apiSpec: string;
 }
 
 class Setting extends Component<{}, SettingState> {
@@ -21,15 +23,23 @@ class Setting extends Component<{}, SettingState> {
     super(props);
     this.state = {
       beBaseUrl: getBeBaseUrl(),
-      modelSpec: '',
       dataBaseDir: '',
       chromaBaseDir: '',
+      apiSpecs: [],
+      apiSpec: '',
     };
     this.initSetting();
   }
 
   initSetting() {
     this.initConfig();
+    this.initApiSpecs()
+  }
+
+  initApiSpecs() {
+    fetchApiSpecs().then((apiSpecs) => {
+      this.setState({ apiSpecs: apiSpecs });
+    });
   }
 
   handleSaveBeBaseUrl = async (e: MouseEvent) => {
@@ -48,7 +58,7 @@ class Setting extends Component<{}, SettingState> {
   initConfig() {
     fetchConfig().then(config => {
       this.setState({
-        modelSpec: config.model_spec,
+        apiSpec: config.api_spec,
         dataBaseDir: config.data_base_dir,
         chromaBaseDir: config.chroma_base_dir,
       });
@@ -56,9 +66,9 @@ class Setting extends Component<{}, SettingState> {
   }
 
   handleSaveConfig = async (e: MouseEvent) => {
-    const { modelSpec, dataBaseDir, chromaBaseDir } = this.state
+    const { apiSpec, dataBaseDir, chromaBaseDir } = this.state
     const config = {
-      'model_spec': modelSpec,
+      'api_spec': apiSpec,
       'data_base_dir': dataBaseDir,
       'chroma_base_dir': chromaBaseDir,
     };
@@ -68,7 +78,7 @@ class Setting extends Component<{}, SettingState> {
   };
 
   render() {
-    const { beBaseUrl, dataBaseDir, chromaBaseDir, modelSpec } = this.state;
+    const { beBaseUrl, dataBaseDir, chromaBaseDir, apiSpecs, apiSpec } = this.state;
 
     return (
       <div className='container-column'>
@@ -118,13 +128,12 @@ class Setting extends Component<{}, SettingState> {
           </div>
           <div className='setting'>
             <div>
-              <label className='config-lable'>Model Spec: </label>
-              <select value={modelSpec} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                this.setState({ modelSpec: e.target.value })
-              }}>
-                {modelSpec === '' ? <option>Select a spec</option> : ''}
-                <option key='openai' value='openai'>openai</option>
-                <option key='gemini' value='gemini'>gemini</option>
+              <label className='config-lable'>API Spec: </label>
+              <select value={apiSpec} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                this.setState({ apiSpec: e.target.value })
+              }}>{apiSpecs.map(apiSpec => (
+                <option key={apiSpec} value={apiSpec}>{apiSpec}</option>
+              ))}
               </select>
             </div>
           </div>

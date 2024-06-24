@@ -23,8 +23,12 @@ __model_spec = {
 }
 
 
+def get_api_specs():
+    return list(__model_spec.keys())
+
+
 def get_model_spec():
-    return __model_spec[config.model_spec]
+    return __model_spec[config.api_spec]
 
 
 def embed_model():
@@ -47,7 +51,7 @@ def chat_model():
     if model_class == Ollama:
         return Ollama(
             base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
-            model_name=os.environ.get("OLLAMA_CHAT_MODEL", "vicuna:13b"),
+            model=os.environ.get("OLLAMA_CHAT_MODEL", "vicuna:13b"),
         )
     return model_class()
 

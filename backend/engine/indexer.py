@@ -12,7 +12,7 @@ __indexes = {}
 def create_or_load_index(data_name, data_dir):
     vector_store = vector_db.get_vector_store(data_name)
     embed_model = models.embed_model()
-    print("model_spec:", config.model_spec)
+    print("model_spec:", config.api_spec)
     print("data_name:", data_name)
     print("embed_model:", embed_model.model_name)
     if vector_db.has_data(vector_store):
@@ -35,7 +35,7 @@ def create_or_load_index(data_name, data_dir):
 def get_index(data_name):
     global __indexes
     index_key = "{data_name}@{model_spec}".format(
-        data_name=data_name, model_spec=config.model_spec
+        data_name=data_name, model_spec=config.api_spec
     )
     index = __indexes.get(index_key)
     if index is None:

@@ -5,7 +5,7 @@ __engines = {}
 
 def query(data_name, query_text):
     engine_key = "{data_name}@{model_spec}".format(
-        data_name=data_name, model_spec=config.model_spec
+        data_name=data_name, model_spec=config.api_spec
     )
     query_engine = __engines.get(engine_key)
     if query_engine is None:

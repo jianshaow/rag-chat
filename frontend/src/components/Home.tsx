@@ -5,7 +5,7 @@ import './Common.css';
 import './Home.css';
 
 interface HomeState {
-  modelSpec: string;
+  apiSpec: string;
   dataList: string[];
   dataConfig: any;
   data: string;
@@ -16,7 +16,7 @@ interface HomeState {
 class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
-    this.state = { modelSpec: "", dataConfig: {}, dataList: [], data: '', request: '', response: '' };
+    this.state = { apiSpec: "", dataConfig: {}, dataList: [], data: '', request: '', response: '' };
     this.initConfig()
     this.initData();
   }
@@ -24,7 +24,7 @@ class Home extends Component<{}, HomeState> {
   initConfig() {
     fetchConfig().then(config => {
       this.setState({
-        modelSpec: config.model_spec,
+        apiSpec: config.api_spec,
       });
     });
   }
@@ -50,7 +50,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { modelSpec, dataConfig, dataList, data, request, response } = this.state;
+    const { apiSpec, dataConfig, dataList, data, request, response } = this.state;
     return (
       <div className='container-column'>
         <div className='header'>
@@ -58,8 +58,8 @@ class Home extends Component<{}, HomeState> {
         </div>
         <h1 className='title'>RAG Chat</h1>
         <div className='container'>
-          <label className='config-lable'>Model Spec:</label>
-          <input value={modelSpec} readOnly style={{ marginRight: '5px' }} />
+          <label className='config-lable'>API Spec:</label>
+          <input value={apiSpec} readOnly style={{ marginRight: '5px' }} />
           <label className='config-lable'>Data:</label>
           <select value={data} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
             this.setState({ data: e.target.value, request: dataConfig[e.target.value].default_question });
