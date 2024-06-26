@@ -9,7 +9,7 @@ def query(data_name, query_text):
     )
     query_engine = __engines.get(engine_key)
     if query_engine is None:
-        chat_model = models.chat_model()
+        chat_model = models.new_model("chat")
         query_engine = indexer.get_index(data_name).as_query_engine(llm=chat_model)
         print("chat_model:", chat_model.model)
         __engines[engine_key] = query_engine
@@ -27,4 +27,6 @@ if __name__ == "__main__":
         len(sys.argv) >= 3 and sys.argv[2] or data_store.get_default_question(data_name)
     )
     answer = query(data_name, question)
+    print("-" * 80)
     print(answer)
+    print("-" * 80)

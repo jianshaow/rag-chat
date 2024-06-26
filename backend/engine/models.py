@@ -9,16 +9,42 @@ from llama_index.llms.ollama import Ollama
 
 __model_spec = {
     "openai": {
-        "embed_model_class": OpenAIEmbedding,
-        "llm_model_class": OpenAI,
+        "embed": {
+            "model_class": OpenAIEmbedding,
+            "model_args": {},
+        },
+        "chat": {
+            "model_class": OpenAI,
+            "model_args": {},
+        },
     },
     "gemini": {
-        "embed_model_class": GeminiEmbedding,
-        "llm_model_class": Gemini,
+        "embed": {
+            "model_class": GeminiEmbedding,
+            "model_args": {"transport": "rest"},
+        },
+        "chat": {
+            "model_class": Gemini,
+            "model_args": {"model": "models/gemini-1.5-pro", "transport": "rest"},
+        },
     },
     "ollama": {
-        "embed_model_class": OllamaEmbedding,
-        "llm_model_class": Ollama,
+        "embed": {
+            "model_class": OllamaEmbedding,
+            "model_args": {
+                "base_url": os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
+                "model_name": os.environ.get(
+                    "OLLAMA_EMBED_MODEL", "nomic-embed-text:v1.5"
+                ),
+            },
+        },
+        "chat": {
+            "model_class": Ollama,
+            "model_args": {
+                "base_url": os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
+                "model": os.environ.get("OLLAMA_CHAT_MODEL", "vicuna:7b"),
+            },
+        },
     },
 }
 
@@ -31,29 +57,11 @@ def get_model_spec():
     return __model_spec[config.api_spec]
 
 
-def embed_model():
+def new_model(model_type):
     model_spec = get_model_spec()
-    model_class = model_spec["embed_model_class"]
-
-    if model_class == OllamaEmbedding:
-        return OllamaEmbedding(
-            base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
-            model_name=os.environ.get("OLLAMA_EMBED_MODEL", "nomic-embed-text:v1.5"),
-        )
-
-    return model_class()
-
-
-def chat_model():
-    model_spec = get_model_spec()
-    model_class = model_spec["llm_model_class"]
-
-    if model_class == Ollama:
-        return Ollama(
-            base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
-            model=os.environ.get("OLLAMA_CHAT_MODEL", "vicuna:7b"),
-        )
-    return model_class()
+    model_class = model_spec[model_type]["model_class"]
+    model_args = model_spec[model_type]["model_args"]
+    return model_class(**model_args)
 
 
 if __name__ == "__main__":
