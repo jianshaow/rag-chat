@@ -25,7 +25,7 @@ __model_spec = {
         },
         "chat": {
             "model_class": Gemini,
-            "model_args": {"model": "models/gemini-1.5-pro", "transport": "rest"},
+            "model_args": {"model": "models/gemini-1.5-flash", "transport": "rest"},
         },
     },
     "ollama": {
