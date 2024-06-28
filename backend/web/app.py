@@ -58,6 +58,23 @@ def update_config():
 def get_api_specs():
     return models.get_api_specs(), 200
 
+@app.route("/api_spec/<api_spec>", methods=["GET"])
+def get_api_config(api_spec):
+    return models.get_api_config(api_spec), 200
+
+
+@app.route("/api_spec/<api_spec>", methods=["PUT"])
+def update_api_config(api_spec):
+    conf = request.get_json()
+    models.update_api_config(api_spec, conf)
+    queryer.setStale(api_spec)
+    return "", 204
+
+@app.route("/models", methods=["GET"])
+def get_models():
+    reload = request.args.get("reload", "false")
+    return models.get_models(reload == "true"), 200
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

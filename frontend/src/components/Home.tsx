@@ -1,11 +1,12 @@
 import { Component, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchConfig, fetchDataConfig, query } from '../services/backend'
+import { fetchConfig, fetchApiConfig, fetchDataConfig, query } from '../services/backend'
 import './Common.css';
 import './Home.css';
 
 interface HomeState {
   apiSpec: string;
+  model: string;
   dataList: string[];
   dataConfig: any;
   data: string;
@@ -16,7 +17,7 @@ interface HomeState {
 class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
-    this.state = { apiSpec: "", dataConfig: {}, dataList: [], data: '', request: '', response: '' };
+    this.state = { apiSpec: "", model: "", dataConfig: {}, dataList: [], data: '', request: '', response: '' };
     this.initConfig()
     this.initData();
   }
@@ -25,6 +26,11 @@ class Home extends Component<{}, HomeState> {
     fetchConfig().then(config => {
       this.setState({
         apiSpec: config.api_spec,
+      });
+      fetchApiConfig(config.api_spec).then(config => {
+        this.setState({
+          model: config.model,
+        });
       });
     });
   }
@@ -50,7 +56,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { apiSpec, dataConfig, dataList, data, request, response } = this.state;
+    const { apiSpec, model, dataConfig, dataList, data, request, response } = this.state;
     return (
       <div className='container-column'>
         <div className='header'>
@@ -60,6 +66,8 @@ class Home extends Component<{}, HomeState> {
         <div className='container'>
           <label className='config-lable'>API Spec:</label>
           <input value={apiSpec} readOnly style={{ marginRight: '5px' }} />
+          <label className='config-lable'>Model: </label>
+          <input value={model} readOnly style={{ marginRight: '5px' }} />
           <label className='config-lable'>Data:</label>
           <select value={data} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
             this.setState({ data: e.target.value, request: dataConfig[e.target.value].default_question });

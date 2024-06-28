@@ -4,18 +4,23 @@ __engines = {}
 
 
 def query(data_name, query_text):
-    engine_key = "{data_name}@{model_spec}".format(
-        data_name=data_name, model_spec=config.api_spec
-    )
-    query_engine = __engines.get(engine_key)
+    api_spec = config.api_spec
+
+    engines = __engines.get(api_spec, {})
+    query_engine = engines.get(data_name)
     if query_engine is None:
         chat_model = models.new_model("chat")
         query_engine = indexer.get_index(data_name).as_query_engine(llm=chat_model)
         print("chat_model:", chat_model.model)
-        __engines[engine_key] = query_engine
+        engines[data_name] = query_engine
+        __engines[api_spec] = engines
 
     response = query_engine.query(query_text)
     return str(response)
+
+
+def setStale(api_spec: str):
+    __engines.pop(api_spec, None)
 
 
 if __name__ == "__main__":

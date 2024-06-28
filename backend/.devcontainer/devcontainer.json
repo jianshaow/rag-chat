@@ -3,6 +3,7 @@
 	"image": "jianshao/rag-chat-dev:0.0.7",
 	"remoteEnv": {
 		"PYTHONPATH": ".",
+		"OLLAMA_HOST": "host.docker.internal",
 		"OLLAMA_BASE_URL": "http://host.docker.internal:11434"
 	},
 	"runArgs": [

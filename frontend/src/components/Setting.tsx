@@ -6,6 +6,9 @@ import {
   fetchConfig,
   updateConfig,
   fetchApiSpecs,
+  updateApiConfig,
+  fetchApiConfig,
+  fetchModels,
 } from '../services/backend'
 import './Common.css';
 import './Setting.css';
@@ -16,6 +19,9 @@ interface SettingState {
   chromaBaseDir: string;
   apiSpecs: string[];
   apiSpec: string;
+  models: string[];
+  model: string;
+  systemPrompt: string;
 }
 
 class Setting extends Component<{}, SettingState> {
@@ -27,18 +33,32 @@ class Setting extends Component<{}, SettingState> {
       chromaBaseDir: '',
       apiSpecs: [],
       apiSpec: '',
+      model: '',
+      models: [],
+      systemPrompt: '',
     };
     this.initSetting();
   }
 
   initSetting() {
     this.initConfig();
-    this.initApiSpecs()
+    this.initApiSpecs();
+    this.initModels();
   }
 
   initApiSpecs() {
     fetchApiSpecs().then((apiSpecs) => {
       this.setState({ apiSpecs: apiSpecs });
+    });
+  }
+
+  initModels() {
+    fetchModels(false).then((models) => {
+      const { model } = this.state;
+      if (!models.includes(model)) {
+        models.push(model);
+      }
+      this.setState({ models: models });
     });
   }
 
@@ -62,8 +82,28 @@ class Setting extends Component<{}, SettingState> {
         dataBaseDir: config.data_base_dir,
         chromaBaseDir: config.chroma_base_dir,
       });
+      this.reloadApiConfig(config.api_spec);
     });
   }
+
+  reloadApiConfig(apiSpec: string) {
+    fetchApiConfig(apiSpec).then((config) => {
+      console.log(config);
+      this.setState({
+        model: config.model,
+      });
+    })
+  }
+
+  handleReloadModels = async (e: MouseEvent) => {
+    fetchModels(true).then((models) => {
+      const { model } = this.state;
+      if (!models.includes(model)) {
+        models.push(model);
+      }
+      this.setState({ models: models });
+    });
+  };
 
   handleSaveConfig = async (e: MouseEvent) => {
     const { apiSpec, dataBaseDir, chromaBaseDir } = this.state
@@ -73,12 +113,24 @@ class Setting extends Component<{}, SettingState> {
       'chroma_base_dir': chromaBaseDir,
     };
     updateConfig(JSON.stringify(config)).then(() => {
-      alert('Setting Saved!')
+      alert('Setting Saved!');
+      this.initModels();
+      this.reloadApiConfig(apiSpec);
+    })
+  };
+
+  handleSaveApiConfig = async (e: MouseEvent) => {
+    const { apiSpec, model } = this.state
+    const config = {
+      'model': model,
+    };
+    updateApiConfig(apiSpec, JSON.stringify(config)).then(() => {
+      alert('API Config Saved!')
     })
   };
 
   render() {
-    const { beBaseUrl, dataBaseDir, chromaBaseDir, apiSpecs, apiSpec } = this.state;
+    const { beBaseUrl, dataBaseDir, chromaBaseDir, apiSpecs, apiSpec, models, model, systemPrompt } = this.state;
 
     return (
       <div className='container-column'>
@@ -139,9 +191,36 @@ class Setting extends Component<{}, SettingState> {
           </div>
           <div className='setting'>
             <div>
-              <button onClick={this.handleSaveConfig}>Save Setting</button>
+              <button onClick={this.handleSaveConfig}>Save</button>
             </div>
           </div>
+        </div>
+        <label className='title'>API Config</label>
+        <div className='setting-container'>
+          <div className='setting'>
+            <div>
+              <label className='config-lable'>Chat Model: </label>
+              <select value={model} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                this.setState({ model: e.target.value })
+              }}>{models.map(model => (
+                <option key={model} value={model}>{model}</option>
+              ))}
+              </select>
+              <button onClick={this.handleReloadModels}>Reload Models</button>
+            </div>
+          </div>
+          <div className='setting'>
+            <div>
+              <button onClick={this.handleSaveApiConfig}>Save</button>
+            </div>
+          </div>
+        </div>
+        <label className='title'>System Prompt</label>
+        <div className='setting-container'>
+          <textarea value={systemPrompt} rows={10}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+              this.setState({ systemPrompt: e.target.value });
+            }} />
         </div>
       </div>
     );

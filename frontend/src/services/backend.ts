@@ -11,7 +11,6 @@ function getBeBaseUrl() {
     return beBaseUrl;
 }
 
-
 async function fetchConfig() {
     const url = `${getBeBaseUrl()}/config`;
     return fetch(url).then(response => response.json());
@@ -25,7 +24,6 @@ async function updateConfig(config: string) {
         body: config,
     })
 }
-
 
 async function fetchData() {
     const url = `${getBeBaseUrl()}/data`;
@@ -51,6 +49,26 @@ async function fetchApiSpecs() {
     return fetch(url).then(response => response.json());
 }
 
+
+async function fetchApiConfig(api_spec: string) {
+    const url = `${getBeBaseUrl()}/api_spec/${api_spec}`;
+    return fetch(url).then(response => response.json());
+}
+
+async function updateApiConfig(api_spec: string, config: string) {
+    const url = `${getBeBaseUrl()}/api_spec/${api_spec}`;
+    fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: config,
+    })
+}
+
+async function fetchModels(reload: boolean) {
+    const url = `${getBeBaseUrl()}/models?reload=${reload}`
+    return fetch(url).then(response => response.json());
+}
+
 async function query(data: string, query: string) {
     const url = `${getBeBaseUrl()}/${data}/query`;
     return fetch(url, {
@@ -69,5 +87,8 @@ export {
     updateDataConfig,
     fetchData,
     fetchApiSpecs,
+    fetchApiConfig,
+    updateApiConfig,
+    fetchModels,
     query,
 }
