@@ -21,7 +21,6 @@ interface SettingState {
   apiSpec: string;
   models: string[];
   model: string;
-  systemPrompt: string;
 }
 
 class Setting extends Component<{}, SettingState> {
@@ -35,7 +34,6 @@ class Setting extends Component<{}, SettingState> {
       apiSpec: '',
       model: '',
       models: [],
-      systemPrompt: '',
     };
     this.initSetting();
   }
@@ -130,7 +128,7 @@ class Setting extends Component<{}, SettingState> {
   };
 
   render() {
-    const { beBaseUrl, dataBaseDir, chromaBaseDir, apiSpecs, apiSpec, models, model, systemPrompt } = this.state;
+    const { beBaseUrl, dataBaseDir, chromaBaseDir, apiSpecs, apiSpec, models, model } = this.state;
 
     return (
       <div className='container-column'>
@@ -214,13 +212,6 @@ class Setting extends Component<{}, SettingState> {
               <button onClick={this.handleSaveApiConfig}>Save</button>
             </div>
           </div>
-        </div>
-        <label className='title'>System Prompt</label>
-        <div className='setting-container'>
-          <textarea value={systemPrompt} rows={10}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
-              this.setState({ systemPrompt: e.target.value });
-            }} />
         </div>
       </div>
     );
