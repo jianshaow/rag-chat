@@ -14,7 +14,7 @@ pip install -r requirements.txt
 
 ### Build
 ~~~ shell
-export image_ver=0.0.7
+export image_ver=0.0.8
 docker build -t jianshao/rag-chat-dev:$image_ver .
 docker push jianshao/rag-chat-dev:$image_ver
 ~~~
