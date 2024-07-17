@@ -97,14 +97,20 @@ def get_models(reload=False):
     api_spec = config.api_spec
     models = __models.get(api_spec)
     if models is None or reload:
-        model_spec = __model_spec[api_spec]
-        models = model_spec["models_func"]()
-        __models[api_spec] = models
+        model_spec = __model_spec.get(api_spec)
+        if model_spec:
+            models = model_spec["models_func"]()
+            __models[api_spec] = models
+        else:
+            import engine.extension as ext
+
+            models = ext.get_models(api_spec)
+            __models[api_spec] = models
     return models
 
 
 def get_api_config(api_spec: str) -> dict:
-    model_spec = __model_spec[api_spec]
+    model_spec = __model_spec.get(api_spec)
     if model_spec:
         model = model_spec["chat"]["model_args"]["model"]
         return {"model": model}
@@ -115,7 +121,7 @@ def get_api_config(api_spec: str) -> dict:
 
 
 def update_api_config(api_spec: str, conf: dict):
-    model_spec = __model_spec[api_spec]
+    model_spec = __model_spec.get(api_spec)
     if model_spec:
         model_spec["chat"]["model_args"]["model"] = conf.get("model")
     else:
@@ -125,13 +131,13 @@ def update_api_config(api_spec: str, conf: dict):
 
 
 def new_model(api_spec, model_type):
-    model_spec = __model_spec[api_spec]
+    model_spec = __model_spec.get(api_spec)
     if model_spec:
         model_class = model_spec[model_type]["model_class"]
         model_args = model_spec[model_type]["model_args"]
         return model_class(**model_args)
     else:
-        import extension as ext
+        import engine.extension as ext
 
         return ext.new_model(api_spec, model_type)
 

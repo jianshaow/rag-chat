@@ -37,7 +37,10 @@ def update_data_config(data_config: dict):
 
 
 def get_data_dir(data_name):
-    return get_data_config()[data_name]["data_dir"]
+    data_dir = os.path.join(
+        config.data_base_dir, get_data_config()[data_name]["data_dir"]
+    )
+    return data_dir
 
 
 def get_data_type(data_name):
