@@ -9,7 +9,7 @@ def query(data_name, query_text):
     engines = __engines.get(api_spec, {})
     query_engine = engines.get(data_name)
     if query_engine is None:
-        chat_model = models.new_model("chat")
+        chat_model = models.new_model(config.api_spec, "chat")
         query_engine = indexer.get_index(data_name).as_query_engine(llm=chat_model)
         print("chat_model:", chat_model.model)
         engines[data_name] = query_engine

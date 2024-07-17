@@ -84,7 +84,10 @@ __model_spec = {
 
 
 def get_api_specs():
-    return list(__model_spec.keys())
+    import engine.extension as ext
+
+    ext_api_specs = ext.get_api_specs()
+    return list(__model_spec.keys()) + ext_api_specs
 
 
 __models = {}
@@ -100,17 +103,15 @@ def get_models(reload=False):
     return models
 
 
-def get_model_spec():
-    return __model_spec[config.api_spec]
-
-
 def get_api_config(api_spec: str) -> dict:
     model_spec = __model_spec[api_spec]
     if model_spec:
         model = model_spec["chat"]["model_args"]["model"]
         return {"model": model}
     else:
-        raise NotImplementedError(f"API spec {api_spec} not implemented")
+        import engine.extension as ext
+
+        return ext.get_api_config(api_spec)
 
 
 def update_api_config(api_spec: str, conf: dict):
@@ -118,14 +119,21 @@ def update_api_config(api_spec: str, conf: dict):
     if model_spec:
         model_spec["chat"]["model_args"]["model"] = conf.get("model")
     else:
-        raise NotImplementedError(f"API spec {api_spec} not implemented")
+        import engine.extension as ext
+
+        ext.update_api_config(api_spec, conf)
 
 
-def new_model(model_type):
-    model_spec = get_model_spec()
-    model_class = model_spec[model_type]["model_class"]
-    model_args = model_spec[model_type]["model_args"]
-    return model_class(**model_args)
+def new_model(api_spec, model_type):
+    model_spec = __model_spec[api_spec]
+    if model_spec:
+        model_class = model_spec[model_type]["model_class"]
+        model_args = model_spec[model_type]["model_args"]
+        return model_class(**model_args)
+    else:
+        import extension as ext
+
+        return ext.new_model(api_spec, model_type)
 
 
 if __name__ == "__main__":

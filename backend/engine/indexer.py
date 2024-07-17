@@ -11,7 +11,7 @@ __indexes = {}
 
 def create_or_load_index(data_name, data_dir):
     vector_store = vector_db.get_vector_store(data_name)
-    embed_model = models.new_model("embed")
+    embed_model = models.new_model(config.api_spec, "embed")
     print("model_spec:", config.api_spec)
     print("data_name:", data_name)
     print("embed_model:", embed_model.model_name)
