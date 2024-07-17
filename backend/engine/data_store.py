@@ -2,15 +2,15 @@ import os, json
 from engine import config
 
 
-__data_dir_dict: dict = None
-
 __default_data_config: dict = {
     "en_novel": {
         "data_dir": "en_novel",
+        "data_type": "text",
         "default_question": "What did the author do growing up?",
     },
     "zh_novel": {
         "data_dir": "zh_novel",
+        "data_type": "text",
         "default_question": "地球发动机都安装在哪里？",
     },
 }
@@ -36,21 +36,12 @@ def update_data_config(data_config: dict):
     __data_config = data_config
 
 
-def scan_data_dirs():
-    global __data_dir_dict
-    __data_dir_dict = {}
-    base_dir = config.data_base_dir
-    for key, value in get_data_config().items():
-        data_dir = value["data_dir"]
-        path = os.path.join(base_dir, data_dir)
-        if os.path.isdir(path):
-            __data_dir_dict[key] = path
-
-
 def get_data_dir(data_name):
-    if __data_dir_dict is None:
-        scan_data_dirs()
-    return __data_dir_dict[data_name]
+    return get_data_config()[data_name]["data_dir"]
+
+
+def get_data_type(data_name):
+    return get_data_config()[data_name]["data_type"]
 
 
 def get_default_question(data_name):
