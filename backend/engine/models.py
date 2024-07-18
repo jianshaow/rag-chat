@@ -15,7 +15,7 @@ from engine import config
 
 
 ollama_host = os.environ.get("OLLAMA_HOST", "localhost")
-ollama_base_url = os.environ.get("OLLAMA_BASE_URL", f"http://${ollama_host}:11434")
+ollama_base_url = os.environ.get("OLLAMA_BASE_URL", f"http://{ollama_host}:11434")
 
 
 def openai_models() -> list[str]:
