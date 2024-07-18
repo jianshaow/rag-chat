@@ -17,8 +17,12 @@ def query(data_name, query_text):
         __engines[api_spec] = engines
 
     response = query_engine.query(query_text)
-    files = [node.metadata["file_name"] for node in response.source_nodes]
-    return {"text": str(response), "sources": files}
+    sources = [
+        {"id": node.node_id, "file_name": node.metadata["file_name"]}
+        for node in response.source_nodes
+    ]
+    print(sources)
+    return {"text": str(response), "sources": sources}
 
 
 def setStale(api_spec: str):

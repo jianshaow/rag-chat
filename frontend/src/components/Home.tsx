@@ -1,12 +1,17 @@
-import { Component, ChangeEvent, FormEvent } from 'react';
+import { Component, ChangeEvent, FormEvent, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchConfig, fetchApiConfig, fetchDataConfig, query } from '../services/backend'
+import { fetchConfig, fetchApiConfig, fetchDataConfig, query, fetchSource } from '../services/backend'
 import './Common.css';
 import './Home.css';
 
+interface Node {
+  id: string;
+  file_name: string;
+}
+
 interface Response {
   text: string;
-  sources: string[];
+  sources: Node[];
 }
 
 interface HomeState {
@@ -22,7 +27,15 @@ interface HomeState {
 class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
-    this.state = { apiSpec: "", model: "", dataConfig: {}, dataList: [], data: '', request: '', response: { text: "", sources: [] } };
+    this.state = {
+      apiSpec: "",
+      model: "",
+      dataConfig: {},
+      dataList: [],
+      data: '',
+      request: '',
+      response: { text: "", sources: [] },
+    };
     this.initConfig()
     this.initData();
   }
@@ -57,6 +70,15 @@ class Home extends Component<{}, HomeState> {
 
     query(data, request).then(response => {
       this.setState({ response: response });
+    });
+  }
+
+  viewSource = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const { data } = this.state;
+    const id = (e.target as HTMLButtonElement).id
+    fetchSource(data, id).then(source => {
+      alert(source['text']);
     });
   }
 
@@ -103,7 +125,7 @@ class Home extends Component<{}, HomeState> {
             <label>Reference</label>
             <div>
               {response.sources.map(source => (
-                <li>{source}</li>
+                <li>{source.file_name}<button id={source.id} onClick={this.viewSource}>view</button></li>
               ))}
             </div>
           </div>

@@ -78,6 +78,11 @@ async function query(data: string, query: string) {
     }).then(response => response.json());
 }
 
+async function fetchSource(data: string, id: string) {
+    const url = `${getBeBaseUrl()}/${data}/get/${id}`;
+    return fetch(url).then(response => response.json());
+}
+
 export {
     getBeBaseUrl,
     setBeBaseUrl,
@@ -91,4 +96,5 @@ export {
     updateApiConfig,
     fetchModels,
     query,
+    fetchSource,
 }

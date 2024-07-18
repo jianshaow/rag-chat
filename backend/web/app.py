@@ -27,7 +27,7 @@ def query_index(data):
 
 @app.route("/<data>/get/<id>", methods=["GET"])
 def get_data_text(data, id):
-    return vector_db.get_vector_text(data, [id])[0], 200
+    return {"text": vector_db.get_vector_text(data, [id])[0]}, 200
 
 
 @app.route("/data", methods=["GET"])
