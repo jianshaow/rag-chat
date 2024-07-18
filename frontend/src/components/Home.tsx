@@ -4,6 +4,11 @@ import { fetchConfig, fetchApiConfig, fetchDataConfig, query } from '../services
 import './Common.css';
 import './Home.css';
 
+interface Response {
+  text: string;
+  sources: string[];
+}
+
 interface HomeState {
   apiSpec: string;
   model: string;
@@ -11,13 +16,13 @@ interface HomeState {
   dataConfig: any;
   data: string;
   request: string;
-  response: string;
+  response: Response;
 }
 
 class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
-    this.state = { apiSpec: "", model: "", dataConfig: {}, dataList: [], data: '', request: '', response: '' };
+    this.state = { apiSpec: "", model: "", dataConfig: {}, dataList: [], data: '', request: '', response: { text: "", sources: [] } };
     this.initConfig()
     this.initData();
   }
@@ -91,7 +96,15 @@ class Home extends Component<{}, HomeState> {
           <div className='answer-block'>
             <label>Answer</label>
             <div>
-              <textarea value={response} readOnly rows={20} style={{ width: '100%' }} />
+              <textarea value={response.text} readOnly rows={20} style={{ width: '100%' }} />
+            </div>
+          </div>
+          <div className='reference-block'>
+            <label>Reference</label>
+            <div>
+              {response.sources.map(source => (
+                <li>{source}</li>
+              ))}
             </div>
           </div>
         </div>

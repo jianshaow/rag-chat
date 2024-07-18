@@ -1,3 +1,4 @@
+import os
 from engine import config, indexer, models
 
 __engines = {}
@@ -16,7 +17,8 @@ def query(data_name, query_text):
         __engines[api_spec] = engines
 
     response = query_engine.query(query_text)
-    return str(response)
+    files = [node.metadata["file_name"] for node in response.source_nodes]
+    return {"text": str(response), "sources": files}
 
 
 def setStale(api_spec: str):

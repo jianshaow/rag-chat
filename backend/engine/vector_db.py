@@ -18,15 +18,21 @@ def get_db():
     return db
 
 
-def get_collection(collection_name):
+def get_collection(data_name):
     db = get_db()
+    collection_name = __get_collection_name(data_name)
     return db.get_or_create_collection(collection_name)
 
 
 def get_vector_store(data_name):
-    collection_name = __get_collection_name(data_name)
-    chroma_collection = get_collection(collection_name)
+    chroma_collection = get_collection(data_name)
     return ChromaVectorStore(chroma_collection=chroma_collection)
+
+
+def get_vector_text(data_name, ids: list[str]):
+    collection = get_collection(data_name)
+    result = collection.get(ids)
+    return result["documents"]
 
 
 def has_data(vector_store: ChromaVectorStore):
@@ -68,6 +74,10 @@ if __name__ == "__main__":
                 print("provide the collection name")
             else:
                 __delete_collection(collection)
+        elif sys.argv[1] == "get":
+            data_name = len(sys.argv) >= 3 and sys.argv[2] or None
+            id = len(sys.argv) >= 4 and sys.argv[3] or None
+            print(get_vector_text(data_name, [id])[0])
         else:
             print("rm is only one supported cmd")
     else:

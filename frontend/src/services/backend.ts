@@ -75,7 +75,7 @@ async function query(data: string, query: string) {
         method: 'POST',
         headers: { 'Content-Type': 'plain/text' },
         body: query,
-    }).then(response => response.text());
+    }).then(response => response.json());
 }
 
 export {

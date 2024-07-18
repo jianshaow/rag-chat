@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, send_from_directory
-from engine import data_store, config, models, queryer
+from engine import vector_db, data_store, config, models, queryer
 
 frontend = os.path.abspath(os.path.join("../frontend", "build"))
 frontend = os.environ.get("FRONTEND_DIR", frontend)
@@ -23,6 +23,11 @@ def query_index(data):
     raw_data = request.get_data()
     query = raw_data.decode("utf-8")
     return queryer.query(data, query), 200
+
+
+@app.route("/<data>/get/<id>", methods=["GET"])
+def get_data_text(data, id):
+    return vector_db.get_vector_text(data, [id])[0], 200
 
 
 @app.route("/data", methods=["GET"])
@@ -58,6 +63,7 @@ def update_config():
 def get_api_specs():
     return models.get_api_specs(), 200
 
+
 @app.route("/api_spec/<api_spec>", methods=["GET"])
 def get_api_config(api_spec):
     return models.get_api_config(api_spec), 200
@@ -69,6 +75,7 @@ def update_api_config(api_spec):
     models.update_api_config(api_spec, conf)
     queryer.setStale(api_spec)
     return "", 204
+
 
 @app.route("/models", methods=["GET"])
 def get_models():
