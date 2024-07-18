@@ -62,7 +62,7 @@ class Home extends Component<{}, HomeState> {
         <div className='header'>
           <Link to='/setting'>Setting</Link>
         </div>
-        <h1 className='title'>RAG Chat</h1>
+        <h1 className='title'>RAG Q&A</h1>
         <div className='container'>
           <label className='config-lable'>API Spec:</label>
           <input value={apiSpec} readOnly style={{ marginRight: '5px' }} />
