@@ -21,7 +21,6 @@ def query(data_name, query_text):
         {"id": node.node_id, "file_name": node.metadata["file_name"]}
         for node in response.source_nodes
     ]
-    print(sources)
     return {"text": str(response), "sources": sources}
 
 

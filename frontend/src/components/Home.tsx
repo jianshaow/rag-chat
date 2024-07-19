@@ -1,6 +1,6 @@
 import { Component, ChangeEvent, FormEvent, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchConfig, fetchApiConfig, fetchDataConfig, query, fetchSource } from '../services/backend'
+import { getBeBaseUrl, fetchConfig, fetchApiConfig, fetchDataConfig, query, fetchChrunk } from '../services/backend'
 import './Common.css';
 import './Home.css';
 
@@ -73,13 +73,20 @@ class Home extends Component<{}, HomeState> {
     });
   }
 
-  viewSource = (e: MouseEvent<HTMLButtonElement>) => {
+  viewChrunk = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const { data } = this.state;
     const id = (e.target as HTMLButtonElement).id
-    fetchSource(data, id).then(source => {
+    fetchChrunk(data, id).then(source => {
       alert(source['text']);
     });
+  }
+
+  viewFull = (e: MouseEvent<HTMLButtonElement>) => {
+    const { data } = this.state;
+    const file_name = (e.target as HTMLButtonElement).id
+    const url = `${getBeBaseUrl()}/${data}/files/${file_name}`;
+    window.open(url)
   }
 
   render() {
@@ -125,7 +132,11 @@ class Home extends Component<{}, HomeState> {
             <label>Reference</label>
             <div>
               {response.sources.map(source => (
-                <li>{source.file_name}<button id={source.id} onClick={this.viewSource}>view</button></li>
+                <li>
+                  <label style={{ marginRight: '10px' }}>{source.file_name}</label>
+                  <button id={source.id} onClick={this.viewChrunk}>chunk</button>
+                  <button id={source.file_name} onClick={this.viewFull}>full</button>
+                </li>
               ))}
             </div>
           </div>

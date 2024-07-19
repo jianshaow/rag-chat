@@ -30,6 +30,13 @@ def get_data_text(data, id):
     return {"text": vector_db.get_vector_text(data, [id])[0]}, 200
 
 
+@app.route("/<data>/files/<filename>", methods=["GET"])
+def download_file(data, filename):
+    data_dir = os.path.abspath(os.path.join(config.data_base_dir, data))
+    print(data_dir)
+    return send_from_directory(data_dir, filename)
+
+
 @app.route("/data", methods=["GET"])
 def query_data():
     return data_store.get_data_names(), 200
