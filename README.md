@@ -16,9 +16,7 @@ docker run -v $PWD/frontend:/home/node/frontend \
 
 ## buld docker
 ~~~shell
-export image_tag=0.0.9
-docker build -t jianshao/rag-chat-demo:$image_tag .
-docker push jianshao/rag-chat-demo:$image_tag
+./build-image.sh
 ~~~
 
 ### Test image
@@ -26,5 +24,5 @@ docker push jianshao/rag-chat-demo:$image_tag
 docker run -v $PWD/backend/chroma:/home/devel/chroma \
        -v $PWD/backend/data:/home/devel/data -p 5000:5000 \
        --add-host=host.docker.internal:host-gateway \
-       --rm jianshao/rag-chat-demo:$image_tag
+       --rm jianshao/rag-chat-demo:latest
 ~~~
