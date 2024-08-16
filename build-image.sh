@@ -8,7 +8,7 @@ echo "Using llama-index version ${llamaindex_ver}"
 docker build -t jianshao/rag-chat-demo:latest . --build-arg LLAMAINDEX_VER=${llamaindex_ver}
 
 image_tag=$(date +%Y%m%d)
-docker tag jianshao/rag-chat-demo:latest jianshao/li-app-dev:${image_tag}
+docker tag jianshao/rag-chat-demo:latest jianshao/rag-chat-demo:${image_tag}
 docker push jianshao/rag-chat-demo:latest
 docker push jianshao/rag-chat-demo:${image_tag}
 
