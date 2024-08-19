@@ -10,6 +10,7 @@ services:
       - DATA_BASE_DIR=/home/devel/data
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_API_BASE=${OPENAI_API_BASE}
+      - OPENAI_BASE_URL=${OPENAI_API_BASE}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - OLLAMA_HOST=host.docker.internal
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
