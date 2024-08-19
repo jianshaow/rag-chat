@@ -1,15 +1,17 @@
 #!/bin/bash
 
-docker pull jianshao/li-app-base:latest
+base_image=jianshao/li-app-base
+docker pull ${base_image}:latest
 
-llamaindex_ver=$(docker run --rm jianshao/li-app-base:latest pip list | grep llama-index-core| awk '{print $2}')
-echo "Using llama-index version ${llamaindex_ver}"
+li_ver=$(docker run --rm jianshao/li-app-base:latest pip list | grep llama-index-core | awk '{print $2}')
+echo "Using llama-index version ${li_ver}"
 
-docker build -t jianshao/rag-chat-demo:latest . --build-arg LLAMAINDEX_VER=${llamaindex_ver}
+image=jianshao/rag-chat-demo
+version=$(date +%Y%m%d)
+docker build -t ${image}:latest . --build-arg TAG=${li_ver} --build-arg VERSION=${version}
 
-image_tag=$(date +%Y%m%d)
-docker tag jianshao/rag-chat-demo:latest jianshao/rag-chat-demo:${image_tag}
-docker push jianshao/rag-chat-demo:latest
-docker push jianshao/rag-chat-demo:${image_tag}
+docker tag ${image}:latest ${image}:${version}
+docker push ${image}:latest
+docker push ${image}:${version}
 
 echo "Done"

@@ -1,6 +1,10 @@
-ARG LLAMAINDEX_VER=latest
+ARG BASE_IMAGE=jianshao/li-app-base
+ARG TAG=latest
 
-FROM jianshao/li-app-base:${LLAMAINDEX_VER}
+FROM ${BASE_IMAGE}:${TAG}
+
+ARG VERSION=snapshot
+LABEL version=${VERSION}
 
 RUN pip install --no-cache-dir --upgrade pip && \
 pip install --no-cache-dir flask
