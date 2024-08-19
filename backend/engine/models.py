@@ -46,7 +46,7 @@ __model_spec = {
         },
         "chat": {
             "model_class": OpenAI,
-            "model_args": {"model": "gpt-3.5-turbo"},
+            "model_args": {"model": "gpt-4o-mini"},
         },
         "models_func": openai_models,
     },
