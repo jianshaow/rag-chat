@@ -40,6 +40,15 @@ def has_data(vector_store: ChromaVectorStore):
     return len(ids) != 0
 
 
+def __clear_collection(collection_name):
+    db = get_db()
+    collection = db.get_collection(collection_name)
+    ids = collection.peek()["ids"]
+    while len(ids) > 0:
+        collection.delete(ids)
+        ids = collection.peek()["ids"]
+
+
 def __delete_collection(collection_name):
     db = get_db()
     db.delete_collection(collection_name)
@@ -50,17 +59,25 @@ def __get_collection_name(data_name):
 
 
 def __show_db():
+    import json
+
     collections = get_db().list_collections()
     print("collections size:", len(collections))
     print("=" * 80)
     for collection in collections:
-        print(collection.get_model())
+        print("collection name:", collection.get_model()["name"])
         count = collection.count()
         print("record count:", count)
-        vectors = collection.peek(1)
-        for embeddings in vectors["embeddings"]:
-            print("embeddings dimension:", len(embeddings))
-            print(embeddings[:4])
+        result = collection.peek(1)
+        for i, metadata in enumerate(result["metadatas"]):
+            print("+" * 80)
+            print(
+                "file name:",
+                json.loads(metadata["_node_content"])["metadata"]["file_name"],
+            )
+            embedding = result["embeddings"][i]
+            print("embeddings dimension:", len(embedding))
+            print(embedding[:4])
         print("-" * 80)
 
 
@@ -68,7 +85,13 @@ if __name__ == "__main__":
     import sys
 
     if len(sys.argv) > 2:
-        if sys.argv[1] == "rm":
+        if sys.argv[1] == "cls":
+            collection = len(sys.argv) == 3 and sys.argv[2] or None
+            if collection is None:
+                print("provide the collection name")
+            else:
+                __clear_collection(collection)
+        elif sys.argv[1] == "rm":
             collection = len(sys.argv) == 3 and sys.argv[2] or None
             if collection is None:
                 print("provide the collection name")
