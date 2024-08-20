@@ -69,11 +69,16 @@ def __show_db():
         count = collection.count()
         print("record count:", count)
         result = collection.peek(1)
-        for i, metadata in enumerate(result["metadatas"]):
+        for i, metadatas in enumerate(result["metadatas"]):
             print("+" * 80)
+            node_content = json.loads(metadatas["_node_content"])
+            metadata = node_content["metadata"]
+            print("file name:", metadata["file_name"])
             print(
-                "file name:",
-                json.loads(metadata["_node_content"])["metadata"]["file_name"],
+                "char index:",
+                node_content["start_char_idx"],
+                "->",
+                node_content["end_char_idx"],
             )
             embedding = result["embeddings"][i]
             print("embeddings dimension:", len(embedding))
