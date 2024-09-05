@@ -1,4 +1,3 @@
-import os
 from engine import config, indexer, models
 
 __engines = {}
