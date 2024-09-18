@@ -8,7 +8,7 @@ echo "Using llama-index version ${li_ver}"
 
 image=jianshao/rag-chat-demo
 version=$(date +%Y%m%d)
-docker build -t ${image}:latest . --build-arg TAG=${li_ver} --build-arg VERSION=${version}
+docker build -t ${image}:latest . --build-arg TAG=${li_ver} --build-arg VERSION=${version} $*
 
 docker tag ${image}:latest ${image}:${version}
 docker push ${image}:latest
