@@ -19,6 +19,9 @@ llama-index-llms-ollama = "^0.5.0"
 flask = "^3.1.0"
 
 
+[tool.poetry.group.dev.dependencies]
+flask-cors = "^5.0.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
