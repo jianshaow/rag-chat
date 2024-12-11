@@ -1,46 +1,60 @@
 {
   "name": "rag-chat",
   "version": "0.1.0",
-  "private": true,
+  "scripts": {
+    "format": "prettier --ignore-unknown --cache --check .",
+    "format:write": "prettier --ignore-unknown --write .",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "generate": "tsx app/api/chat/engine/generate.ts"
+  },
   "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.86",
-    "@types/react": "^18.2.62",
-    "@types/react-dom": "^18.2.19",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.2",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.9.5"
+    "@apidevtools/swagger-parser": "^10.1.0",
+    "@e2b/code-interpreter": "0.0.9-beta.3",
+    "@radix-ui/react-collapsible": "^1.0.3",
+    "@radix-ui/react-select": "^2.1.1",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-tabs": "^1.1.0",
+    "@llamaindex/chat-ui": "0.0.12",
+    "ai": "4.0.3",
+    "ajv": "^8.12.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.3.1",
+    "duck-duck-scrape": "^2.2.5",
+    "formdata-node": "^6.0.3",
+    "got": "^14.4.1",
+    "llamaindex": "0.8.2",
+    "lucide-react": "^0.460.0",
+    "next": "^15.0.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "papaparse": "^5.4.1",
+    "supports-color": "^8.1.1",
+    "tailwind-merge": "^2.1.0",
+    "tiktoken": "^1.0.15",
+    "uuid": "^9.0.1",
+    "marked": "^14.1.2"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "@types/node": "^20.10.3",
+    "@types/react": "^18.2.42",
+    "@types/react-dom": "^18.2.17",
+    "@types/uuid": "^9.0.8",
+    "@llamaindex/workflow": "^0.0.3",
+    "@types/papaparse": "^5.3.15",
+    "autoprefixer": "^10.4.16",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.14.0",
+    "eslint-config-next": "^15.0.3",
+    "eslint-config-prettier": "^9.1.0",
+    "postcss": "^8.4.32",
+    "prettier": "^3.2.5",
+    "prettier-plugin-organize-imports": "^3.2.4",
+    "tailwindcss": "^3.3.6",
+    "tsx": "^4.7.2",
+    "typescript": "^5.3.2"
   }
 }

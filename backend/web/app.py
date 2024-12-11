@@ -1,5 +1,5 @@
-import os
-from flask import Flask, request, send_from_directory
+import os, time, json
+from flask import Flask, Response, request, send_from_directory
 from engine import vector_db, data_store, config, models, queryer
 
 frontend = os.path.abspath(os.path.join("../frontend", "build"))
@@ -88,6 +88,30 @@ def update_api_config(api_spec):
 def get_models():
     reload = request.args.get("reload", "false")
     return models.get_models(reload == "true"), 200
+
+
+@app.route("/api/chat/config", methods=["GET"])
+def config():
+    return {"starterQuestions": None}
+
+
+def generate():
+    from mock_data import pre_events, messeges, post_events
+
+    for event in pre_events:
+        yield f"8:{json.dumps(event)}\n"
+        time.sleep(0.2)
+    for message in messeges:
+        yield f'0:"{message}"\n'
+        time.sleep(0.2)
+    for event in post_events:
+        yield f"8:{json.dumps(event)}\n"
+        time.sleep(0.2)
+
+
+@app.route("/api/chat", methods=["POST"])
+def chat():
+    return Response(generate(), mimetype="text/plain")
 
 
 if __name__ == "__main__":
