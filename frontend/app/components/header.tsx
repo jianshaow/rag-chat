@@ -15,8 +15,8 @@ export default function Header() {
           <span>Github Source</span>
           <Image
             className="rounded-xl"
-            src="/llama.png"
-            alt="Llama Logo"
+            src="/github.png"
+            alt="Github Logo"
             width={40}
             height={40}
             priority
