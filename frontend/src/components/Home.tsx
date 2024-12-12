@@ -132,7 +132,7 @@ class Home extends Component<{}, HomeState> {
             <label>Reference</label>
             <div>
               {response.sources.map(source => (
-                <li>
+                <li key={source.id}>
                   <label style={{ marginRight: '10px' }}>{source.file_name}</label>
                   <button id={source.id} onClick={this.viewChrunk}>chunk</button>
                   <button id={source.file_name} onClick={this.viewFull}>full</button>
