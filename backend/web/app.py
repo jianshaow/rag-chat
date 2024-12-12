@@ -8,7 +8,7 @@ frontend = os.environ.get("FRONTEND_DIR", frontend)
 
 app = Flask(__name__)
 app.register_blueprint(api, url_prefix="/api")
-app.register_blueprint(legacy, url_prefix="/")
+app.register_blueprint(legacy, url_prefix="/legacy")
 
 
 @app.route("/", defaults={"path": ""})
