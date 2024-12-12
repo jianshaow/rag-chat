@@ -94,7 +94,7 @@ class Home extends Component<{}, HomeState> {
     return (
       <div className='container-column'>
         <div className='header'>
-          <Link to='/setting'>Setting</Link>
+          <Link to='/legacy/setting'>Setting</Link>
         </div>
         <h1 className='title'>RAG Q&A</h1>
         <div className='container'>

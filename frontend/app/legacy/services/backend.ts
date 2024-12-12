@@ -1,5 +1,3 @@
-"use client";
-
 function setBeBaseUrl(beBaseUrl: string) {
     localStorage.setItem('beBaseUrl', beBaseUrl);
 }
