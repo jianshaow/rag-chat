@@ -35,7 +35,7 @@ def google_models() -> list[str]:
 def ollama_models() -> list[str]:
     client = ollama.Client(ollama_host)
     models = client.list()
-    return [obj["name"] for obj in models["models"]]
+    return [obj["model"] for obj in models["models"]]
 
 
 __model_spec = {
