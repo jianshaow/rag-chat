@@ -13,9 +13,11 @@ app.register_blueprint(legacy, url_prefix="/legacy")
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
-def main(path):
-    if path == "" or path == "setting" or path == "legacy" or path == "legacy/setting":
+def main(path:str):
+    if path == "" or path == "setting":
         return send_from_directory(frontend, "index.html")
+    elif path.startswith("legacy"):
+        return send_from_directory(frontend, "legacy.html")
     else:
         return send_from_directory(frontend, path)
 
