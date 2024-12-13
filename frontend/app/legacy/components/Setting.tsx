@@ -72,7 +72,7 @@ class Setting extends Component<{}, SettingState> {
   handleDetectBeBaseUrl = async (e: MouseEvent) => {
     const protocol = window.location.protocol;
     const host = window.location.host;
-    const url = `${protocol}//${host}`;
+    const url = `${protocol}//${host}/legacy`;
     this.setState({ beBaseUrl: url })
   };
 
