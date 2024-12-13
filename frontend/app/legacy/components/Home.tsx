@@ -36,6 +36,9 @@ class Home extends Component<{}, HomeState> {
       request: '',
       response: { text: "", sources: [] },
     };
+  }
+
+  componentDidMount() {
     this.initConfig()
     this.initData();
   }
@@ -99,9 +102,9 @@ class Home extends Component<{}, HomeState> {
         <h1 className='title'>RAG Q&A</h1>
         <div className='container'>
           <label className='config-lable'>API Spec:</label>
-          <input value={apiSpec} readOnly style={{ marginRight: '5px' }} />
+          <input value={apiSpec} readOnly />
           <label className='config-lable'>Model: </label>
-          <input value={model} readOnly style={{ marginRight: '5px' }} />
+          <input value={model} readOnly />
           <label className='config-lable'>Data:</label>
           <select value={data} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
             this.setState({ data: e.target.value, request: dataConfig[e.target.value].default_question });

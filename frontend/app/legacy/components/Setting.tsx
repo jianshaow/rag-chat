@@ -35,6 +35,9 @@ class Setting extends Component<{}, SettingState> {
       model: '',
       models: [],
     };
+  }
+
+  componentDidMount() {
     this.initSetting();
   }
 
