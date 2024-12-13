@@ -9,7 +9,7 @@ from engine import config, models, vector_db, data_store
 __indexes = {}
 
 
-def create_or_load_index(data_name, data_dir):
+def create_or_load_index(data_name, data_dir) -> VectorStoreIndex:
     vector_store = vector_db.get_vector_store(data_name)
     embed_model = models.new_model(config.api_spec, "embed")
     print("model_spec:", config.api_spec)
@@ -32,7 +32,7 @@ def create_or_load_index(data_name, data_dir):
     return index
 
 
-def get_index(data_name):
+def get_index(data_name) -> VectorStoreIndex:
     global __indexes
     index_key = "{data_name}@{model_spec}".format(
         data_name=data_name, model_spec=config.api_spec

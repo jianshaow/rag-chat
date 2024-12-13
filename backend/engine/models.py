@@ -4,6 +4,7 @@ from openai import OpenAI as OriginalOpenAI
 import google.generativeai as genai
 import ollama
 
+from llama_index.core.llms import LLM
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.embeddings.gemini import GeminiEmbedding
 from llama_index.embeddings.ollama import OllamaEmbedding
@@ -83,7 +84,7 @@ __model_spec = {
 }
 
 
-def get_api_specs():
+def get_api_specs() -> list[str]:
     import engine.extension as ext
 
     ext_api_specs = ext.get_api_specs()
@@ -93,7 +94,7 @@ def get_api_specs():
 __models = {}
 
 
-def get_models(reload=False):
+def get_models(reload=False) -> list[str]:
     api_spec = config.api_spec
     models = __models.get(api_spec)
     if models is None or reload:
@@ -130,7 +131,7 @@ def update_api_config(api_spec: str, conf: dict):
         ext.update_api_config(api_spec, conf)
 
 
-def new_model(api_spec, model_type):
+def new_model(api_spec, model_type) -> LLM:
     model_spec = __model_spec.get(api_spec)
     if model_spec:
         model_class = model_spec[model_type]["model_class"]
