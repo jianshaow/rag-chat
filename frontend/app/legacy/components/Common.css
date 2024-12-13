@@ -41,3 +41,19 @@
   background-color: #000;
   margin: 10px 0;
 }
+
+input,
+textarea,
+select {
+  border: 2px solid black;
+  border-radius: 5px;
+}
+
+button {
+  background-color: lightgray;
+  border: 1px solid gray;
+  color: black;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
