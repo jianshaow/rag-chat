@@ -75,7 +75,7 @@ __model_spec = {
             "model_class": Ollama,
             "model_args": {
                 "base_url": ollama_base_url,
-                "model": os.environ.get("OLLAMA_CHAT_MODEL", "vicuna:7b"),
+                "model": os.environ.get("OLLAMA_CHAT_MODEL", "gemma2:9b"),
             },
         },
         "models_func": ollama_models,
