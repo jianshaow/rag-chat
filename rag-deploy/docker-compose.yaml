@@ -1,4 +1,3 @@
-version: "3"
 services:
   rag-chat:
     image: jianshao/rag-chat-demo:${image_ver}
