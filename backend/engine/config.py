@@ -1,4 +1,8 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 data_base_dir = os.environ.get("DATA_BASE_DIR", "data")
 chroma_base_dir = os.environ.get("CHROMA_BASE_DIR", "chroma")
