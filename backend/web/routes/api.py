@@ -20,7 +20,8 @@ def generate(messages: models.ChatMessages):
         yield f"8:{json.dumps(event)}\n"
         time.sleep(0.2)
     for message in messages:
-        yield f'0:"{message}"\n'
+        yield f'0:{json.dumps(message)}\n'
+        time.sleep(0.2)
     for event in post_events:
         yield f"8:{json.dumps(event)}\n"
         time.sleep(0.2)
