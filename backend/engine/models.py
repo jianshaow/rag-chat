@@ -182,7 +182,12 @@ class ChatMessages:
         return chat_messages
 
     def __str__(self):
-        return str(self.messages)
+        return str(
+            [
+                {"role": message["role"], "content": message["content"]}
+                for message in self.messages
+            ]
+        )
 
 
 if __name__ == "__main__":
