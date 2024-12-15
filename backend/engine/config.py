@@ -1,12 +1,6 @@
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
-
-
-data_base_dir = os.environ.get("DATA_BASE_DIR", "data")
-chroma_base_dir = os.environ.get("CHROMA_BASE_DIR", "chroma")
-api_spec = os.environ.get("API_SPEC", "ollama")
+from engine import data_base_dir, chroma_base_dir, api_spec
 
 
 def get_db_path():

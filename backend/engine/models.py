@@ -12,11 +12,34 @@ from llama_index.llms.openai import OpenAI
 from llama_index.llms.gemini import Gemini
 from llama_index.llms.ollama import Ollama
 
-from engine import config
+from engine import (
+    config,
+    ollama_host,
+    ollama_base_url,
+    ollama_embed_model,
+    ollama_chat_model,
+    openai_embed_model,
+    openai_chat_model,
+    gemini_embed_model,
+    gemini_chat_model,
+)
 
 
-ollama_host = os.environ.get("OLLAMA_HOST", "localhost")
-ollama_base_url = os.environ.get("OLLAMA_BASE_URL", f"http://{ollama_host}:11434")
+class NormOllamaEmbedding(OllamaEmbedding):
+
+    def get_general_text_embedding(self, texts: str) -> list[float]:
+        """Get Ollama embedding."""
+        result = self._client.embed(
+            model=self.model_name, input=texts, options=self.ollama_additional_kwargs
+        )
+        return result["embeddings"][0]
+
+    async def aget_general_text_embedding(self, prompt: str) -> list[float]:
+        """Asynchronously get Ollama embedding."""
+        result = await self._async_client.embed(
+            model=self.model_name, input=prompt, options=self.ollama_additional_kwargs
+        )
+        return result["embeddings"][0]
 
 
 def openai_models() -> list[str]:
@@ -43,40 +66,38 @@ __model_spec = {
     "openai": {
         "embed": {
             "model_class": OpenAIEmbedding,
-            "model_args": {},
+            "model_args": {"model": openai_embed_model},
         },
         "chat": {
             "model_class": OpenAI,
-            "model_args": {"model": "gpt-4o-mini"},
+            "model_args": {"model": openai_chat_model},
         },
         "models_func": openai_models,
     },
     "gemini": {
         "embed": {
             "model_class": GeminiEmbedding,
-            "model_args": {"transport": "rest"},
+            "model_args": {"model": gemini_embed_model, "transport": "rest"},
         },
         "chat": {
             "model_class": Gemini,
-            "model_args": {"model": "models/gemini-1.5-flash", "transport": "rest"},
+            "model_args": {"model": gemini_chat_model, "transport": "rest"},
         },
         "models_func": google_models,
     },
     "ollama": {
         "embed": {
-            "model_class": OllamaEmbedding,
+            "model_class": NormOllamaEmbedding,
             "model_args": {
                 "base_url": ollama_base_url,
-                "model_name": os.environ.get(
-                    "OLLAMA_EMBED_MODEL", "nomic-embed-text:v1.5"
-                ),
+                "model_name": ollama_embed_model,
             },
         },
         "chat": {
             "model_class": Ollama,
             "model_args": {
                 "base_url": ollama_base_url,
-                "model": os.environ.get("OLLAMA_CHAT_MODEL", "gemma2:9b"),
+                "model": ollama_chat_model,
             },
         },
         "models_func": ollama_models,
