@@ -1,15 +1,17 @@
-from llama_index.core.tools.query_engine import QueryEngineTool
+from llama_index.core.base.response.schema import Response, StreamingResponse
+from llama_index.core.tools.query_engine import BaseQueryEngine, QueryEngineTool
+from llama_index.core.agent import AgentRunner
 
 from engine import config, indexer, models, agents
 
-__engines = {}
-__agents = {}
+__engines: dict[str, dict[str, BaseQueryEngine]] = {}
+__agents: dict[str, dict[str, AgentRunner]] = {}
 
 
 def query(data_name: str, query_text: str):
     api_spec = config.api_spec
 
-    engines: dict = __engines.get(api_spec, {})
+    engines = __engines.get(api_spec, {})
     query_engine = engines.get(data_name)
     if query_engine is None:
         chat_model = models.new_model(config.api_spec, "chat")
@@ -18,7 +20,7 @@ def query(data_name: str, query_text: str):
         engines[data_name] = query_engine
         __engines[api_spec] = engines
 
-    response = query_engine.query(query_text)
+    response: Response = query_engine.query(query_text)
     sources = [
         {"id": node.node_id, "file_name": node.metadata["file_name"]}
         for node in response.source_nodes
@@ -30,9 +32,9 @@ def stream_query(data_name: str, messages: models.ChatMessages):
     print(messages)
     api_spec = config.api_spec
 
-    engine_dict: dict = __engines.get(api_spec, {})
+    engine_dict = __engines.get(api_spec, {})
     query_engine = engine_dict.get(data_name)
-    agent_dict: dict = __agents.get(api_spec, {})
+    agent_dict = __agents.get(api_spec, {})
     agent = agent_dict.get(data_name)
     if agent is None:
         chat_model = models.new_model(config.api_spec, "chat")
@@ -45,7 +47,8 @@ def stream_query(data_name: str, messages: models.ChatMessages):
         __engines[api_spec] = engine_dict
         __agents[api_spec] = agent_dict
 
-    return agent.stream_chat(messages.last, messages.history).response_gen
+    response: StreamingResponse = agent.stream_chat(messages.last, messages.history)
+    return response.response_gen
 
 
 def setStale(api_spec: str):
