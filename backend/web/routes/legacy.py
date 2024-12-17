@@ -71,7 +71,13 @@ def update_api_config(api_spec):
     return "", 204
 
 
-@legacy.route("/models", methods=["GET"])
-def get_models():
+@legacy.route("/embed_models", methods=["GET"])
+def get_embed_models():
     reload = request.args.get("reload", "false")
-    return models.get_models(reload == "true"), 200
+    return models.get_models("embed", reload == "true"), 200
+
+
+@legacy.route("/chat_models", methods=["GET"])
+def get_chat_models():
+    reload = request.args.get("reload", "false")
+    return models.get_models("chat", reload == "true"), 200

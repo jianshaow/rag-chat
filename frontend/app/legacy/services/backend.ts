@@ -64,8 +64,13 @@ async function updateApiConfig(api_spec: string, config: string) {
     })
 }
 
-async function fetchModels(reload: boolean) {
-    const url = `${getBeBaseUrl()}/models?reload=${reload}`
+async function fetchEmbedModels(reload: boolean) {
+    const url = `${getBeBaseUrl()}/embed_models?reload=${reload}`
+    return fetch(url).then(response => response.json());
+}
+
+async function fetchChatModels(reload: boolean) {
+    const url = `${getBeBaseUrl()}/chat_models?reload=${reload}`
     return fetch(url).then(response => response.json());
 }
 
@@ -94,7 +99,8 @@ export {
     fetchApiSpecs,
     fetchApiConfig,
     updateApiConfig,
-    fetchModels,
+    fetchEmbedModels,
+    fetchChatModels,
     query,
     fetchChrunk,
 }

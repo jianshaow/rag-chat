@@ -8,7 +8,8 @@ import {
   fetchApiSpecs,
   updateApiConfig,
   fetchApiConfig,
-  fetchModels,
+  fetchEmbedModels,
+  fetchChatModels,
 } from '../services/backend'
 import './Common.css';
 import './Setting.css';
@@ -19,8 +20,10 @@ interface SettingState {
   chromaBaseDir: string;
   apiSpecs: string[];
   apiSpec: string;
-  models: string[];
-  model: string;
+  embedModels: string[];
+  embedModel: string;
+  chatModels: string[];
+  chatModel: string;
 }
 
 class Setting extends Component<{}, SettingState> {
@@ -32,8 +35,10 @@ class Setting extends Component<{}, SettingState> {
       chromaBaseDir: '',
       apiSpecs: [],
       apiSpec: '',
-      model: '',
-      models: [],
+      embedModels: [],
+      embedModel: '',
+      chatModels: [],
+      chatModel: '',
     };
   }
 
@@ -44,7 +49,8 @@ class Setting extends Component<{}, SettingState> {
   initSetting() {
     this.initConfig();
     this.initApiSpecs();
-    this.initModels();
+    this.initEmbedModels()
+    this.initChatModels();
   }
 
   initApiSpecs() {
@@ -53,13 +59,23 @@ class Setting extends Component<{}, SettingState> {
     });
   }
 
-  initModels() {
-    fetchModels(false).then((models) => {
-      const { model } = this.state;
-      if (!models.includes(model)) {
-        models.push(model);
+  initEmbedModels() {
+    fetchEmbedModels(false).then((models) => {
+      const { embedModel } = this.state;
+      if (!models.includes(embedModel)) {
+        models.push(embedModel);
       }
-      this.setState({ models: models });
+      this.setState({ embedModels: models });
+    });
+  }
+
+  initChatModels() {
+    fetchChatModels(false).then((models) => {
+      const { chatModel } = this.state;
+      if (!models.includes(chatModel)) {
+        models.push(chatModel);
+      }
+      this.setState({ chatModels: models });
     });
   }
 
@@ -91,18 +107,26 @@ class Setting extends Component<{}, SettingState> {
     fetchApiConfig(apiSpec).then((config) => {
       console.log(config);
       this.setState({
-        model: config.model,
+        embedModel: config.embed_model,
+        chatModel: config.chat_model,
       });
     })
   }
 
   handleReloadModels = async (e: MouseEvent) => {
-    fetchModels(true).then((models) => {
-      const { model } = this.state;
-      if (!models.includes(model)) {
-        models.push(model);
+    fetchEmbedModels(true).then((models) => {
+      const { embedModel } = this.state;
+      if (!models.includes(embedModel)) {
+        models.push(embedModel);
       }
-      this.setState({ models: models });
+      this.setState({ embedModels: models });
+    });
+    fetchChatModels(true).then((models) => {
+      const { chatModel } = this.state;
+      if (!models.includes(chatModel)) {
+        models.push(chatModel);
+      }
+      this.setState({ chatModels: models });
     });
   };
 
@@ -115,15 +139,17 @@ class Setting extends Component<{}, SettingState> {
     };
     updateConfig(JSON.stringify(config)).then(() => {
       alert('Setting Saved!');
-      this.initModels();
+      this.initEmbedModels();
+      this.initChatModels();
       this.reloadApiConfig(apiSpec);
     })
   };
 
   handleSaveApiConfig = async (e: MouseEvent) => {
-    const { apiSpec, model } = this.state
+    const { apiSpec, embedModel, chatModel } = this.state
     const config = {
-      'model': model,
+      'embed_model': embedModel,
+      'chat_model': chatModel,
     };
     updateApiConfig(apiSpec, JSON.stringify(config)).then(() => {
       alert('API Config Saved!')
@@ -131,7 +157,7 @@ class Setting extends Component<{}, SettingState> {
   };
 
   render() {
-    const { beBaseUrl, dataBaseDir, chromaBaseDir, apiSpecs, apiSpec, models, model } = this.state;
+    const { beBaseUrl, dataBaseDir, chromaBaseDir, apiSpecs, apiSpec, embedModel, chatModel, embedModels, chatModels } = this.state;
 
     return (
       <div className='container-column'>
@@ -200,19 +226,30 @@ class Setting extends Component<{}, SettingState> {
         <div className='setting-container'>
           <div className='setting'>
             <div>
-              <label className='config-lable'>Chat Model: </label>
-              <select value={model} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                this.setState({ model: e.target.value })
-              }}>{models.map(model => (
+              <label className='config-lable'>Embed Model: </label>
+              <select value={embedModel} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                this.setState({ embedModel: e.target.value })
+              }}>{embedModels.map(model => (
                 <option key={model} value={model}>{model}</option>
               ))}
               </select>
-              <button onClick={this.handleReloadModels}>Reload Models</button>
+            </div>
+          </div>
+          <div className='setting'>
+            <div>
+              <label className='config-lable'>Chat Model: </label>
+              <select value={chatModel} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                this.setState({ chatModel: e.target.value })
+              }}>{chatModels.map(model => (
+                <option key={model} value={model}>{model}</option>
+              ))}
+              </select>
             </div>
           </div>
           <div className='setting'>
             <div>
               <button onClick={this.handleSaveApiConfig}>Save</button>
+              <button onClick={this.handleReloadModels}>Reload Models</button>
             </div>
           </div>
         </div>

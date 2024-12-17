@@ -2,29 +2,29 @@ import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core.vector_stores import VectorStoreQuery
 
-from engine import config
+from engine import config, models
 
 __dbs: dict = {}
 
 
 def get_db():
     global __dbs
-    model_spec = config.api_spec
-    db = __dbs.get(model_spec)
+    db = __dbs.get(config.api_spec)
     if db is None:
         path = config.get_db_path()
         db = chromadb.PersistentClient(path)
-        __dbs[model_spec] = db
+        __dbs[config.api_spec] = db
     return db
 
 
-def get_collection(data_name):
+def get_collection(data_name: str):
     db = get_db()
-    collection_name = __get_collection_name(data_name)
+    escaped = models.get_embed_model_name().replace(":", "_").replace("/", "_")
+    collection_name = data_name + "__" + escaped
     return db.get_or_create_collection(collection_name)
 
 
-def get_vector_store(data_name):
+def get_vector_store(data_name: str):
     chroma_collection = get_collection(data_name)
     return ChromaVectorStore(chroma_collection=chroma_collection)
 
@@ -40,7 +40,7 @@ def has_data(vector_store: ChromaVectorStore):
     return len(ids) != 0
 
 
-def __clear_collection(collection_name):
+def __clear_collection(collection_name: str):
     db = get_db()
     collection = db.get_collection(collection_name)
     ids = collection.peek()["ids"]
@@ -52,10 +52,6 @@ def __clear_collection(collection_name):
 def __delete_collection(collection_name):
     db = get_db()
     db.delete_collection(collection_name)
-
-
-def __get_collection_name(data_name):
-    return "c_" + data_name
 
 
 def __show_db():

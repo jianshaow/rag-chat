@@ -16,7 +16,8 @@ interface Response {
 
 interface HomeState {
   apiSpec: string;
-  model: string;
+  embedModel: string;
+  chatModel: string;
   dataList: string[];
   dataConfig: any;
   data: string;
@@ -28,13 +29,14 @@ class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      apiSpec: "",
-      model: "",
+      apiSpec: '',
+      embedModel: '',
+      chatModel: '',
       dataConfig: {},
       dataList: [],
       data: '',
       request: '',
-      response: { text: "", sources: [] },
+      response: { text: '', sources: [] },
     };
   }
 
@@ -50,7 +52,8 @@ class Home extends Component<{}, HomeState> {
       });
       fetchApiConfig(config.api_spec).then(config => {
         this.setState({
-          model: config.model,
+          embedModel: config.embed_model,
+          chatModel: config.chat_model,
         });
       });
     });
@@ -93,7 +96,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { apiSpec, model, dataConfig, dataList, data, request, response } = this.state;
+    const { apiSpec, embedModel, chatModel, dataConfig, dataList, data, request, response } = this.state;
     return (
       <div className='container-column'>
         <div className='header'>
@@ -103,8 +106,10 @@ class Home extends Component<{}, HomeState> {
         <div className='container'>
           <label className='config-lable'>API Spec:</label>
           <input value={apiSpec} readOnly />
-          <label className='config-lable'>Model: </label>
-          <input value={model} readOnly />
+          <label className='config-lable'>Embed Model: </label>
+          <input value={embedModel} readOnly />
+          <label className='config-lable'>Chat Model: </label>
+          <input value={chatModel} readOnly />
           <label className='config-lable'>Data:</label>
           <select value={data} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
             this.setState({ data: e.target.value, request: dataConfig[e.target.value].default_question });
