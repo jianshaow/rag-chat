@@ -48,7 +48,7 @@ def stream_query(data_name: str, messages: models.ChatMessages):
         __agents[api_spec] = agent_dict
 
     response: StreamingResponse = agent.stream_chat(messages.last, messages.history)
-    return response.response_gen
+    return response
 
 
 def setStale(api_spec: str):
