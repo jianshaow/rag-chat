@@ -1,30 +1,30 @@
 import chromadb
+from chromadb import ClientAPI, Collection
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core.vector_stores import VectorStoreQuery
 
 from engine import config, models
 
-__dbs: dict = {}
+__db_clients: dict[str, ClientAPI] = {}
 
 
-def get_db():
-    global __dbs
-    db = __dbs.get(config.model_provider)
-    if db is None:
+def get_db_client() -> ClientAPI:
+    client = __db_clients.get(config.model_provider)
+    if client is None:
         path = config.get_db_path()
-        db = chromadb.PersistentClient(path)
-        __dbs[config.model_provider] = db
-    return db
+        client = chromadb.PersistentClient(path)
+        __db_clients[config.model_provider] = client
+    return client
 
 
-def get_collection(data_name: str):
-    db = get_db()
+def get_collection(data_name: str) -> Collection:
+    client = get_db_client()
     escaped = models.get_embed_model_name().replace(":", "_").replace("/", "_")
     collection_name = data_name + "__" + escaped
-    return db.get_or_create_collection(collection_name)
+    return client.get_or_create_collection(collection_name)
 
 
-def get_vector_store(data_name: str):
+def get_vector_store(data_name: str) -> ChromaVectorStore:
     chroma_collection = get_collection(data_name)
     return ChromaVectorStore(chroma_collection=chroma_collection)
 
@@ -41,8 +41,8 @@ def has_data(vector_store: ChromaVectorStore):
 
 
 def __clear_collection(collection_name: str):
-    db = get_db()
-    collection = db.get_collection(collection_name)
+    client = get_db_client()
+    collection = client.get_collection(collection_name)
     ids = collection.peek()["ids"]
     while len(ids) > 0:
         collection.delete(ids)
@@ -50,14 +50,14 @@ def __clear_collection(collection_name: str):
 
 
 def __delete_collection(collection_name):
-    db = get_db()
-    db.delete_collection(collection_name)
+    client = get_db_client()
+    client.delete_collection(collection_name)
 
 
 def __show_db():
     import json
 
-    collections = get_db().list_collections()
+    collections = get_db_client().list_collections()
     print("collections size:", len(collections))
     print("=" * 80)
     for collection in collections:
