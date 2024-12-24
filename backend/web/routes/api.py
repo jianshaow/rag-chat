@@ -1,7 +1,7 @@
 import os, time, json
 from flask import Blueprint, Response, request, send_from_directory
 
-from engine import models, queryer, config
+from engine import models, queryer, config, backend_base_url
 
 api = Blueprint("api", __name__)
 
@@ -27,7 +27,9 @@ def generate(messages: models.ChatMessages):
                             "metadata": node.node.metadata,
                             "score": node.score,
                             "text": node.text,
-                            "url": node.node.metadata.get("file_name"),
+                            "url": backend_base_url
+                            + "/api/en_novel/files/"
+                            + node.node.metadata.get("file_name"),
                         }
                         for node in response.source_nodes
                     ]
