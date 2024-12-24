@@ -9,16 +9,16 @@ __agents: dict[str, dict[str, AgentRunner]] = {}
 
 
 def query(data_name: str, query_text: str):
-    api_spec = config.model_provider
+    model_provider = config.model_provider
 
-    engines = __engines.get(api_spec, {})
+    engines = __engines.get(model_provider, {})
     query_engine = engines.get(data_name)
     if query_engine is None:
         chat_model = models.new_model(config.model_provider, "chat")
         query_engine = indexer.get_index(data_name).as_query_engine(llm=chat_model)
         print("chat_model:", chat_model.model)
         engines[data_name] = query_engine
-        __engines[api_spec] = engines
+        __engines[model_provider] = engines
 
     response: Response = query_engine.query(query_text)
     sources = [
@@ -30,11 +30,11 @@ def query(data_name: str, query_text: str):
 
 def stream_query(data_name: str, messages: models.ChatMessages):
     print(messages)
-    api_spec = config.model_provider
+    model_provider = config.model_provider
 
-    engine_dict = __engines.get(api_spec, {})
+    engine_dict = __engines.get(model_provider, {})
     query_engine = engine_dict.get(data_name)
-    agent_dict = __agents.get(api_spec, {})
+    agent_dict = __agents.get(model_provider, {})
     agent = agent_dict.get(data_name)
     if agent is None:
         chat_model = models.new_model(config.model_provider, "chat")
@@ -44,15 +44,15 @@ def stream_query(data_name: str, messages: models.ChatMessages):
         tools = [QueryEngineTool.from_defaults(query_engine)]
         agent = agents.new_agent(chat_model, tools)
         agent_dict[data_name] = agent
-        __engines[api_spec] = engine_dict
-        __agents[api_spec] = agent_dict
+        __engines[model_provider] = engine_dict
+        __agents[model_provider] = agent_dict
 
     response: StreamingResponse = agent.stream_chat(messages.last, messages.history)
     return response
 
 
-def setStale(api_spec: str):
-    __engines.pop(api_spec, None)
+def setStale(model_provider: str):
+    __engines.pop(model_provider, None)
 
 
 if __name__ == "__main__":
