@@ -1,18 +1,18 @@
-import time, json
-from flask import Blueprint, Response, request
+import os, time, json
+from flask import Blueprint, Response, request, send_from_directory
 
-from engine import models, queryer
+from engine import models, queryer, config
 
 api = Blueprint("api", __name__)
 
 
 @api.route("/chat/config", methods=["GET"])
-def config():
+def chat_config():
     return {"starterQuestions": None}
 
 
 def generate(messages: models.ChatMessages):
-    from web.routes.mock_data import pre_events, post_events
+    from web.routes.mock_response import pre_events, post_events
 
     response = queryer.stream_query("en_novel", messages)
     messages = response.response_gen
@@ -52,3 +52,10 @@ def chat():
     messages = request.json["messages"]
     chat_messages = models.ChatMessages(messages)
     return Response(generate(chat_messages), mimetype="text/plain")
+
+
+@api.route("/<data>/files/<filename>", methods=["GET"])
+def download_file(data, filename):
+    data_dir = os.path.abspath(os.path.join(config.data_base_dir, data))
+    print(data_dir)
+    return send_from_directory(data_dir, filename)

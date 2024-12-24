@@ -1,6 +1,6 @@
 import { Component, ChangeEvent, FormEvent, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { getBeBaseUrl, fetchConfig, fetchApiConfig, fetchDataConfig, query, fetchChrunk } from '../services/backend'
+import { getBeBaseUrl, fetchConfig, fetchModelConfig, fetchDataConfig, query, fetchChrunk } from '../services/backend'
 import './Common.css';
 import './Home.css';
 
@@ -15,7 +15,7 @@ interface Response {
 }
 
 interface HomeState {
-  apiSpec: string;
+  modelProvider: string;
   embedModel: string;
   chatModel: string;
   dataList: string[];
@@ -29,7 +29,7 @@ class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      apiSpec: '',
+      modelProvider: '',
       embedModel: '',
       chatModel: '',
       dataConfig: {},
@@ -48,9 +48,9 @@ class Home extends Component<{}, HomeState> {
   initConfig() {
     fetchConfig().then(config => {
       this.setState({
-        apiSpec: config.api_spec,
+        modelProvider: config.model_provider,
       });
-      fetchApiConfig(config.api_spec).then(config => {
+      fetchModelConfig(config.model_provider).then(config => {
         this.setState({
           embedModel: config.embed_model,
           chatModel: config.chat_model,
@@ -96,7 +96,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { apiSpec, embedModel, chatModel, dataConfig, dataList, data, request, response } = this.state;
+    const { modelProvider, embedModel, chatModel, dataConfig, dataList, data, request, response } = this.state;
     return (
       <div className='container-column'>
         <div className='header'>
@@ -104,8 +104,8 @@ class Home extends Component<{}, HomeState> {
         </div>
         <h1 className='title'>RAG Q&A</h1>
         <div className='container'>
-          <label className='config-lable'>API Spec:</label>
-          <input value={apiSpec} readOnly />
+          <label className='config-lable'>Model Provider:</label>
+          <input value={modelProvider} readOnly />
           <label className='config-lable'>Embed Model: </label>
           <input value={embedModel} readOnly />
           <label className='config-lable'>Chat Model: </label>

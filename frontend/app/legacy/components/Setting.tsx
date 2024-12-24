@@ -5,9 +5,9 @@ import {
   setBeBaseUrl,
   fetchConfig,
   updateConfig,
-  fetchApiSpecs,
-  updateApiConfig,
-  fetchApiConfig,
+  fetchModelProviders,
+  updateModelConfig,
+  fetchModelConfig,
   fetchEmbedModels,
   fetchChatModels,
 } from '../services/backend'
@@ -18,8 +18,8 @@ interface SettingState {
   beBaseUrl: string;
   dataBaseDir: string;
   chromaBaseDir: string;
-  apiSpecs: string[];
-  apiSpec: string;
+  modelProviders: string[];
+  modelProvider: string;
   embedModels: string[];
   embedModel: string;
   chatModels: string[];
@@ -33,8 +33,8 @@ class Setting extends Component<{}, SettingState> {
       beBaseUrl: getBeBaseUrl(),
       dataBaseDir: '',
       chromaBaseDir: '',
-      apiSpecs: [],
-      apiSpec: '',
+      modelProviders: [],
+      modelProvider: '',
       embedModels: [],
       embedModel: '',
       chatModels: [],
@@ -48,14 +48,14 @@ class Setting extends Component<{}, SettingState> {
 
   initSetting() {
     this.initConfig();
-    this.initApiSpecs();
+    this.initModelProviders();
     this.initEmbedModels()
     this.initChatModels();
   }
 
-  initApiSpecs() {
-    fetchApiSpecs().then((apiSpecs) => {
-      this.setState({ apiSpecs: apiSpecs });
+  initModelProviders() {
+    fetchModelProviders().then((modelProviders) => {
+      this.setState({ modelProviders: modelProviders });
     });
   }
 
@@ -95,16 +95,16 @@ class Setting extends Component<{}, SettingState> {
   initConfig() {
     fetchConfig().then(config => {
       this.setState({
-        apiSpec: config.api_spec,
+        modelProvider: config.model_provider,
         dataBaseDir: config.data_base_dir,
         chromaBaseDir: config.chroma_base_dir,
       });
-      this.reloadApiConfig(config.api_spec);
+      this.reloadApiConfig(config.model_provider);
     });
   }
 
-  reloadApiConfig(apiSpec: string) {
-    fetchApiConfig(apiSpec).then((config) => {
+  reloadApiConfig(modelProvider: string) {
+    fetchModelConfig(modelProvider).then((config) => {
       console.log(config);
       this.setState({
         embedModel: config.embed_model,
@@ -131,9 +131,9 @@ class Setting extends Component<{}, SettingState> {
   };
 
   handleSaveConfig = async (e: MouseEvent) => {
-    const { apiSpec, dataBaseDir, chromaBaseDir } = this.state
+    const { modelProvider, dataBaseDir, chromaBaseDir } = this.state
     const config = {
-      'api_spec': apiSpec,
+      'model_provider': modelProvider,
       'data_base_dir': dataBaseDir,
       'chroma_base_dir': chromaBaseDir,
     };
@@ -141,23 +141,23 @@ class Setting extends Component<{}, SettingState> {
       alert('Setting Saved!');
       this.initEmbedModels();
       this.initChatModels();
-      this.reloadApiConfig(apiSpec);
+      this.reloadApiConfig(modelProvider);
     })
   };
 
-  handleSaveApiConfig = async (e: MouseEvent) => {
-    const { apiSpec, embedModel, chatModel } = this.state
+  handleSaveModelConfig = async (e: MouseEvent) => {
+    const { modelProvider, embedModel, chatModel } = this.state
     const config = {
       'embed_model': embedModel,
       'chat_model': chatModel,
     };
-    updateApiConfig(apiSpec, JSON.stringify(config)).then(() => {
-      alert('API Config Saved!')
+    updateModelConfig(modelProvider, JSON.stringify(config)).then(() => {
+      alert('Model Config Saved!')
     })
   };
 
   render() {
-    const { beBaseUrl, dataBaseDir, chromaBaseDir, apiSpecs, apiSpec, embedModel, chatModel, embedModels, chatModels } = this.state;
+    const { beBaseUrl, dataBaseDir, chromaBaseDir, modelProviders, modelProvider, embedModel, chatModel, embedModels, chatModels } = this.state;
 
     return (
       <div className='container-column'>
@@ -207,11 +207,11 @@ class Setting extends Component<{}, SettingState> {
           </div>
           <div className='setting'>
             <div>
-              <label className='config-lable'>API Spec: </label>
-              <select value={apiSpec} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                this.setState({ apiSpec: e.target.value })
-              }}>{apiSpecs.map(apiSpec => (
-                <option key={apiSpec} value={apiSpec}>{apiSpec}</option>
+              <label className='config-lable'>Model Provider: </label>
+              <select value={modelProvider} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                this.setState({ modelProvider: e.target.value })
+              }}>{modelProviders.map(modelProvider => (
+                <option key={modelProvider} value={modelProvider}>{modelProvider}</option>
               ))}
               </select>
             </div>
@@ -248,7 +248,7 @@ class Setting extends Component<{}, SettingState> {
           </div>
           <div className='setting'>
             <div>
-              <button onClick={this.handleSaveApiConfig}>Save</button>
+              <button onClick={this.handleSaveModelConfig}>Save</button>
               <button onClick={this.handleReloadModels}>Reload Models</button>
             </div>
           </div>

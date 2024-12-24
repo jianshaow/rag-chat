@@ -136,38 +136,38 @@ __model_specs = {
 }
 
 
-def get_api_specs() -> list[str]:
+def get_model_providers() -> list[str]:
     import engine.extension as ext
 
-    ext_api_specs = ext.get_api_specs()
-    return list(__model_specs.keys()) + ext_api_specs
+    ext_model_providers = ext.get_model_providers()
+    return list(__model_specs.keys()) + ext_model_providers
 
 
 __models = {"embed": {}, "chat": {}}
 
 
 def get_models(model_type: str, reload: bool):
-    api_spec = config.api_spec
-    models = __models[model_type].get(api_spec)
+    model_provider = config.model_provider
+    models = __models[model_type].get(model_provider)
     if models is None or reload:
-        model_spec = __model_specs.get(api_spec)
+        model_spec = __model_specs.get(model_provider)
         if model_spec:
             models = model_spec[model_type]["models_func"]()
-            __models[model_type][api_spec] = models
+            __models[model_type][model_provider] = models
         else:
             import engine.extension as ext
 
-            models = ext.get_models(api_spec, model_type)
-            __models[model_type][api_spec] = models
+            models = ext.get_models(model_provider, model_type)
+            __models[model_type][model_provider] = models
     return models
 
 
 def get_embed_model_name() -> str:
-    return get_api_config(config.api_spec)["embed_model"]
+    return get_model_config(config.model_provider)["embed_model"]
 
 
-def get_api_config(api_spec: str) -> dict:
-    model_spec = __model_specs.get(api_spec)
+def get_model_config(model_provider: str) -> dict:
+    model_spec = __model_specs.get(model_provider)
     if model_spec:
         embed_model_args: dict = model_spec["embed"]["model_args"]
         embed_model = embed_model_args.get("model") or embed_model_args.get(
@@ -178,11 +178,11 @@ def get_api_config(api_spec: str) -> dict:
     else:
         import engine.extension as ext
 
-        return ext.get_api_config(api_spec)
+        return ext.get_model_config(model_provider)
 
 
-def update_api_config(api_spec: str, conf: dict):
-    model_spec = __model_specs.get(api_spec)
+def update_model_config(model_provider: str, conf: dict):
+    model_spec = __model_specs.get(model_provider)
     if model_spec:
         embed_model_args = model_spec["embed"]["model_args"]
         if "model" in embed_model_args:
@@ -193,11 +193,11 @@ def update_api_config(api_spec: str, conf: dict):
     else:
         import engine.extension as ext
 
-        ext.update_api_config(api_spec, conf)
+        ext.update_model_config(model_provider, conf)
 
 
-def new_model(api_spec: str, model_type: str) -> BaseEmbedding | LLM:
-    model_spec = __model_specs.get(api_spec)
+def new_model(model_provider: str, model_type: str) -> BaseEmbedding | LLM:
+    model_spec = __model_specs.get(model_provider)
     if model_spec:
         model_class = model_spec[model_type]["model_class"]
         model_args = model_spec[model_type]["model_args"]
@@ -205,11 +205,12 @@ def new_model(api_spec: str, model_type: str) -> BaseEmbedding | LLM:
     else:
         import engine.extension as ext
 
-        return ext.new_model(api_spec, model_type)
+        return ext.new_model(model_provider, model_type)
 
 
 class ChatMessages:
-    def __init__(self, messages: list):
+
+    def __init__(self, messages: list[dict]):
         self.messages = messages
 
     @property

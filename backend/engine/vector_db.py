@@ -9,11 +9,11 @@ __dbs: dict = {}
 
 def get_db():
     global __dbs
-    db = __dbs.get(config.api_spec)
+    db = __dbs.get(config.model_provider)
     if db is None:
         path = config.get_db_path()
         db = chromadb.PersistentClient(path)
-        __dbs[config.api_spec] = db
+        __dbs[config.model_provider] = db
     return db
 
 

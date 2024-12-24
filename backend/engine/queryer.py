@@ -9,12 +9,12 @@ __agents: dict[str, dict[str, AgentRunner]] = {}
 
 
 def query(data_name: str, query_text: str):
-    api_spec = config.api_spec
+    api_spec = config.model_provider
 
     engines = __engines.get(api_spec, {})
     query_engine = engines.get(data_name)
     if query_engine is None:
-        chat_model = models.new_model(config.api_spec, "chat")
+        chat_model = models.new_model(config.model_provider, "chat")
         query_engine = indexer.get_index(data_name).as_query_engine(llm=chat_model)
         print("chat_model:", chat_model.model)
         engines[data_name] = query_engine
@@ -30,14 +30,14 @@ def query(data_name: str, query_text: str):
 
 def stream_query(data_name: str, messages: models.ChatMessages):
     print(messages)
-    api_spec = config.api_spec
+    api_spec = config.model_provider
 
     engine_dict = __engines.get(api_spec, {})
     query_engine = engine_dict.get(data_name)
     agent_dict = __agents.get(api_spec, {})
     agent = agent_dict.get(data_name)
     if agent is None:
-        chat_model = models.new_model(config.api_spec, "chat")
+        chat_model = models.new_model(config.model_provider, "chat")
         query_engine = indexer.get_index(data_name).as_query_engine(llm=chat_model)
         print("chat_model:", chat_model.model)
         engine_dict[data_name] = query_engine

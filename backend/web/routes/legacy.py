@@ -53,21 +53,21 @@ def update_config():
     return "", 204
 
 
-@legacy.route("/api_spec", methods=["GET"])
-def get_api_specs():
-    return models.get_api_specs(), 200
+@legacy.route("/model_provider", methods=["GET"])
+def get_model_providers():
+    return models.get_model_providers(), 200
 
 
-@legacy.route("/api_spec/<api_spec>", methods=["GET"])
-def get_api_config(api_spec):
-    return models.get_api_config(api_spec), 200
+@legacy.route("/model_provider/<model_provider>", methods=["GET"])
+def get_model_config(model_provider):
+    return models.get_model_config(model_provider), 200
 
 
-@legacy.route("/api_spec/<api_spec>", methods=["PUT"])
-def update_api_config(api_spec):
+@legacy.route("/model_provider/<model_provider>", methods=["PUT"])
+def update_model_config(model_provider):
     conf = request.get_json()
-    models.update_api_config(api_spec, conf)
-    queryer.setStale(api_spec)
+    models.update_model_config(model_provider, conf)
+    queryer.setStale(model_provider)
     return "", 204
 
 

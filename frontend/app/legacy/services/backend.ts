@@ -44,19 +44,19 @@ async function updateDataConfig(data_config: string) {
     })
 }
 
-async function fetchApiSpecs() {
-    const url = `${getBeBaseUrl()}/api_spec`
+async function fetchModelProviders() {
+    const url = `${getBeBaseUrl()}/model_provider`
     return fetch(url).then(response => response.json());
 }
 
 
-async function fetchApiConfig(api_spec: string) {
-    const url = `${getBeBaseUrl()}/api_spec/${api_spec}`;
+async function fetchModelConfig(model_provider: string) {
+    const url = `${getBeBaseUrl()}/model_provider/${model_provider}`;
     return fetch(url).then(response => response.json());
 }
 
-async function updateApiConfig(api_spec: string, config: string) {
-    const url = `${getBeBaseUrl()}/api_spec/${api_spec}`;
+async function updateModelConfig(model_provider: string, config: string) {
+    const url = `${getBeBaseUrl()}/model_provider/${model_provider}`;
     fetch(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -91,14 +91,14 @@ async function fetchChrunk(data: string, id: string) {
 export {
     getBeBaseUrl,
     setBeBaseUrl,
+    fetchData,
     fetchConfig,
     updateConfig,
     fetchDataConfig,
     updateDataConfig,
-    fetchData,
-    fetchApiSpecs,
-    fetchApiConfig,
-    updateApiConfig,
+    fetchModelProviders,
+    fetchModelConfig,
+    updateModelConfig,
     fetchEmbedModels,
     fetchChatModels,
     query,
