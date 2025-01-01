@@ -28,8 +28,7 @@ def query(data_name: str, query_text: str):
     return {"text": str(response), "sources": sources}
 
 
-def stream_query(data_name: str, messages: models.ChatMessages):
-    print(messages)
+def stream_query(data_name: str, messages: models.ChatMessages) -> StreamingResponse:
     model_provider = config.model_provider
 
     engine_dict = __engines.get(model_provider, {})
@@ -47,8 +46,7 @@ def stream_query(data_name: str, messages: models.ChatMessages):
         __engines[model_provider] = engine_dict
         __agents[model_provider] = agent_dict
 
-    response: StreamingResponse = agent.stream_chat(messages.last, messages.history)
-    return response
+    return agent.stream_chat(messages.last, messages.history)
 
 
 def setStale(model_provider: str):
