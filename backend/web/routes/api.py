@@ -1,4 +1,4 @@
-import os, time, json
+import time, json
 from flask import Blueprint, Response, request, send_from_directory
 
 from engine import models, queryer, config, backend_base_url
@@ -58,6 +58,5 @@ def chat():
 
 @api.route("/<data>/files/<filename>", methods=["GET"])
 def download_file(data, filename):
-    data_dir = os.path.abspath(os.path.join(config.data_base_dir, data))
-    print(data_dir)
+    data_dir = config.get_data_path(data)
     return send_from_directory(data_dir, filename)
