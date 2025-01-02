@@ -11,9 +11,8 @@ def get_query_engine(data_name: str) -> BaseQueryEngine:
     query_engine = __engines.get(engine_key)
 
     if query_engine is None:
-        chat_model = models.new_model(config.model_provider, "chat")
+        chat_model = models.new_model(model_provider, "chat")
         query_engine = indexer.get_index(data_name).as_query_engine(llm=chat_model)
-        print("chat_model:", chat_model.model)
         __engines[engine_key] = query_engine
 
     return query_engine
