@@ -1543,6 +1543,22 @@ websocket-client = ">=0.32.0,<0.40.0 || >0.40.0,<0.41.dev0 || >=0.43.dev0"
 adal = ["adal (>=1.0.2)"]
 
 [[package]]
+name = "llama-index-agent-openai"
+version = "0.4.1"
+description = "llama-index agent openai integration"
+optional = false
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "llama_index_agent_openai-0.4.1-py3-none-any.whl", hash = "sha256:162507543082f739a8c806911344c8d7f2434d0ee91124cfdd7b0ba5f76d0e57"},
+    {file = "llama_index_agent_openai-0.4.1.tar.gz", hash = "sha256:3a89137b228a6e9c2b3f46e367a27b75fb31b458e21777bba819de654707d59e"},
+]
+
+[package.dependencies]
+llama-index-core = ">=0.12.0,<0.13.0"
+llama-index-llms-openai = ">=0.3.0,<0.4.0"
+openai = ">=1.14.0"
+
+[[package]]
 name = "llama-index-core"
 version = "0.12.5"
 description = "Interface between LLMs and your data"
@@ -4335,4 +4351,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "d9e47967755db74b018fdb722520033a5a370e1cab1aea5ef036e0dd7b9cebd3"
+content-hash = "a9622e121c723d54b95056a35eba7943f3917f3b52fefc9e88d9d9a34a3a7e14"
