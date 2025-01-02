@@ -3,16 +3,13 @@ from llama_index.core.base.embeddings.base import BaseEmbedding
 
 from engine import config, models, vector_db, data_store
 
-__indexes = {}
+__indexes: dict[str, VectorStoreIndex] = {}
 
 
 def create_or_load_index(
     embed_model: BaseEmbedding, data_name, data_dir
 ) -> VectorStoreIndex:
     vector_store = vector_db.get_vector_store(data_name)
-    print("model_provider:", config.model_provider)
-    print("data_name:", data_name)
-    print("embed_model:", embed_model.model_name)
     if vector_db.has_data(vector_store):
         index = VectorStoreIndex.from_vector_store(
             vector_store,
@@ -31,8 +28,6 @@ def create_or_load_index(
 
 
 def get_index(data_name) -> VectorStoreIndex:
-    global __indexes
-
     embed_model_name = models.get_embed_model_name()
     index_key = f"{data_name}@{embed_model_name}@{config.model_provider}"
     index = __indexes.get(index_key)

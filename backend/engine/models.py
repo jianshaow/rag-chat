@@ -166,6 +166,10 @@ def get_embed_model_name() -> str:
     return get_model_config(config.model_provider)["embed_model"]
 
 
+def get_chat_model_name() -> str:
+    return get_model_config(config.model_provider)["chat_model"]
+
+
 def get_model_config(model_provider: str) -> dict:
     model_spec = __model_specs.get(model_provider)
     if model_spec:
