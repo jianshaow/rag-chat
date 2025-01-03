@@ -1,7 +1,8 @@
 from llama_index.core import StorageContext, VectorStoreIndex, SimpleDirectoryReader
 from llama_index.core.base.embeddings.base import BaseEmbedding
+from llama_index.core.callbacks import CallbackManager
 
-from engine import config, models, vector_db, data_store
+from engine import config, models, vector_db, data_store, events
 
 __indexes: dict[str, VectorStoreIndex] = {}
 
@@ -9,11 +10,13 @@ __indexes: dict[str, VectorStoreIndex] = {}
 def create_or_load_index(
     embed_model: BaseEmbedding, data_name, data_dir
 ) -> VectorStoreIndex:
+    callback_manager = CallbackManager([events.event_callback_handler])
     vector_store = vector_db.get_vector_store(data_name)
     if vector_db.has_data(vector_store):
         index = VectorStoreIndex.from_vector_store(
             vector_store,
             embed_model,
+            callback_manager=callback_manager,
         )
     else:
         documents = SimpleDirectoryReader(data_dir).load_data(show_progress=True)
@@ -22,6 +25,7 @@ def create_or_load_index(
             documents,
             storage_context,
             embed_model=embed_model,
+            callback_manager=callback_manager,
             show_progress=True,
         )
     return index
