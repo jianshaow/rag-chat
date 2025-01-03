@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, request, send_from_directory
-from engine import vector_db, data_store, config, models, queryer
+from engine import vector_db, data_store, config, models, queryer, chatter
 
 legacy = Blueprint("legacy", __name__)
 
@@ -68,6 +68,7 @@ def update_model_config(model_provider):
     conf = request.get_json()
     models.update_model_config(model_provider, conf)
     queryer.setStale(model_provider)
+    chatter.setStale(model_provider)
     return "", 204
 
 

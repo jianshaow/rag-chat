@@ -1,6 +1,6 @@
 from flask import Blueprint, Response, request, send_from_directory
 
-from engine import models, queryer, config
+from engine import chatter, models, config
 from web.routes.vercel import stream_gen
 
 api = Blueprint("api", __name__)
@@ -15,7 +15,7 @@ def chat_config():
 def chat():
     messages = request.json["messages"]
     chat_messages = models.ChatMessages(messages)
-    response = queryer.stream_query("en_novel", chat_messages)
+    response = chatter.chat("en_novel", chat_messages)
     return Response(stream_gen(response), mimetype="text/plain")
 
 
