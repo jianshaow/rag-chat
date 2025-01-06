@@ -11,7 +11,7 @@ backend_base_url = os.getenv("BACKEND_BASE_URL", "http://localhost:5000")
 ollama_host = os.getenv("OLLAMA_HOST", "localhost")
 ollama_base_url = os.getenv("OLLAMA_BASE_URL", f"http://{ollama_host}:11434")
 ollama_embed_model = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text:v1.5")
-ollama_chat_model = os.getenv("OLLAMA_CHAT_MODEL", "gemma2:9b")
+ollama_chat_model = os.getenv("OLLAMA_CHAT_MODEL", "qwen2.5:14b")
 
 openai_embed_model = os.getenv("OPENAI_EMBED_MODEL", "text-embedding-ada-002")
 openai_chat_model = os.getenv("OPENAI_CHAT_MODEL", "gpt-4o-mini")
