@@ -1,6 +1,6 @@
 from llama_index.core.llms import LLM
 from llama_index.core.agent import AgentRunner
-from llama_index.core.tools.query_engine import BaseQueryEngine, QueryEngineTool
+from llama_index.core.tools.query_engine import QueryEngineTool
 
 from engine import config, indexer, models
 
