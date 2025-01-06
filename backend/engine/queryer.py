@@ -4,6 +4,7 @@ from engine import common, engines
 
 
 def query(data_name: str, query_text: str):
+    common.print_info(data_name)
     query_engine = engines.get_query_engine(data_name)
     response: Response = query_engine.query(query_text)
     sources = [
@@ -11,7 +12,6 @@ def query(data_name: str, query_text: str):
         for node in response.source_nodes
     ]
 
-    common.print_info(data_name)
     return {"text": str(response), "sources": sources}
 
 
