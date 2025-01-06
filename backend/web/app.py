@@ -1,7 +1,7 @@
 import os
 from flask import Flask, send_from_directory
 
-from routes import api, legacy
+from web.routes import api, legacy
 
 frontend = os.path.abspath(os.path.join("../frontend", "out"))
 frontend = os.environ.get("FRONTEND_DIR", frontend)
