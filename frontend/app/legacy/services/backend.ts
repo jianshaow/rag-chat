@@ -5,7 +5,7 @@ function setBeBaseUrl(beBaseUrl: string) {
 function getBeBaseUrl() {
     var beBaseUrl = localStorage.getItem('beBaseUrl');
     if (beBaseUrl === null) {
-        beBaseUrl = "http://localhost:5000/legacy";
+        beBaseUrl = "http://localhost:8000/legacy";
         setBeBaseUrl(beBaseUrl);
     }
     return beBaseUrl;

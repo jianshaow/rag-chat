@@ -23,9 +23,8 @@ def get_data_text(data, id):
 
 @legacy.get("/{data}/files/{filename}", tags=["legacy"])
 def download_file(data, filename):
-    data_dir = os.path.abspath(os.path.join(config.data_base_dir, data))
-    print(data_dir)
-    return FileResponse(path=data_dir, filename=filename)
+    path = config.get_data_file(data, filename)
+    return FileResponse(path=path)
 
 
 @legacy.get("/data", tags=["legacy"])
