@@ -1,9 +1,9 @@
-from llama_index.core.base.response.schema import StreamingResponse
+from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 
 from engine import common, models, agents, engines
 
 
-def chat(data_name: str, messages: models.ChatMessages) -> StreamingResponse:
+def chat(data_name: str, messages: models.ChatMessages) -> StreamingAgentChatResponse:
     common.print_info(data_name)
     # return _chat_with_agent(data_name, messages)
     return _chat_with_engine(data_name, messages)

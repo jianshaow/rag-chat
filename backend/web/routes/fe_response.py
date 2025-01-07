@@ -1,10 +1,11 @@
 import json
-from llama_index.core.base.response.schema import StreamingResponse
+
+from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 
 from engine import backend_base_url
 
 
-def get_sources(response: StreamingResponse):
+def get_sources(response: StreamingAgentChatResponse):
     sources = json.dumps(
         [
             {
@@ -18,7 +19,7 @@ def get_sources(response: StreamingResponse):
                             "text": node.text,
                             "url": backend_base_url
                             + "/api/en_novel/files/"
-                            + node.node.metadata.get("file_name"),
+                            + (node.node.metadata.get("file_name") or ""),
                         }
                         for node in response.source_nodes
                     ]

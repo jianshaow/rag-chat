@@ -76,17 +76,27 @@ def gemini_chat_models() -> list[str]:
     ]
 
 
-def ollama_embed_models() -> list[str]:
-    client = ollama.Client(ollama_host)
-    response = client.list()
-    return [model.model for model in response.models if "bert" in model.details.family]
-
-
-def ollama_chat_models() -> list[str]:
+def ollama_embed_models() -> list[str | None]:
     client = ollama.Client(ollama_host)
     response = client.list()
     return [
-        model.model for model in response.models if "bert" not in model.details.family
+        model.model
+        for model in response.models
+        if (model.details and model.details.family and "bert" in model.details.family)
+    ]
+
+
+def ollama_chat_models() -> list[str | None]:
+    client = ollama.Client(ollama_host)
+    response = client.list()
+    return [
+        model.model
+        for model in response.models
+        if (
+            model.details is None
+            or model.details.family is None
+            or "bert" not in model.details.family
+        )
     ]
 
 

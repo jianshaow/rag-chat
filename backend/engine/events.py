@@ -1,7 +1,8 @@
 import json
 from queue import Queue, Empty
 from typing import Any, Generator
-from llama_index.core.callbacks.base import BaseCallbackHandler
+
+from llama_index.core.callbacks.base_handler import BaseCallbackHandler
 from llama_index.core.callbacks.schema import CBEventType
 from llama_index.core.tools.types import ToolOutput
 
@@ -9,7 +10,10 @@ from llama_index.core.tools.types import ToolOutput
 class CallbackEvent:
 
     def __init__(
-        self, event_id: str, event_type: CBEventType, payload: dict[str, Any] = None
+        self,
+        event_id: str,
+        event_type: CBEventType,
+        payload: dict[str, Any] | None = None,
     ) -> None:
         self.event_id = event_id
         self.event_type = event_type
@@ -113,7 +117,7 @@ class EventCallbackHandler(BaseCallbackHandler):
     def on_event_start(
         self,
         event_type: CBEventType,
-        payload: dict[str, Any] = None,
+        payload: dict[str, Any] | None = None,
         event_id: str = "",
         **kwargs,
     ) -> str:
@@ -125,11 +129,12 @@ class EventCallbackHandler(BaseCallbackHandler):
             print("response:", response)
             self.queue.put(event)
         print("*" * 80)
+        return event_id
 
     def on_event_end(
         self,
         event_type: CBEventType,
-        payload: dict[str, Any] = None,
+        payload: dict[str, Any] | None = None,
         event_id: str = "",
         **kwargs,
     ) -> None:
@@ -142,13 +147,13 @@ class EventCallbackHandler(BaseCallbackHandler):
             self.queue.put(event)
         print("*" * 80)
 
-    def start_trace(self, trace_id: str = None) -> None:
+    def start_trace(self, trace_id: str | None = None) -> None:
         """No-op."""
 
     def end_trace(
         self,
-        trace_id: str = None,
-        trace_map: dict[str, list[str]] = None,
+        trace_id: str | None = None,
+        trace_map: dict[str, list[str]] | None = None,
     ) -> None:
         """No-op."""
 

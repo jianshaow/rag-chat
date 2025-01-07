@@ -1,5 +1,6 @@
 import chromadb
-from chromadb import ClientAPI, Collection
+from chromadb import Collection
+from chromadb.api import ClientAPI
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core.vector_stores import VectorStoreQuery
 
@@ -37,7 +38,8 @@ def get_vector_text(data_name, ids: list[str]):
 
 def has_data(vector_store: ChromaVectorStore):
     ids = vector_store.query(VectorStoreQuery()).ids
-    return len(ids) != 0
+    length = len(ids) if ids else 0
+    return length != 0
 
 
 def __clear_collection(collection_name: str):
@@ -65,9 +67,14 @@ def __show_db():
         count = collection.count()
         print("record count:", count)
         result = collection.peek(1)
-        for i, metadatas in enumerate(result["metadatas"]):
+        metadatas = result["metadatas"] if result["metadatas"] else []
+        print("metadatas size:", len(metadatas))
+        for i, metadatas in enumerate(metadatas):
             print("+" * 80)
-            node_content = json.loads(metadatas["_node_content"])
+            node_content_json = metadatas["_node_content"]
+            node_content = json.loads(
+                str(node_content_json) if node_content_json else ""
+            )
             metadata = node_content["metadata"]
             print("file name:", metadata["file_name"])
             print(
@@ -76,9 +83,11 @@ def __show_db():
                 "->",
                 node_content["end_char_idx"],
             )
-            embedding = result["embeddings"][i]
-            print("embeddings dimension:", len(embedding))
-            print(embedding[:4])
+            embeddings = result["embeddings"]
+            embedding = embeddings[i] if embeddings else None
+            if embedding:
+                print("embeddings dimension:", len(embedding))
+                print(embedding[:4])
         print("-" * 80)
 
 
@@ -88,10 +97,10 @@ if __name__ == "__main__":
     if len(sys.argv) > 2:
         if sys.argv[1] == "cls":
             collection = len(sys.argv) == 3 and sys.argv[2] or None
-            if collection is None:
-                print("provide the collection name")
-            else:
+            if collection:
                 __clear_collection(collection)
+            else:
+                print("provide the collection name")
         elif sys.argv[1] == "rm":
             collection = len(sys.argv) == 3 and sys.argv[2] or None
             if collection is None:
@@ -101,7 +110,9 @@ if __name__ == "__main__":
         elif sys.argv[1] == "get":
             data_name = len(sys.argv) >= 3 and sys.argv[2] or None
             id = len(sys.argv) >= 4 and sys.argv[3] or None
-            print(get_vector_text(data_name, [id])[0])
+            vector_text = get_vector_text(data_name, [id] if id else [])
+            text = vector_text[0] if vector_text else ""
+            print(text)
         else:
             print("rm is only one supported cmd")
     else:

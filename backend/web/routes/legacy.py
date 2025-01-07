@@ -14,7 +14,9 @@ def query_index(data):
 
 @legacy.route("/<data>/get/<id>", methods=["GET"])
 def get_data_text(data, id):
-    return {"text": vector_db.get_vector_text(data, [id])[0]}, 200
+    vector_texts = vector_db.get_vector_text(data, [id])
+    text = vector_texts[0] if vector_texts else ""
+    return {"text": text}, 200
 
 
 @legacy.route("/<data>/files/<filename>", methods=["GET"])

@@ -13,7 +13,7 @@ def chat_config():
 
 @api.route("/chat", methods=["POST"])
 def chat():
-    messages = request.json["messages"]
+    messages = request.json["messages"]  # type: ignore
     chat_messages = models.ChatMessages(messages)
     response = chatter.chat("en_novel", chat_messages)
     return Response(stream_gen(response), mimetype="text/plain")

@@ -15,19 +15,14 @@ __default_data_config: dict = {
     },
 }
 
-__data_config: dict = None
+__data_config: dict[str, dict[str, str]] = __default_data_config
+data_config = os.environ.get("DATA_CONFIG")
+if data_config and os.path.isfile(data_config):
+    with open(data_config, "r") as file:
+        __data_config = json.load(file)
 
 
 def get_data_config():
-    global __data_config
-    if __data_config is None:
-        data_config = os.environ.get("DATA_CONFIG")
-        if data_config:
-            if os.path.isfile(data_config):
-                with open(data_config, "r") as file:
-                    __data_config = json.load(file)
-        else:
-            __data_config = __default_data_config
     return __data_config
 
 
