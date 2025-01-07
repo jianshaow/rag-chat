@@ -6,7 +6,6 @@ load_dotenv()
 data_base_dir = os.getenv("DATA_BASE_DIR", "data")
 chroma_base_dir = os.getenv("CHROMA_BASE_DIR", "chroma")
 model_provider = os.getenv("MODEL_PROVIDER", "ollama")
-backend_base_url = os.getenv("BACKEND_BASE_URL", "http://localhost:5000")
 
 ollama_host = os.getenv("OLLAMA_HOST", "localhost")
 ollama_base_url = os.getenv("OLLAMA_BASE_URL", f"http://{ollama_host}:11434")

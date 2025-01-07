@@ -1,2 +1,2 @@
-from web.routes.api import api
-from web.routes.legacy import legacy
+from .api import api
+from .legacy import legacy

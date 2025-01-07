@@ -2,7 +2,7 @@ import json
 
 from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 
-from engine import backend_base_url
+from app import backend_base_url
 
 
 def get_sources(response: StreamingAgentChatResponse):

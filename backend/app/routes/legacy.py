@@ -1,86 +1,87 @@
 import os
-from flask import Blueprint, request, send_from_directory
+from fastapi import APIRouter, Request, status
+from fastapi.responses import FileResponse
+
 from engine import vector_db, data_store, config, models, queryer, chatter
 
-legacy = Blueprint("legacy", __name__)
+legacy = APIRouter()
 
 
-@legacy.route("/<data>/query", methods=["POST"])
-def query_index(data):
-    raw_data = request.get_data()
+@legacy.post("/{data}/query", tags=["legacy"])
+async def query_index(data: str, request: Request):
+    raw_data = await request.body()
     query = raw_data.decode("utf-8")
-    return queryer.query(data, query), 200
+    return queryer.query(data, query)
 
 
-@legacy.route("/<data>/get/<id>", methods=["GET"])
+@legacy.get("/{data}/get/{id}", tags=["legacy"])
 def get_data_text(data, id):
     vector_texts = vector_db.get_vector_text(data, [id])
     text = vector_texts[0] if vector_texts else ""
-    return {"text": text}, 200
+    return {"text": text}
 
 
-@legacy.route("/<data>/files/<filename>", methods=["GET"])
+@legacy.get("/{data}/files/{filename}", tags=["legacy"])
 def download_file(data, filename):
     data_dir = os.path.abspath(os.path.join(config.data_base_dir, data))
     print(data_dir)
-    return send_from_directory(data_dir, filename)
+    return FileResponse(path=data_dir, filename=filename)
 
 
-@legacy.route("/data", methods=["GET"])
+@legacy.get("/data", tags=["legacy"])
 def query_data():
-    return data_store.get_data_names(), 200
+    return data_store.get_data_names()
 
 
-@legacy.route("/data_config", methods=["GET"])
+@legacy.get("/data_config", tags=["legacy"])
 def get_data_config():
-    return data_store.get_data_config(), 200
+    return data_store.get_data_config()
 
 
-@legacy.route("/data_config", methods=["PUT"])
-def update_data_config():
-    data_config = request.get_json()
+@legacy.put("/data_config", tags=["legacy"], status_code=status.HTTP_204_NO_CONTENT)
+async def update_data_config(request: Request):
+    data_config = await request.json()
     data_store.update_data_config(data_config)
-    return "", 204
 
 
-@legacy.route("/config", methods=["GET"])
+@legacy.get("/config", tags=["legacy"])
 def get_config():
-    return config.get_config(), 200
+    return config.get_config()
 
 
-@legacy.route("/config", methods=["PUT"])
-def update_config():
-    conf = request.get_json()
+@legacy.put("/config", tags=["legacy"], status_code=status.HTTP_204_NO_CONTENT)
+async def update_config(request: Request):
+    conf = await request.json()
     config.update_config(conf)
-    return "", 204
 
 
-@legacy.route("/model_provider", methods=["GET"])
+@legacy.get("/model_provider", tags=["legacy"])
 def get_model_providers():
-    return models.get_model_providers(), 200
+    return models.get_model_providers()
 
 
-@legacy.route("/model_provider/<model_provider>", methods=["GET"])
+@legacy.get("/model_provider/{model_provider}", tags=["legacy"])
 def get_model_config(model_provider):
-    return models.get_model_config(model_provider), 200
+    return models.get_model_config(model_provider)
 
 
-@legacy.route("/model_provider/<model_provider>", methods=["PUT"])
-def update_model_config(model_provider):
-    conf = request.get_json()
+@legacy.put(
+    "/model_provider/{model_provider}",
+    tags=["legacy"],
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def update_model_config(model_provider, request: Request):
+    conf = await request.json()
     models.update_model_config(model_provider, conf)
     queryer.setStale(model_provider)
     chatter.setStale(model_provider)
-    return "", 204
 
 
-@legacy.route("/embed_models", methods=["GET"])
-def get_embed_models():
-    reload = request.args.get("reload", "false")
-    return models.get_models("embed", reload == "true"), 200
+@legacy.get("/embed_models", tags=["legacy"])
+async def get_embed_models(reload):
+    return models.get_models("embed", reload == "true")
 
 
-@legacy.route("/chat_models", methods=["GET"])
-def get_chat_models():
-    reload = request.args.get("reload", "false")
-    return models.get_models("chat", reload == "true"), 200
+@legacy.get("/chat_models", tags=["legacy"])
+async def get_chat_models(reload):
+    return models.get_models("chat", reload == "true")

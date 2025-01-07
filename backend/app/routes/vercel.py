@@ -1,11 +1,12 @@
 import json, time
 from llama_index.core.chat_engine.types import StreamingAgentChatResponse
-from web.routes.fe_response import get_sources
+
 from engine import events
+from .fe_response import get_sources
 
 
 def stream_gen(response: StreamingAgentChatResponse):
-    from web.routes.mock_response import post_events
+    from .mock_response import post_events
 
     messages = response.response_gen
     sources = get_sources(response)
