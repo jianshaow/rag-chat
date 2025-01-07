@@ -46,14 +46,20 @@ def openai_embed_models() -> list[str]:
     client = OriginalOpenAI()
     response = client.models.list()
     return [
-        model.id for model in response.data if model.id.startswith("text-embedding")
+        model.model_dump()["root"]
+        for model in response.data
+        if str(model.model_dump()["root"]).startswith("text-embedding")
     ]
 
 
 def openai_chat_models() -> list[str]:
     client = OriginalOpenAI()
     response = client.models.list()
-    return [model.id for model in response.data if model.id.startswith("gpt")]
+    return [
+        model.model_dump()["root"]
+        for model in response.data
+        if str(model.model_dump()["root"]).startswith("gpt")
+    ]
 
 
 def gemini_embed_models() -> list[str]:
