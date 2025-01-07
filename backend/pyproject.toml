@@ -17,11 +17,9 @@ llama-index-llms-openai = "^0.3.4"
 llama-index-llms-gemini = "^0.4.0"
 llama-index-llms-ollama = "^0.5.0"
 llama-index-agent-openai = "^0.4.1"
-flask = "^3.1.0"
-
+fastapi = "^0.115.6"
 
 [tool.poetry.group.dev.dependencies]
-flask-cors = "^5.0.0"
 
 [build-system]
 requires = ["poetry-core"]
