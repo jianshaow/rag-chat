@@ -139,9 +139,9 @@ class Setting extends Component<{}, SettingState> {
     };
     updateConfig(JSON.stringify(config)).then(() => {
       alert('Setting Saved!');
+      this.reloadApiConfig(modelProvider);
       this.initEmbedModels();
       this.initChatModels();
-      this.reloadApiConfig(modelProvider);
     })
   };
 
