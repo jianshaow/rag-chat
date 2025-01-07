@@ -105,7 +105,7 @@ class Home extends Component<{}, HomeState> {
         <h1 className='title'>RAG Q&A</h1>
         <div className='container'>
           <label className='config-lable'>Model Provider:</label>
-          <input value={modelProvider} readOnly />
+          <input value={modelProvider} readOnly style={{ maxWidth: '60px' }} />
           <label className='config-lable'>Embed Model: </label>
           <input value={embedModel} readOnly />
           <label className='config-lable'>Chat Model: </label>
