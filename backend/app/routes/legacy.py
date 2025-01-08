@@ -1,4 +1,3 @@
-import os
 from fastapi import APIRouter, Request, status
 from fastapi.responses import FileResponse
 

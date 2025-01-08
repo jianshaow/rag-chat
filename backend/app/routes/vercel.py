@@ -1,8 +1,14 @@
 import json, time
 from llama_index.core.chat_engine.types import StreamingAgentChatResponse
+from fastapi.responses import StreamingResponse
 
 from engine import events
-from .fe_response import get_sources
+from .frontend import get_sources
+
+
+class VercelStreamingResponse(StreamingResponse):
+    def __init__(self, response: StreamingAgentChatResponse):
+        super().__init__(stream_gen(response))
 
 
 def stream_gen(response: StreamingAgentChatResponse):
