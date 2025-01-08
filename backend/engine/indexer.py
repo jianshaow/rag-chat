@@ -39,8 +39,10 @@ def get_index(data_name) -> VectorStoreIndex:
         data_dir = data_store.get_data_dir(data_name)
         if data_dir is not None:
             embed_model = models.new_model(config.model_provider, "embed")
-            index = create_or_load_index(embed_model, data_name, data_dir)
+            index = create_or_load_index(embed_model, data_name, data_dir)  # type: ignore
             __indexes[index_key] = index
+        else:
+            raise ValueError(f"Data {data_name} not found.")
     return index
 
 

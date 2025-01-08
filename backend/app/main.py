@@ -23,7 +23,7 @@ app.include_router(api, prefix="/api")
 app.include_router(legacy, prefix="/legacy")
 
 app.mount(
-    "/", StaticFiles(directory=frontend, check_dir=False, html=True), name="static"
+    "/", StaticFiles(directory=frontend, check_dir=False, html=True), name="frontend"
 )
 
 
