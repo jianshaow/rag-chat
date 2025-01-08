@@ -122,18 +122,20 @@ class Home extends Component<{}, HomeState> {
           <div className='question-block'>
             <label>Question</label>
             <form onSubmit={this.handleQuestion}>
-              <input type='text' value={request}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  this.setState({ request: e.target.value });
-                }}
-                style={{ width: '100%' }} />
-              <button type='submit'>Submit</button>
+              <div className='question-bar'>
+                <input type='text' value={request}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    this.setState({ request: e.target.value });
+                  }}
+                  style={{ width: '100%' }} />
+                <button type='submit'>Submit</button>
+              </div>
             </form>
           </div>
           <div className='answer-block'>
             <label>Answer</label>
             <div>
-              <textarea value={response.text} readOnly rows={20} style={{ width: '100%' }} />
+              <textarea value={response.text} readOnly rows={10} style={{ width: '100%' }} />
             </div>
           </div>
           <div className='reference-block'>

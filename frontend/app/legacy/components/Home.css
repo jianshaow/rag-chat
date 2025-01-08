@@ -10,6 +10,10 @@
   margin: 0 20px;
 }
 
+.question-bar {
+  display: flex;
+}
+
 .reference-block {
   display: flex;
   flex-direction: column;
