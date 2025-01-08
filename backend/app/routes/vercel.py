@@ -1,8 +1,9 @@
-import json, time
+import json
 from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 from fastapi.responses import StreamingResponse
 
-from engine import events
+from engine import events, models
+from app.services.suggestion import suggest_next_questions
 from .frontend import extract_sources_data
 
 
@@ -12,8 +13,15 @@ class VercelStreamingResponse(StreamingResponse):
     DATA_PREFIX = "8:"
     ERROR_PREFIX = "3:"
 
-    def __init__(self, response: StreamingAgentChatResponse):
-        super().__init__(VercelStreamingResponse.stream_generator(response))
+    def __init__(
+        self,
+        event_callback_handler: events.EventCallbackHandler,
+        messages: list[dict[str, str]],
+        response: StreamingAgentChatResponse,
+    ):
+        super().__init__(
+            self.__class__.stream_generator(event_callback_handler, messages, response)
+        )
 
     @classmethod
     def to_text(cls, token: str):
@@ -31,19 +39,30 @@ class VercelStreamingResponse(StreamingResponse):
         return f"{cls.ERROR_PREFIX}{error_str}\n"
 
     @classmethod
-    def stream_generator(cls, response: StreamingAgentChatResponse):
-        from .mock_response import post_events
-
-        messages = response.response_gen
+    def stream_generator(
+        cls,
+        event_callback_handler: events.EventCallbackHandler,
+        messages: list[dict[str, str]],
+        response: StreamingAgentChatResponse,
+    ):
         sources_data = extract_sources_data(response)
+        yield cls.to_data(sources_data)
 
-        for event in events.event_callback_handler.event_gen():
+        for event in event_callback_handler.event_gen():
             event_response = event.to_response()
             if event_response:
                 yield cls.to_data(event_response)
-        for message in messages:
-            yield cls.to_text(message)
-            time.sleep(0.2)
-        for event in post_events:
-            yield cls.to_data(event)
-        yield cls.to_data(sources_data)
+
+        final_response = ""
+        for chunk in response.response_gen:
+            final_response += chunk
+            yield cls.to_text(chunk)
+
+        yield cls.to_data(cls.next_questions(messages, final_response))
+
+    @classmethod
+    def next_questions(cls, messages: list[dict[str, str]], response: str):
+        return {
+            "type": "suggested_questions",
+            "data": suggest_next_questions(messages, response),
+        }

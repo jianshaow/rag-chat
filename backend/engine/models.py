@@ -14,6 +14,7 @@ from llama_index.llms.ollama import Ollama
 
 from engine import (
     config,
+    caches,
     ollama_host,
     ollama_base_url,
     ollama_embed_model,
@@ -159,23 +160,23 @@ def get_model_providers() -> list[str]:
     return list(__model_specs.keys()) + ext_model_providers
 
 
-__models = {"embed": {}, "chat": {}}
+__model_lists: dict[str, dict[str, list[str]]] = {"embed": {}, "chat": {}}
 
 
-def get_models(model_type: str, reload: bool):
+def get_models(model_type: str, reload: bool) -> list[str]:
     model_provider = config.model_provider
-    models = __models[model_type].get(model_provider)
-    if models is None or reload:
+    model_list = __model_lists[model_type].get(model_provider)
+    if model_list is None or reload:
         model_spec = __model_specs.get(model_provider)
         if model_spec:
-            models = model_spec[model_type]["models_func"]()
-            __models[model_type][model_provider] = models
+            model_list = model_spec[model_type]["models_func"]()
+            __model_lists[model_type][model_provider] = model_list
         else:
             import engine.extension as ext
 
-            models = ext.get_models(model_provider, model_type)
-            __models[model_type][model_provider] = models
-    return models
+            model_list = ext.get_models(model_provider, model_type)
+            __model_lists[model_type][model_provider] = model_list
+    return model_list
 
 
 def get_embed_model_name() -> str:
@@ -216,7 +217,8 @@ def update_model_config(model_provider: str, conf: dict):
         ext.update_model_config(model_provider, conf)
 
 
-def new_model(model_provider: str, model_type: str) -> BaseEmbedding | LLM:
+def new_model(model_type: str) -> BaseEmbedding | LLM:
+    model_provider = config.model_provider
     model_spec = __model_specs.get(model_provider)
     if model_spec:
         model_class = model_spec[model_type]["model_class"]
@@ -226,6 +228,14 @@ def new_model(model_provider: str, model_type: str) -> BaseEmbedding | LLM:
         import engine.extension as ext
 
         return ext.new_model(model_provider, model_type)
+
+
+def get_embed_model() -> BaseEmbedding:
+    return caches.get_embed_model(lambda: new_model("embed"))
+
+
+def get_chat_model() -> LLM:
+    return caches.get_chat_model(lambda: new_model("chat"))
 
 
 class ChatMessages:

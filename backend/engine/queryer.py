@@ -15,10 +15,6 @@ def query(data_name: str, query_text: str):
     return {"text": str(response), "sources": sources}
 
 
-def setStale(model_provider: str):
-    engines.setStale(model_provider)
-
-
 if __name__ == "__main__":
     import sys
     from engine import data_store

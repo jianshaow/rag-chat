@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, status
 from fastapi.responses import FileResponse
 
-from engine import vector_db, data_store, config, models, queryer, chatter
+from engine import vector_db, data_store, config, models, queryer, caches
 
 legacy = APIRouter()
 
@@ -71,8 +71,7 @@ def get_model_config(model_provider):
 async def update_model_config(model_provider, request: Request):
     conf = await request.json()
     models.update_model_config(model_provider, conf)
-    queryer.setStale(model_provider)
-    chatter.setStale(model_provider)
+    caches.invalidate(model_provider)
 
 
 @legacy.get("/embed_models", tags=["legacy"])

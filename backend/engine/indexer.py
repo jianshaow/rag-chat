@@ -2,9 +2,7 @@ from llama_index.core import StorageContext, VectorStoreIndex, SimpleDirectoryRe
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.callbacks import CallbackManager
 
-from engine import config, models, vector_db, data_store, events
-
-__indexes: dict[str, VectorStoreIndex] = {}
+from engine import models, vector_db, data_store, events, caches
 
 
 def create_or_load_index(
@@ -33,17 +31,18 @@ def create_or_load_index(
 
 def get_index(data_name) -> VectorStoreIndex:
     embed_model_name = models.get_embed_model_name()
-    index_key = f"{data_name}@{embed_model_name}@{config.model_provider}"
-    index = __indexes.get(index_key)
-    if index is None:
+    index_key = f"{data_name}@{embed_model_name}"
+
+    def new_index() -> VectorStoreIndex:
         data_dir = data_store.get_data_dir(data_name)
         if data_dir is not None:
-            embed_model = models.new_model(config.model_provider, "embed")
-            index = create_or_load_index(embed_model, data_name, data_dir)  # type: ignore
-            __indexes[index_key] = index
+            embed_model = models.get_embed_model()
+            index = create_or_load_index(embed_model, data_name, data_dir)
         else:
             raise ValueError(f"Data {data_name} not found.")
-    return index
+        return index
+
+    return caches.get_index(new_index, index_key)
 
 
 if __name__ == "__main__":

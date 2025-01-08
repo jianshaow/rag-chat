@@ -1,26 +1,16 @@
 from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 
-from engine import common, models, agents, engines
+from engine import common, models, engines, caches
 
 
 def chat(data_name: str, messages: models.ChatMessages) -> StreamingAgentChatResponse:
     common.print_info(data_name)
-    # return _chat_with_agent(data_name, messages)
-    return _chat_with_engine(data_name, messages)
+    engine = engines.get_chat_engine(data_name)
+    return engine.stream_chat(messages.last, messages.history)
 
 
 def setStale(model_provider: str):
-    agents.setStale(model_provider)
-
-
-def _chat_with_agent(data_name: str, messages: models.ChatMessages):
-    agent = agents.get_agent(data_name)
-    return agent.stream_chat(messages.last, messages.history)
-
-
-def _chat_with_engine(data_name: str, messages: models.ChatMessages):
-    engine = engines.get_chat_engine(data_name)
-    return engine.stream_chat(messages.last, messages.history)
+    caches.invalidate(model_provider)
 
 
 if __name__ == "__main__":
