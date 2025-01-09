@@ -1,6 +1,6 @@
 import os
 
-from engine import data_base_dir, chroma_base_dir, model_provider
+from . import data_base_dir, chroma_base_dir, model_provider
 
 
 def get_db_path():

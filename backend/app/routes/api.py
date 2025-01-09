@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse
 
-from engine import chatter, models, config, events
+from app.engine import chatter, models, config, events
 from .vercel import VercelStreamingResponse
 
 api = APIRouter()

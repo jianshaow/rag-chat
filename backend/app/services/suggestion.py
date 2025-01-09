@@ -2,7 +2,7 @@ import re
 from llama_index.core.prompts import PromptTemplate
 from llama_index.core.llms import LLM
 
-from engine import models
+from app.engine import models
 from .prompts import next_question_prompt
 
 

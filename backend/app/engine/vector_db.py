@@ -4,7 +4,7 @@ from chromadb.api import ClientAPI
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core.vector_stores import VectorStoreQuery
 
-from engine import config, models
+from . import config, models
 
 __db_clients: dict[str, ClientAPI] = {}
 

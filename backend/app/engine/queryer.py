@@ -1,6 +1,6 @@
 from llama_index.core.base.response.schema import Response
 
-from engine import common, engines
+from . import common, engines
 
 
 def query(data_name: str, query_text: str):
