@@ -1,7 +1,8 @@
+from llama_index.core.base.response.schema import Response
 from fastapi import APIRouter, Request, status
 from fastapi.responses import FileResponse
 
-from app.engine import vector_db, data_store, config, models, queryer, caches
+from app.engine import vector_db, data_store, config, models, engines, caches
 
 legacy_router = r = APIRouter()
 
@@ -10,7 +11,14 @@ legacy_router = r = APIRouter()
 async def query_index(data: str, request: Request):
     raw_data = await request.body()
     query = raw_data.decode("utf-8")
-    return queryer.query(data, query)
+    query_engine = engines.get_query_engine(data)
+    response: Response = query_engine.query(query)
+    sources = [
+        {"id": node.node_id, "file_name": node.metadata["file_name"]}
+        for node in response.source_nodes
+    ]
+
+    return {"text": str(response), "sources": sources}
 
 
 @r.get("/{data}/get/{id}", tags=["legacy"])
@@ -75,10 +83,10 @@ async def update_model_config(model_provider, request: Request):
 
 
 @r.get("/embed_models", tags=["legacy"])
-async def get_embed_models(reload):
+def get_embed_models(reload):
     return models.get_models("embed", reload == "true")
 
 
 @r.get("/chat_models", tags=["legacy"])
-async def get_chat_models(reload):
+def get_chat_models(reload):
     return models.get_models("chat", reload == "true")

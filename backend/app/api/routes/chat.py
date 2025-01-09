@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request
 
-from app.engine import chatter, models, events
+from app.engine import models, events, engines
 from .vercel import VercelStreamingResponse
 
 chat_router = r = APIRouter()
@@ -15,5 +15,6 @@ def chat_config():
 async def chat(request: Request):
     messages = (await request.json())["messages"]
     chat_messages = models.ChatMessages(messages)
-    response = chatter.chat("en_novel", chat_messages)
+    engine = engines.get_chat_engine("en_novel")
+    response = engine.astream_chat(chat_messages.last, chat_messages.history)
     return VercelStreamingResponse(events.event_handler, messages, response)
