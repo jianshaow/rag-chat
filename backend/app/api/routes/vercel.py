@@ -3,7 +3,7 @@ from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 from fastapi.responses import StreamingResponse
 
 from app.engine import events
-from app.services.suggestion import suggest_next_questions
+from app.api.services.suggestion import suggest_next_questions
 from .frontend import extract_sources_data
 
 
