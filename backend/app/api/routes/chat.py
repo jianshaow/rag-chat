@@ -16,4 +16,4 @@ async def chat(request: Request):
     messages = (await request.json())["messages"]
     chat_messages = models.ChatMessages(messages)
     response = chatter.chat("en_novel", chat_messages)
-    return VercelStreamingResponse(events.event_callback_handler, messages, response)
+    return VercelStreamingResponse(events.event_handler, messages, response)

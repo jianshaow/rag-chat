@@ -1,6 +1,5 @@
-import json
-from queue import Queue, Empty
-from typing import Any, Generator
+import json, asyncio
+from typing import Any, AsyncGenerator
 
 from llama_index.core.callbacks.base_handler import BaseCallbackHandler
 from llama_index.core.callbacks.schema import CBEventType
@@ -103,7 +102,8 @@ class EventCallbackHandler(BaseCallbackHandler):
     def __init__(
         self,
     ):
-        self.queue = Queue()
+        self.queue = asyncio.Queue()
+        self.is_done: bool = False
         ignored_events = [
             CBEventType.CHUNKING,
             CBEventType.NODE_PARSING,
@@ -127,7 +127,7 @@ class EventCallbackHandler(BaseCallbackHandler):
         event = CallbackEvent(event_id=event_id, event_type=event_type, payload=payload)
         if response := event.to_response():
             print("response:", response)
-            self.queue.put(event)
+            self.queue.put_nowait(event)
         print("*" * 80)
         return event_id
 
@@ -144,7 +144,7 @@ class EventCallbackHandler(BaseCallbackHandler):
         event = CallbackEvent(event_id=event_id, event_type=event_type, payload=payload)
         if response := event.to_response():
             print("response:", response)
-            self.queue.put(event)
+            self.queue.put_nowait(event)
         print("*" * 80)
 
     def start_trace(self, trace_id: str | None = None) -> None:
@@ -157,12 +157,12 @@ class EventCallbackHandler(BaseCallbackHandler):
     ) -> None:
         """No-op."""
 
-    def event_gen(self) -> Generator[CallbackEvent, None, None]:
-        while not self.queue.empty():
+    async def async_event_gen(self) -> AsyncGenerator[CallbackEvent, None]:
+        while not self.queue.empty() or not self.is_done:
             try:
-                yield self.queue.get(block=True, timeout=0.1)
-            except Empty:
+                yield await asyncio.wait_for(self.queue.get(), timeout=0.1)
+            except asyncio.TimeoutError:
                 pass
 
 
-event_callback_handler = EventCallbackHandler()
+event_handler = EventCallbackHandler()

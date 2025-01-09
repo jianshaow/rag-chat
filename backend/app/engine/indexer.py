@@ -8,7 +8,7 @@ from . import models, vector_db, data_store, events, caches
 def create_or_load_index(
     embed_model: BaseEmbedding, data_name, data_dir
 ) -> VectorStoreIndex:
-    callback_manager = CallbackManager([events.event_callback_handler])
+    callback_manager = CallbackManager([events.event_handler])
     vector_store = vector_db.get_vector_store(data_name)
     if vector_db.has_data(vector_store):
         index = VectorStoreIndex.from_vector_store(
