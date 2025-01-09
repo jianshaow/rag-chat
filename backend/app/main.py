@@ -3,7 +3,8 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import frontend_base_url
+from app.engine import config
+from app.api import frontend_base_url, files_url_prefix
 from app.api.routes import api_router, legacy_router
 
 frontend = os.path.abspath(os.path.join("../frontend", "out"))
@@ -23,6 +24,11 @@ app.include_router(api_router, prefix="/api")
 app.include_router(legacy_router, prefix="/legacy")
 
 app.mount(
+    files_url_prefix,
+    StaticFiles(directory=config.get_data_base_path(), check_dir=False),
+    name="data_base_dir",
+)
+app.mount(
     "/", StaticFiles(directory=frontend, check_dir=False, html=True), name="frontend"
 )
 
@@ -31,4 +37,4 @@ if __name__ == "__main__":
     app_host = os.getenv("APP_HOST", "0.0.0.0")
     app_port = int(os.getenv("APP_PORT", "8000"))
 
-    uvicorn.run(app="main:app", host=app_host, port=app_port, reload=True)
+    uvicorn.run(app="app.main:app", host=app_host, port=app_port, reload=True)

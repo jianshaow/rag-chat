@@ -7,11 +7,17 @@ def get_db_path():
     return os.path.join(chroma_base_dir, model_provider)
 
 
+def get_data_base_path():
+    return os.path.abspath(data_base_dir)
+
+
 def get_data_path(data: str):
     return os.path.abspath(os.path.join(data_base_dir, data))
 
+
 def get_data_file(data: str, filename: str):
     return os.path.join(get_data_path(data), filename)
+
 
 def get_config():
     return {
