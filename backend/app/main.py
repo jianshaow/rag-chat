@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import frontend_base_url
-from app.api.routes import api, legacy
+from app.api.routes import api_router, legacy_router
 
 frontend = os.path.abspath(os.path.join("../frontend", "out"))
 frontend = os.environ.get("FRONTEND_DIR", frontend)
@@ -19,8 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(api, prefix="/api")
-app.include_router(legacy, prefix="/legacy")
+app.include_router(api_router, prefix="/api")
+app.include_router(legacy_router, prefix="/legacy")
 
 app.mount(
     "/", StaticFiles(directory=frontend, check_dir=False, html=True), name="frontend"

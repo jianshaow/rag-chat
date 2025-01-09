@@ -14,7 +14,7 @@ def extract_sources_data(response: StreamingAgentChatResponse):
                     "score": node.score,
                     "text": node.text,
                     "url": backend_base_url
-                    + "/api/en_novel/files/"
+                    + "/api/files/en_novel/"
                     + (node.node.metadata.get("file_name") or ""),
                 }
                 for node in response.source_nodes

@@ -3,67 +3,67 @@ from fastapi.responses import FileResponse
 
 from app.engine import vector_db, data_store, config, models, queryer, caches
 
-legacy = APIRouter()
+legacy_router = r = APIRouter()
 
 
-@legacy.post("/{data}/query", tags=["legacy"])
+@r.post("/{data}/query", tags=["legacy"])
 async def query_index(data: str, request: Request):
     raw_data = await request.body()
     query = raw_data.decode("utf-8")
     return queryer.query(data, query)
 
 
-@legacy.get("/{data}/get/{id}", tags=["legacy"])
+@r.get("/{data}/get/{id}", tags=["legacy"])
 def get_data_text(data, id):
     vector_texts = vector_db.get_vector_text(data, [id])
     text = vector_texts[0] if vector_texts else ""
     return {"text": text}
 
 
-@legacy.get("/{data}/files/{filename}", tags=["legacy"])
+@r.get("/{data}/files/{filename}", tags=["legacy"])
 def download_file(data, filename):
     path = config.get_data_file(data, filename)
     return FileResponse(path=path)
 
 
-@legacy.get("/data", tags=["legacy"])
+@r.get("/data", tags=["legacy"])
 def query_data():
     return data_store.get_data_names()
 
 
-@legacy.get("/data_config", tags=["legacy"])
+@r.get("/data_config", tags=["legacy"])
 def get_data_config():
     return data_store.get_data_config()
 
 
-@legacy.put("/data_config", tags=["legacy"], status_code=status.HTTP_204_NO_CONTENT)
+@r.put("/data_config", tags=["legacy"], status_code=status.HTTP_204_NO_CONTENT)
 async def update_data_config(request: Request):
     data_config = await request.json()
     data_store.update_data_config(data_config)
 
 
-@legacy.get("/config", tags=["legacy"])
+@r.get("/config", tags=["legacy"])
 def get_config():
     return config.get_config()
 
 
-@legacy.put("/config", tags=["legacy"], status_code=status.HTTP_204_NO_CONTENT)
+@r.put("/config", tags=["legacy"], status_code=status.HTTP_204_NO_CONTENT)
 async def update_config(request: Request):
     conf = await request.json()
     config.update_config(conf)
 
 
-@legacy.get("/model_provider", tags=["legacy"])
+@r.get("/model_provider", tags=["legacy"])
 def get_model_providers():
     return models.get_model_providers()
 
 
-@legacy.get("/model_provider/{model_provider}", tags=["legacy"])
+@r.get("/model_provider/{model_provider}", tags=["legacy"])
 def get_model_config(model_provider):
     return models.get_model_config(model_provider)
 
 
-@legacy.put(
+@r.put(
     "/model_provider/{model_provider}",
     tags=["legacy"],
     status_code=status.HTTP_204_NO_CONTENT,
@@ -74,11 +74,11 @@ async def update_model_config(model_provider, request: Request):
     caches.invalidate(model_provider)
 
 
-@legacy.get("/embed_models", tags=["legacy"])
+@r.get("/embed_models", tags=["legacy"])
 async def get_embed_models(reload):
     return models.get_models("embed", reload == "true")
 
 
-@legacy.get("/chat_models", tags=["legacy"])
+@r.get("/chat_models", tags=["legacy"])
 async def get_chat_models(reload):
     return models.get_models("chat", reload == "true")
