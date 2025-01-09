@@ -3,8 +3,8 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from app import frontend_base_url
-from app.routes import api, legacy
+from app.api import frontend_base_url
+from app.api.routes import api, legacy
 
 frontend = os.path.abspath(os.path.join("../frontend", "out"))
 frontend = os.environ.get("FRONTEND_DIR", frontend)
