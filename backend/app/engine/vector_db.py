@@ -4,7 +4,7 @@ from chromadb.api import ClientAPI
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core.vector_stores import VectorStoreQuery
 
-from . import config, models
+from app.engine import config, models
 
 __db_clients: dict[str, ClientAPI] = {}
 
@@ -84,8 +84,8 @@ def __show_db():
                 node_content["end_char_idx"],
             )
             embeddings = result["embeddings"]
-            embedding = embeddings[i] if embeddings else None
-            if embedding:
+            embedding = embeddings[i] if embeddings is not None else None
+            if embedding is not None:
                 print("embeddings dimension:", len(embedding))
                 print(embedding[:4])
         print("-" * 80)
