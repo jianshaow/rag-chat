@@ -4,15 +4,16 @@ from llama_index.core.llms import LLM
 
 from app.engine import models
 from .prompts import next_question_prompt
+from ..routes.payload import ChatMessages
 
 
 def suggest_next_questions(
-    chat_history: list[dict[str, str]],
+    chat_history: ChatMessages,
     response: str,
 ) -> list[str] | None:
     latest_user_message = None
-    for message in reversed(chat_history):
-        if message["role"] == "user":
+    for message in reversed(chat_history.messages):
+        if message.role == "user":
             latest_user_message = message
             break
     conversation: str = f"{latest_user_message}\n{response}"

@@ -7,6 +7,7 @@ from fastapi.responses import StreamingResponse
 from app.engine import events
 from app.api.services.suggestion import suggest_next_questions
 from .frontend import extract_sources_data
+from .payload import ChatMessages
 
 
 class VercelStreamingResponse(StreamingResponse):
@@ -18,7 +19,7 @@ class VercelStreamingResponse(StreamingResponse):
     def __init__(
         self,
         event_handler: events.EventCallbackHandler,
-        messages: list[dict[str, str]],
+        messages: ChatMessages,
         response: Awaitable[StreamingAgentChatResponse],
     ):
         super().__init__(
@@ -44,7 +45,7 @@ class VercelStreamingResponse(StreamingResponse):
     async def stream_generator(
         cls,
         event_handler: events.EventCallbackHandler,
-        messages: list[dict[str, str]],
+        messages: ChatMessages,
         response: Awaitable[StreamingAgentChatResponse],
     ):
         event_handler.is_done = False
@@ -77,7 +78,7 @@ class VercelStreamingResponse(StreamingResponse):
     @classmethod
     async def response_generator(
         cls,
-        messages: list[dict[str, str]],
+        messages: ChatMessages,
         response: Awaitable[StreamingAgentChatResponse],
         event_handler: events.EventCallbackHandler,
     ):
@@ -96,7 +97,7 @@ class VercelStreamingResponse(StreamingResponse):
         event_handler.is_done = True
 
     @classmethod
-    def next_questions(cls, messages: list[dict[str, str]], response: str):
+    def next_questions(cls, messages: ChatMessages, response: str):
         return {
             "type": "suggested_questions",
             "data": suggest_next_questions(messages, response),

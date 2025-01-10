@@ -4,7 +4,6 @@ import ollama
 
 from llama_index.core.llms import LLM
 from llama_index.core.base.embeddings.base import BaseEmbedding
-from llama_index.core.base.llms.types import ChatMessage
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.embeddings.gemini import GeminiEmbedding
 from llama_index.embeddings.ollama import OllamaEmbedding
@@ -236,37 +235,6 @@ def get_embed_model() -> BaseEmbedding:
 
 def get_chat_model() -> LLM:
     return caches.get_chat_model(lambda: new_model("chat"))
-
-
-class ChatMessages:
-
-    def __init__(self, messages: list[dict]):
-        self.messages = messages
-
-    @property
-    def last(self) -> str:
-        last_message = self.messages[-1]
-        message_content = last_message["content"]
-        return message_content
-
-    @property
-    def history(self) -> list[ChatMessage]:
-        chat_messages = [
-            ChatMessage(role=message["role"], content=message["content"])
-            for message in self.messages[:-1]
-        ]
-        return chat_messages
-
-    def __str__(self) -> str:
-        return str(
-            [
-                {"role": message["role"], "content": message["content"]}
-                for message in self.messages
-            ]
-        )
-
-    def __repr__(self) -> str:
-        return str(self.messages)
 
 
 if __name__ == "__main__":
