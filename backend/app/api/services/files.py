@@ -1,9 +1,14 @@
 import os, logging, uuid, re, mimetypes, base64
+from pathlib import Path
 from typing import List, Optional, Tuple
 from pydantic import BaseModel, Field
 
+from llama_index.core.schema import Document
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+from llama_index.core.ingestion import IngestionPipeline
+
 from app.api import files_base_url
-from app.engine import config
+from app.engine import config, indexer
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +31,11 @@ def process_file(
 ) -> DocumentFile:
     file_data, extension = _preprocess_base64_file(content)
     document_file = save_file(file_data, name)
+    logging.info("loading file to documents...")
+    documents = _load_file_to_documents(document_file)
+    logging.info("adding documents to vector store index...")
+    index = indexer.get_index("uploaded")
+    _add_documents_to_vector_store_index(documents, index)
     return document_file
 
 
@@ -98,3 +108,34 @@ def _preprocess_base64_file(base64_content: str) -> Tuple[bytes, str | None]:
     guessed_extension = mimetypes.guess_extension(mime_type)
     extension = guessed_extension.lstrip(".") if guessed_extension else ""
     return base64.b64decode(data), extension
+
+
+def _load_file_to_documents(file: DocumentFile) -> List[Document]:
+    _, extension = os.path.splitext(file.name)
+    extension = extension.lstrip(".")
+
+    def add_metadata(file_name: str) -> dict:
+        return {"file_name": file.name, "private": "true"}
+
+    assert file.path, "File path is not set!"
+
+    documents = SimpleDirectoryReader.load_file(
+        Path(file.path), file_metadata=add_metadata, file_extractor={}
+    )
+
+    return documents
+
+
+def _add_documents_to_vector_store_index(
+    documents: List[Document], index: VectorStoreIndex
+) -> None:
+    pipeline = IngestionPipeline()
+    nodes = pipeline.run(documents=documents)
+
+    if index is None:
+        index = VectorStoreIndex(nodes=nodes)
+    else:
+        index.insert_nodes(nodes=nodes)
+    index.storage_context.persist(
+        persist_dir=os.environ.get("STORAGE_DIR", "storage/" + config.model_provider)
+    )

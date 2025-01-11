@@ -3,6 +3,11 @@ from . import config
 
 
 __default_data_config: dict = {
+    "uploaded": {
+        "data_dir": "uploaded",
+        "data_type": "text",
+        "default_question": "What is the document about?",
+    },
     "en_novel": {
         "data_dir": "en_novel",
         "data_type": "text",
@@ -31,7 +36,7 @@ def update_data_config(data_config: dict):
     __data_config = data_config
 
 
-def get_data_dir(data_name):
+def get_data_dir(data_name: str):
     data_dir = os.path.join(
         config.data_base_dir, get_data_config()[data_name]["data_dir"]
     )

@@ -1,16 +1,20 @@
+import logging
 from llama_index.core import StorageContext, VectorStoreIndex, SimpleDirectoryReader
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.callbacks import CallbackManager
 
 from . import models, vector_db, data_store, events, caches
 
+logger = logging.getLogger(__name__)
+
 
 def create_or_load_index(
-    embed_model: BaseEmbedding, data_name, data_dir
+    embed_model: BaseEmbedding, data_name: str, data_dir: str
 ) -> VectorStoreIndex:
     callback_manager = CallbackManager([events.event_handler])
     vector_store = vector_db.get_vector_store(data_name)
     if vector_db.has_data(vector_store):
+        logging.info("Loading index from vector store...")
         index = VectorStoreIndex.from_vector_store(
             vector_store,
             embed_model,
@@ -29,7 +33,7 @@ def create_or_load_index(
     return index
 
 
-def get_index(data_name) -> VectorStoreIndex:
+def get_index(data_name: str) -> VectorStoreIndex:
     embed_model_name = models.get_embed_model_name()
     index_key = f"{data_name}@{embed_model_name}"
 
