@@ -1,4 +1,4 @@
-from . import config, models
+from app.engine import config, models
 
 
 def print_info(data_name: str):

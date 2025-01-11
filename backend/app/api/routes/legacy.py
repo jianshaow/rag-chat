@@ -30,7 +30,7 @@ def get_data_text(data, id):
 
 @r.get("/{data}/files/{filename}", tags=["legacy"])
 def download_file(data, filename):
-    path = config.get_data_file(data, filename)
+    path = config.get_data_file_path(data, filename)
     return FileResponse(path=path)
 
 

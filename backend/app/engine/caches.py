@@ -6,7 +6,7 @@ from llama_index.core import VectorStoreIndex
 from llama_index.core.query_engine import BaseQueryEngine
 from llama_index.core.chat_engine.types import BaseChatEngine
 
-from . import config
+from app.engine import config
 
 
 T = TypeVar("T", BaseEmbedding, LLM, BaseQueryEngine, BaseChatEngine, VectorStoreIndex)

@@ -11,7 +11,7 @@ from llama_index.llms.openai import OpenAI
 from llama_index.llms.gemini import Gemini
 from llama_index.llms.ollama import Ollama
 
-from . import (
+from app.engine import (
     config,
     caches,
     ollama_host,

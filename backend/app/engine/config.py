@@ -15,7 +15,7 @@ def get_data_path(data: str):
     return os.path.abspath(os.path.join(data_base_dir, data))
 
 
-def get_data_file(data: str, filename: str):
+def get_data_file_path(data: str, filename: str):
     return os.path.join(get_data_path(data), filename)
 
 

@@ -1,5 +1,5 @@
 import os, json
-from . import config
+from app.engine import config
 
 
 __default_data_config: dict = {

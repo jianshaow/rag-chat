@@ -1,7 +1,7 @@
 from llama_index.core.query_engine import BaseQueryEngine
 from llama_index.core.chat_engine.types import BaseChatEngine
 
-from . import indexer, models, caches, utils
+from app.engine import indexer, models, caches, utils
 
 
 def get_query_engine(data_name: str) -> BaseQueryEngine:

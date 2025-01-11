@@ -3,7 +3,7 @@ from llama_index.core import StorageContext, VectorStoreIndex, SimpleDirectoryRe
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.callbacks import CallbackManager
 
-from . import models, vector_db, data_store, events, caches
+from app.engine import models, vector_db, data_store, events, caches
 
 logger = logging.getLogger(__name__)
 
