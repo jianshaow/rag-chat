@@ -1,6 +1,7 @@
 import chromadb
 from chromadb import Collection
 from chromadb.api import ClientAPI
+from chromadb.api.types import Document, Metadata, Embedding
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core.vector_stores import VectorStoreQuery
 
@@ -57,44 +58,62 @@ def __delete_collection(collection_name):
 
 
 def __show_db():
-    import json
-
     collections = get_db_client().list_collections()
     print("collections size:", len(collections))
     print("=" * 80)
     for collection in collections:
-        print("collection name:", collection.get_model()["name"])
-        count = collection.count()
-        print("record count:", count)
-        result = collection.peek(1)
-        metadatas = result["metadatas"] if result["metadatas"] else []
-        print("metadatas size:", len(metadatas))
-        for i, metadatas in enumerate(metadatas):
-            print("+" * 80)
-            node_content_json = metadatas["_node_content"]
-            node_content = json.loads(
-                str(node_content_json) if node_content_json else ""
-            )
-            metadata = node_content["metadata"]
-            print("file name:", metadata["file_name"])
-            print(
-                "char index:",
-                node_content["start_char_idx"],
-                "->",
-                node_content["end_char_idx"],
-            )
-            embeddings = result["embeddings"]
-            embedding = embeddings[i] if embeddings is not None else None
-            if embedding is not None:
-                print("embeddings dimension:", len(embedding))
-                print(embedding[:4])
-        print("-" * 80)
+        __show_collection(collection)
+
+
+def __show_collection(collection: Collection):
+    print("collection name:", collection.name)
+    count = collection.count()
+    print("record count:", count)
+    result = collection.peek(1)
+    metadatas = result["metadatas"] if result["metadatas"] else []
+    embeddings = result["embeddings"] if result["embeddings"] is not None else []
+    documents = result["documents"] if result["documents"] else []
+    print("top", len(metadatas), "results")
+    for i, metadatas in enumerate(metadatas):
+        __show_metadata(metadatas)
+        __show_embeddings(embeddings[i])  # type: ignore
+        __show_document(documents[i])
+    print("-" * 80)
+
+
+def __show_metadata(metadata: Metadata):
+    import json
+
+    print("+" * 80)
+    node_content_json = metadata["_node_content"]
+    node_content = json.loads(str(node_content_json) if node_content_json else "")
+    node_metadata = node_content["metadata"]
+    print("file name:", node_metadata["file_name"])
+    print(
+        "char index:",
+        node_content["start_char_idx"],
+        "->",
+        node_content["end_char_idx"],
+    )
+
+
+def __show_document(document: Document):
+    import textwrap
+
+    print("+" * 80)
+    print("document:\n", textwrap.fill(document[:347] + "..."))
+
+
+def __show_embeddings(embedding: Embedding):
+    print("+" * 80)
+    print("embedding dimension:", len(embedding))
+    print(embedding[:4])
 
 
 if __name__ == "__main__":
     import sys
 
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         if sys.argv[1] == "cls":
             collection = len(sys.argv) == 3 and sys.argv[2] or None
             if collection:
@@ -109,11 +128,20 @@ if __name__ == "__main__":
                 __delete_collection(collection)
         elif sys.argv[1] == "get":
             data_name = len(sys.argv) >= 3 and sys.argv[2] or None
-            id = len(sys.argv) >= 4 and sys.argv[3] or None
-            vector_text = get_vector_text(data_name, [id] if id else [])
-            text = vector_text[0] if vector_text else ""
-            print(text)
+            if data_name is None:
+                print("provide the data_name")
+            else:
+                id = len(sys.argv) >= 4 and sys.argv[3] or None
+                if id is None:
+                    vector_store = get_vector_store(data_name)
+                    result = vector_store.query(VectorStoreQuery())
+                    for node in result.nodes if result.nodes else []:
+                        __show_document(node.get_content())
+                else:
+                    vector_text = get_vector_text(data_name, [id])
+                    text = vector_text[0] if vector_text else ""
+                    __show_document(text)
         else:
-            print("rm is only one supported cmd")
+            print("cls, rm, get are supported cmd")
     else:
         __show_db()

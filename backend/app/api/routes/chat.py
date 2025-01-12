@@ -34,5 +34,5 @@ def upload_file(request: FileUploadRequest) -> DocumentFile:
     try:
         return process_file(request.name, request.base64, request.params)
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
         raise HTTPException(status_code=500, detail="Error processing file")

@@ -136,6 +136,9 @@ def _add_documents_to_vector_store_index(
         index = VectorStoreIndex(nodes=nodes)
     else:
         index.insert_nodes(nodes=nodes)
+
     index.storage_context.persist(
-        persist_dir=os.environ.get("STORAGE_DIR", "storage/" + config.model_provider)
+        persist_dir=os.environ.get(
+            "STORAGE_DIR", os.path.join("storage", config.model_provider)
+        )
     )
