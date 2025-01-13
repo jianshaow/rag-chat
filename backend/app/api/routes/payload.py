@@ -118,6 +118,26 @@ class ChatMessages(BaseModel):
         ]
         return chat_messages
 
+    def get_chat_document_ids(self) -> List[str]:
+        document_ids: List[str] = []
+        uploaded_files = self.get_document_files()
+        for _file in uploaded_files:
+            refs = getattr(_file, "refs", None)
+            if refs is not None:
+                document_ids.extend(refs)
+        return list(set(document_ids))
+
+    def get_document_files(self) -> List[DocumentFile]:
+        uploaded_files = []
+        for message in self.messages:
+            if message.role == MessageRole.USER and message.annotations is not None:
+                for annotation in message.annotations:
+                    if annotation.type == "document_file" and isinstance(
+                        annotation.data, AnnotationFileData
+                    ):
+                        uploaded_files.extend(annotation.data.files)
+        return uploaded_files
+
     def __str__(self) -> str:
         return str(
             [
