@@ -165,19 +165,17 @@ class Setting extends Component<{}, SettingState> {
           <Link to='/legacy'>Return Home</Link>
         </div>
         <h1 className='title'>Settings</h1>
-        <div className='setting'>
-          <div>
-            <label className='config-lable'>Backend Base URL: </label>
-            <input
-              type='text'
-              value={beBaseUrl}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                this.setState({ beBaseUrl: e.target.value });
-              }}
-            />
-            <button onClick={this.handleSaveBeBaseUrl}>Save</button>
-            <button onClick={this.handleDetectBeBaseUrl}>Detect</button>
-          </div>
+        <div className='container'>
+          <label className='config-lable'>Backend Base URL: </label>
+          <input
+            type='text'
+            value={beBaseUrl}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              this.setState({ beBaseUrl: e.target.value });
+            }}
+          />
+          <button onClick={this.handleSaveBeBaseUrl}>Save</button>
+          <button onClick={this.handleDetectBeBaseUrl}>Detect</button>
         </div>
         <label className='title'>Backend</label>
         <div className='setting-container'>

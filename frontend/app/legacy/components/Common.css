@@ -25,6 +25,14 @@
   margin-right: 5px;
 }
 
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.67em 0;
+  line-height: 1.2;
+}
+
+
 input,
 textarea,
 select {
