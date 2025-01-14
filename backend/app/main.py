@@ -1,4 +1,4 @@
-import os, uvicorn
+import logging, os, uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.engine import config
 from app.api import frontend_base_url, files_url_prefix
 from app.api.routes import api_router, legacy_router
+
+logger = logging.getLogger(__name__)
 
 frontend = os.path.abspath(os.path.join("../frontend", "out"))
 frontend = os.environ.get("FRONTEND_DIR", frontend)
@@ -28,9 +30,16 @@ app.mount(
     StaticFiles(directory=config.get_data_base_path(), check_dir=False),
     name="data_base_dir",
 )
-app.mount(
-    "/", StaticFiles(directory=frontend, check_dir=False, html=True), name="frontend"
-)
+if os.path.exists(frontend):
+    app.mount(
+        "/",
+        StaticFiles(directory=frontend, check_dir=False, html=True),
+        name="frontend",
+    )
+else:
+    logger.info(
+        f"Frontend directory {frontend} does not exist. Please build the frontend first if needed."
+    )
 
 
 if __name__ == "__main__":
