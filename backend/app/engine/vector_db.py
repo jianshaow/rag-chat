@@ -101,7 +101,7 @@ def __show_document(document: Document):
     import textwrap
 
     print("+" * 80)
-    print("document:\n", textwrap.fill(document[:347] + "..."))
+    print(f"document:\n{textwrap.fill(document[:347])}...")
 
 
 def __show_embeddings(embedding: Embedding):
