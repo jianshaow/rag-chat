@@ -118,6 +118,14 @@ class ChatMessages(BaseModel):
         ]
         return chat_messages
 
+    @property
+    def chat_messages(self) -> list[ChatMessage]:
+        chat_messages = [
+            ChatMessage(role=message.role, content=message.content)
+            for message in self.messages
+        ]
+        return chat_messages
+
     def get_chat_document_ids(self) -> List[str]:
         document_ids: List[str] = []
         uploaded_files = self.get_document_files()

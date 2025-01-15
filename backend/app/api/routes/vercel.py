@@ -123,5 +123,5 @@ class VercelStreamingResponse(StreamingResponse):
     def next_questions(cls, messages: ChatMessages, response: str):
         return {
             "type": "suggested_questions",
-            "data": suggest_next_questions(messages, response),
+            "data": suggest_next_questions(messages.chat_messages, response),
         }

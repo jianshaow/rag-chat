@@ -1,19 +1,18 @@
 import re
+from typing import List
 from llama_index.core.prompts import PromptTemplate
-from llama_index.core.llms import LLM
+from llama_index.core.llms import LLM, ChatMessage, MessageRole
 
 from app.engine import models
 from app.api.services.prompts import next_question_prompt
-from app.api.routes.payload import ChatMessages
 
 
 def suggest_next_questions(
-    chat_history: ChatMessages,
-    response: str,
+    chat_history: List[ChatMessage], response: str
 ) -> list[str] | None:
     latest_user_message = None
-    for message in reversed(chat_history.messages):
-        if message.role == "user":
+    for message in reversed(chat_history):
+        if message.role == MessageRole.USER:
             latest_user_message = message
             break
     conversation: str = f"{latest_user_message}\n{response}"
