@@ -21,9 +21,13 @@ def get_db_client() -> ClientAPI:
 
 def get_collection(data_name: str) -> Collection:
     client = get_db_client()
-    escaped = models.get_embed_model_name().replace(":", "_").replace("/", "_")
-    collection_name = data_name + "__" + escaped
+    collection_name = _get_collection_name(data_name)
     return client.get_or_create_collection(collection_name)
+
+
+def _get_collection_name(data_name: str) -> str:
+    escaped = models.get_embed_model_name().replace(":", "_").replace("/", "_")
+    return data_name + "__" + escaped
 
 
 def get_vector_store(data_name: str) -> ChromaVectorStore:
@@ -43,18 +47,17 @@ def has_data(vector_store: ChromaVectorStore):
     return length != 0
 
 
-def __clear_collection(collection_name: str):
-    client = get_db_client()
-    collection = client.get_collection(collection_name)
+def __clear_data_vector(data_name: str):
+    collection = get_collection(data_name)
     ids = collection.peek()["ids"]
     while len(ids) > 0:
         collection.delete(ids)
         ids = collection.peek()["ids"]
 
 
-def __delete_collection(collection_name):
+def __delete_data_collection(data_name):
     client = get_db_client()
-    client.delete_collection(collection_name)
+    client.delete_collection(_get_collection_name(data_name))
 
 
 def __show_db():
@@ -115,17 +118,17 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         if sys.argv[1] == "cls":
-            collection = len(sys.argv) == 3 and sys.argv[2] or None
-            if collection:
-                __clear_collection(collection)
+            data_name = len(sys.argv) == 3 and sys.argv[2] or None
+            if data_name:
+                __clear_data_vector(data_name)
             else:
-                print("provide the collection name")
+                print("provide the data name")
         elif sys.argv[1] == "rm":
-            collection = len(sys.argv) == 3 and sys.argv[2] or None
-            if collection is None:
+            data_name = len(sys.argv) == 3 and sys.argv[2] or None
+            if data_name is None:
                 print("provide the collection name")
             else:
-                __delete_collection(collection)
+                __delete_data_collection(data_name)
         elif sys.argv[1] == "get":
             data_name = len(sys.argv) >= 3 and sys.argv[2] or None
             if data_name is None:
