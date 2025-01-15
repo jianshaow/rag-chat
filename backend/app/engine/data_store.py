@@ -3,11 +3,6 @@ from app.engine import config
 
 
 __default_data_config: dict = {
-    "uploaded": {
-        "data_dir": "uploaded",
-        "data_type": "text",
-        "default_question": "What is the document about?",
-    },
     "en_novel": {
         "data_dir": "en_novel",
         "data_type": "text",
@@ -17,6 +12,11 @@ __default_data_config: dict = {
         "data_dir": "zh_novel",
         "data_type": "text",
         "default_question": "地球发动机都安装在哪里？",
+    },
+    "uploaded": {
+        "data_dir": "uploaded",
+        "data_type": "text",
+        "default_question": "What is the document about?",
     },
 }
 
