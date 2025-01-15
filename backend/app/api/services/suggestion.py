@@ -3,8 +3,8 @@ from llama_index.core.prompts import PromptTemplate
 from llama_index.core.llms import LLM
 
 from app.engine import models
-from .prompts import next_question_prompt
-from ..routes.payload import ChatMessages
+from app.api.services.prompts import next_question_prompt
+from app.api.routes.payload import ChatMessages
 
 
 def suggest_next_questions(

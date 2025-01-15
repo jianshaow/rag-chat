@@ -5,9 +5,13 @@ from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 from fastapi.responses import StreamingResponse
 
 from app.engine import events
+from app.api import files_base_url
 from app.api.services.suggestion import suggest_next_questions
-from .frontend import extract_sources_data
-from .payload import ChatMessages
+from app.api.routes.payload import ChatMessages
+
+
+data_name = "en_novel"
+file_dir = f"{files_base_url}/{data_name}"
 
 
 class VercelStreamingResponse(StreamingResponse):
@@ -84,7 +88,7 @@ class VercelStreamingResponse(StreamingResponse):
     ):
         result = await response
 
-        sources_data = extract_sources_data(result)
+        sources_data = cls.extract_sources(result)
         yield cls.to_data(sources_data)
 
         final_response = ""
@@ -95,6 +99,25 @@ class VercelStreamingResponse(StreamingResponse):
         yield cls.to_data(cls.next_questions(messages, final_response))
 
         event_handler.is_done = True
+
+    @classmethod
+    def extract_sources(cls, response: StreamingAgentChatResponse):
+        sources_data = {
+            "type": "sources",
+            "data": {
+                "nodes": [
+                    {
+                        "id": node.node_id,
+                        "metadata": node.node.metadata,
+                        "score": node.score,
+                        "text": node.text,
+                        "url": f"{file_dir}/{(node.node.metadata.get("file_name") or "")}",
+                    }
+                    for node in response.source_nodes
+                ]
+            },
+        }
+        return sources_data
 
     @classmethod
     def next_questions(cls, messages: ChatMessages, response: str):
