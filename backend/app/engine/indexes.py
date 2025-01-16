@@ -1,5 +1,6 @@
-import logging, os
+import logging
 from llama_index.core import StorageContext, VectorStoreIndex, SimpleDirectoryReader
+from llama_index.core.readers.file.base import default_file_metadata_func
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.callbacks import CallbackManager
 
@@ -13,12 +14,10 @@ def index_data(embed_model: BaseEmbedding, data_dir: str) -> VectorStoreIndex:
     data_path = data_store.get_data_path(data_dir)
 
     def add_metadata(file_name: str) -> dict:
-        file_name = os.path.basename(file_name)
-        return {
-            "file_name": file_name,
-            "private": "false",
-            "data_dir": data_dir,
-        }
+        metadata = default_file_metadata_func(file_name)
+        metadata["private"] = "false"
+        metadata["data_dir"] = data_dir
+        return metadata
 
     documents = SimpleDirectoryReader(data_path, file_metadata=add_metadata).load_data(
         show_progress=True

@@ -92,6 +92,7 @@ def __show_metadata(metadata: Metadata):
     node_content = json.loads(str(node_content_json) if node_content_json else "")
     node_metadata = node_content["metadata"]
     print("file name:", node_metadata["file_name"])
+    print("data dir:", node_metadata["data_dir"])
     print(
         "char index:",
         node_content["start_char_idx"],

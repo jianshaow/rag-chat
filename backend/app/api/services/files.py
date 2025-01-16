@@ -3,9 +3,10 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 from pydantic import BaseModel, Field
 
-from llama_index.core.schema import Document
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 from llama_index.core.ingestion import IngestionPipeline
+from llama_index.core.readers.file.base import default_file_metadata_func
+from llama_index.core.schema import Document
 
 from app.api import files_base_url
 from app.engine import config, indexes, uploaded_data_dir
@@ -110,18 +111,15 @@ def _load_file_to_documents(file: DocumentFile) -> List[Document]:
     _, extension = os.path.splitext(file.name)
     extension = extension.lstrip(".")
 
-    def add_metadata(file_name: str) -> dict:
-        return {
-            "file_name": file.name,
-            "private": "true",
-            "data_dir": uploaded_data_dir,
-        }
-
     assert file.path, "File path is not set!"
 
     documents = SimpleDirectoryReader.load_file(
-        Path(file.path), file_metadata=add_metadata, file_extractor={}
+        Path(file.path), file_metadata=default_file_metadata_func, file_extractor={}
     )
+
+    for doc in documents:
+        doc.metadata["private"] = "true"
+        doc.metadata["data_dir"] = uploaded_data_dir
 
     return documents
 
