@@ -7,7 +7,7 @@ from app.engine import models
 from app.api.services.prompts import next_question_prompt
 
 
-def suggest_next_questions(
+async def suggest_next_questions(
     chat_history: List[ChatMessage], response: str
 ) -> list[str] | None:
     latest_user_message = None
@@ -19,9 +19,9 @@ def suggest_next_questions(
     prompt_template = PromptTemplate(next_question_prompt)
     prompt = prompt_template.format(conversation=conversation)
 
-    chat_model: LLM = models.get_chat_model()
-    output = chat_model.complete(prompt)
-    questions = _extract_questions(str(output))
+    chat_model = models.get_chat_model()
+    output = await chat_model.acomplete(prompt)
+    questions = _extract_questions(output.text)
 
     return questions
 

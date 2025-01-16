@@ -93,7 +93,7 @@ class VercelStreamingResponse(StreamingResponse):
             final_response += chunk
             yield cls.to_text(chunk)
 
-        yield cls.to_data(cls.next_questions(messages, final_response))
+        yield cls.to_data(await cls.next_questions(messages, final_response))
 
         event_handler.is_done = True
 
@@ -125,8 +125,8 @@ class VercelStreamingResponse(StreamingResponse):
         }
 
     @classmethod
-    def next_questions(cls, messages: ChatMessages, response: str):
+    async def next_questions(cls, messages: ChatMessages, response: str):
         return {
             "type": "suggested_questions",
-            "data": suggest_next_questions(messages.chat_messages, response),
+            "data": await suggest_next_questions(messages.chat_messages, response),
         }
