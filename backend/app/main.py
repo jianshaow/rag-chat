@@ -37,8 +37,9 @@ if os.path.exists(frontend):
         name="frontend",
     )
 else:
-    logger.info(
-        f"Frontend directory {frontend} does not exist. Please build the frontend first if needed."
+    logger.warning(
+        "Frontend directory %s does not exist. Please build the frontend first if needed.",
+        frontend,
     )
 
 
