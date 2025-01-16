@@ -1,17 +1,14 @@
 import json
 from aiostream import stream
-from typing import Awaitable
+from typing import Awaitable, List
 from llama_index.core.chat_engine.types import StreamingAgentChatResponse
+from llama_index.core.schema import NodeWithScore
 from fastapi.responses import StreamingResponse
 
 from app.engine import events
 from app.api import files_base_url
 from app.api.services.suggestion import suggest_next_questions
 from app.api.routes.payload import ChatMessages
-
-
-data_name = "en_novel"
-file_dir = f"{files_base_url}/{data_name}"
 
 
 class VercelStreamingResponse(StreamingResponse):
@@ -106,18 +103,26 @@ class VercelStreamingResponse(StreamingResponse):
             "type": "sources",
             "data": {
                 "nodes": [
-                    {
-                        "id": node.node_id,
-                        "metadata": node.node.metadata,
-                        "score": node.score,
-                        "text": node.text,
-                        "url": f"{file_dir}/{(node.node.metadata.get("file_name") or "")}",
-                    }
-                    for node in response.source_nodes
+                    cls._to_node_dict(source_node)
+                    for source_node in response.source_nodes
                 ]
             },
         }
         return sources_data
+
+    @classmethod
+    def _to_node_dict(cls, source_node: NodeWithScore):
+        data_dir = source_node.node.metadata.get("data_dir")
+        file_name = source_node.node.metadata.get("file_name")
+        url = f"{files_base_url}/{data_dir}/{file_name}"
+
+        return {
+            "id": source_node.node.node_id,
+            "metadata": source_node.node.metadata,
+            "score": source_node.score,
+            "text": source_node.text,
+            "url": url,
+        }
 
     @classmethod
     def next_questions(cls, messages: ChatMessages, response: str):

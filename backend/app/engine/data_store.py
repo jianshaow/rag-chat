@@ -36,9 +36,9 @@ def update_data_config(data_config: dict):
     __data_config = data_config
 
 
-def get_data_dir(data_name: str):
+def get_data_path(data_dir: str):
     data_dir = os.path.join(
-        config.data_base_dir, get_data_config()[data_name]["data_dir"]
+        config.data_base_dir, get_data_config()[data_dir]["data_dir"]
     )
     return data_dir
 

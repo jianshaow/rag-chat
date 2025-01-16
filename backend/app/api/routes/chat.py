@@ -2,9 +2,10 @@ import logging
 from fastapi import APIRouter, Request, HTTPException
 
 from app.engine import events, engines
+from app.api.routes.filters import generate_filters
 from app.api.services.files import DocumentFile, process_file
-from .vercel import VercelStreamingResponse
-from .payload import FileUploadRequest, ChatMessages
+from app.api.routes.vercel import VercelStreamingResponse
+from app.api.routes.payload import FileUploadRequest, ChatMessages
 
 logger = logging.getLogger(__name__)
 
@@ -17,11 +18,13 @@ def chat_config():
 
 
 @r.post("", tags=["chat"])
-async def chat(request: Request, chat_messages: ChatMessages):
+async def chat(chat_messages: ChatMessages):
     """
     Chat with agent based on data.
     """
-    engine = engines.get_chat_engine("en_novel")
+    doc_ids = chat_messages.get_chat_document_ids()
+    data, filters = generate_filters(doc_ids)
+    engine = engines.get_chat_engine(data, filters)
     response = engine.astream_chat(chat_messages.last_content, chat_messages.history)
     return VercelStreamingResponse(events.event_handler, chat_messages, response)
 

@@ -8,7 +8,7 @@ from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 from llama_index.core.ingestion import IngestionPipeline
 
 from app.api import files_base_url
-from app.engine import config, indexer
+from app.engine import config, indexes, uploaded_data_dir
 
 logger = logging.getLogger(__name__)
 
@@ -31,22 +31,18 @@ def process_file(
 ) -> DocumentFile:
     file_data, extension = _preprocess_base64_file(content)
     document_file = save_file(file_data, name)
-    logging.info("loading file to documents...")
     documents = _load_file_to_documents(document_file)
-    logging.info("adding documents to vector store index...")
-    index = indexer.get_index("uploaded")
+    index = indexes.get_index(uploaded_data_dir)
     _add_documents_to_vector_store_index(documents, index)
+    document_file.refs = [doc.doc_id for doc in documents]
     return document_file
 
 
 def save_file(
     content: bytes | str,
     file_name: str,
-    save_dir: Optional[str] = None,
+    save_dir: str = uploaded_data_dir,
 ) -> DocumentFile:
-    if save_dir is None:
-        save_dir = "uploaded"
-
     file_id = str(uuid.uuid4())
     name, extension = os.path.splitext(file_name)
     extension = extension.lstrip(".")
@@ -115,7 +111,11 @@ def _load_file_to_documents(file: DocumentFile) -> List[Document]:
     extension = extension.lstrip(".")
 
     def add_metadata(file_name: str) -> dict:
-        return {"file_name": file.name, "private": "true"}
+        return {
+            "file_name": file.name,
+            "private": "true",
+            "data_dir": uploaded_data_dir,
+        }
 
     assert file.path, "File path is not set!"
 
@@ -130,12 +130,12 @@ def _add_documents_to_vector_store_index(
     documents: List[Document], index: VectorStoreIndex
 ) -> None:
     pipeline = IngestionPipeline()
-    nodes = pipeline.run(documents=documents)
+    nodes = pipeline.run(documents=documents, show_progress=True)
 
     if index is None:
-        index = VectorStoreIndex(nodes=nodes)
+        index = VectorStoreIndex(nodes=nodes, show_progress=True)
     else:
-        index.insert_nodes(nodes=nodes)
+        index.insert_nodes(nodes=nodes, show_progress=True)
 
     index.storage_context.persist(
         persist_dir=os.environ.get(

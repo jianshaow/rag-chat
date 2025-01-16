@@ -136,10 +136,8 @@ if __name__ == "__main__":
             else:
                 id = len(sys.argv) >= 4 and sys.argv[3] or None
                 if id is None:
-                    vector_store = get_vector_store(data_name)
-                    result = vector_store.query(VectorStoreQuery())
-                    for node in result.nodes if result.nodes else []:
-                        __show_document(node.get_content())
+                    collection = get_collection(data_name)
+                    __show_collection(collection)
                 else:
                     vector_text = get_vector_text(data_name, [id])
                     text = vector_text[0] if vector_text else ""

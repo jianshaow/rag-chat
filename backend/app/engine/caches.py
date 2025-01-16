@@ -9,7 +9,7 @@ from llama_index.core.chat_engine.types import BaseChatEngine
 from app.engine import config
 
 
-T = TypeVar("T", BaseEmbedding, LLM, BaseQueryEngine, BaseChatEngine, VectorStoreIndex)
+T = TypeVar("T", BaseEmbedding, LLM, VectorStoreIndex)
 
 __cache: dict[str, dict[str, Any]] = {}
 
@@ -18,20 +18,12 @@ def get_embed_model(builder: Callable) -> BaseEmbedding:
     return get_from_cache(BaseEmbedding, builder)
 
 
-def get_query_engine(builder: Callable) -> BaseQueryEngine:
-    return get_from_cache(BaseQueryEngine, builder)
-
-
 def get_chat_model(builder: Callable) -> LLM:
     return get_from_cache(LLM, builder)
 
 
 def get_index(builder: Callable, key: str) -> VectorStoreIndex:
     return get_from_cache(VectorStoreIndex, builder, key=key)
-
-
-def get_chat_engine(builder: Callable) -> BaseChatEngine:
-    return get_from_cache(BaseChatEngine, builder)
 
 
 def get_from_cache(cls: Type[T], builder: Callable[..., T], key: str = "") -> T:
