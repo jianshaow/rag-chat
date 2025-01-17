@@ -3,26 +3,23 @@ from typing import Type, Any, Callable, TypeVar
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
 from llama_index.core import VectorStoreIndex
-from llama_index.core.query_engine import BaseQueryEngine
-from llama_index.core.chat_engine.types import BaseChatEngine
 
 from app.engine import config
-
 
 T = TypeVar("T", BaseEmbedding, LLM, VectorStoreIndex)
 
 __cache: dict[str, dict[str, Any]] = {}
 
 
-def get_embed_model(builder: Callable) -> BaseEmbedding:
+def get_embed_model(builder: Callable[..., BaseEmbedding]) -> BaseEmbedding:
     return get_from_cache(BaseEmbedding, builder)
 
 
-def get_chat_model(builder: Callable) -> LLM:
+def get_chat_model(builder: Callable[..., LLM]) -> LLM:
     return get_from_cache(LLM, builder)
 
 
-def get_index(builder: Callable, key: str) -> VectorStoreIndex:
+def get_index(builder: Callable[..., VectorStoreIndex], key: str) -> VectorStoreIndex:
     return get_from_cache(VectorStoreIndex, builder, key=key)
 
 

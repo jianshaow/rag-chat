@@ -1,6 +1,13 @@
 import os
 
-from app.engine import data_base_dir, data_dir, chroma_base_dir, model_provider
+from app.engine import (
+    data_base_dir,
+    data_dir,
+    uploaded_data_dir,
+    storage_base_dir,
+    chroma_base_dir,
+    model_provider,
+)
 
 
 def get_db_path():
@@ -11,8 +18,20 @@ def get_data_path(data: str = data_dir):
     return os.path.join(data_base_dir, data)
 
 
-def get_data_file_path(data: str, filename: str):
-    return os.path.join(get_data_path(data), filename)
+def get_uploaded_data_path():
+    return os.path.join(data_base_dir, uploaded_data_dir)
+
+
+def get_data_file_path(data_dir: str, filename: str):
+    return os.path.join(get_data_path(data_dir), filename)
+
+
+def get_uploaded_data_file_path(filename: str):
+    return os.path.join(get_uploaded_data_path(), filename)
+
+
+def get_storage_path() -> str:
+    return os.path.join(storage_base_dir, model_provider)
 
 
 def get_config():

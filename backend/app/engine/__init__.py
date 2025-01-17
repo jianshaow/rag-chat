@@ -3,11 +3,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+model_provider = os.getenv("MODEL_PROVIDER", "ollama")
 data_base_dir = os.getenv("DATA_BASE_DIR", "data")
 data_dir = os.getenv("DATA_DIR", "en_novel")
+
 uploaded_data_dir = os.getenv("UPLOADED_DATA_DIR", "uploaded")
 chroma_base_dir = os.getenv("CHROMA_BASE_DIR", "chroma")
-model_provider = os.getenv("MODEL_PROVIDER", "ollama")
+storage_base_dir = os.getenv("STORAGE_BASE_DIR", "storage")
 
 ollama_host = os.getenv("OLLAMA_HOST", "localhost")
 ollama_base_url = os.getenv("OLLAMA_BASE_URL", f"http://{ollama_host}:11434")

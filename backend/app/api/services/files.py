@@ -5,11 +5,12 @@ from pydantic import BaseModel, Field
 
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 from llama_index.core.ingestion import IngestionPipeline
+from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.readers.file.base import default_file_metadata_func
 from llama_index.core.schema import Document
 
 from app.api import files_base_url
-from app.engine import config, indexes, utils, uploaded_data_dir
+from app.engine import config, indexes, models, utils
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +31,10 @@ class DocumentFile(BaseModel):
 def process_file(
     name: str, content: str, params: Optional[dict] = None
 ) -> DocumentFile:
-    file_data, extension = _preprocess_base64_file(content)
+    file_data, _ = _preprocess_base64_file(content)
     document_file = save_file(file_data, name)
     documents = _load_file_to_documents(document_file)
-    index = indexes.get_index(uploaded_data_dir)
+    index = indexes.get_index(config.uploaded_data_dir)
     _add_documents_to_vector_store_index(documents, index)
     document_file.refs = [doc.doc_id for doc in documents]
     return document_file
@@ -42,7 +43,6 @@ def process_file(
 def save_file(
     content: bytes | str,
     file_name: str,
-    save_dir: str = uploaded_data_dir,
 ) -> DocumentFile:
     file_id = str(uuid.uuid4())
     name, extension = os.path.splitext(file_name)
@@ -52,7 +52,7 @@ def save_file(
         raise ValueError("File is not supported!")
     new_file_name = f"{sanitized_name}_{file_id}.{extension}"
 
-    file_path = os.path.join(config.data_base_dir, save_dir, new_file_name)
+    file_path = config.get_uploaded_data_file_path(new_file_name)
 
     if isinstance(content, str):
         content = content.encode()
@@ -77,7 +77,7 @@ def save_file(
 
     file_url = os.path.join(
         files_base_url,
-        save_dir,
+        config.uploaded_data_dir,
         new_file_name,
     )
 
@@ -120,7 +120,7 @@ def _load_file_to_documents(file: DocumentFile) -> List[Document]:
 
     for doc in documents:
         doc.metadata["private"] = "true"
-        doc.metadata["data_dir"] = uploaded_data_dir
+        doc.metadata["data_dir"] = config.uploaded_data_dir
 
     return documents
 
@@ -128,8 +128,10 @@ def _load_file_to_documents(file: DocumentFile) -> List[Document]:
 def _add_documents_to_vector_store_index(
     documents: List[Document], index: VectorStoreIndex
 ) -> None:
-    utils.log_model_info(uploaded_data_dir)
-    pipeline = IngestionPipeline()
+    utils.log_model_info(config.uploaded_data_dir)
+    pipeline = IngestionPipeline(
+        transformations=[SentenceSplitter(), models.get_embed_model()],
+    )
     nodes = pipeline.run(documents=documents, show_progress=True)
 
     if index is None:
@@ -137,8 +139,4 @@ def _add_documents_to_vector_store_index(
     else:
         index.insert_nodes(nodes=nodes, show_progress=True)
 
-    index.storage_context.persist(
-        persist_dir=os.environ.get(
-            "STORAGE_DIR", os.path.join("storage", config.model_provider)
-        )
-    )
+    index.storage_context.persist(config.get_storage_path())

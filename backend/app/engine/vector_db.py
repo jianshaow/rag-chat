@@ -2,8 +2,6 @@ import chromadb
 from chromadb import Collection
 from chromadb.api import ClientAPI
 from chromadb.api.types import Document, Metadata, Embedding
-from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.core.vector_stores import VectorStoreQuery
 
 from app.engine import config, models
 
@@ -30,21 +28,10 @@ def _get_collection_name(data_name: str) -> str:
     return data_name + "__" + escaped
 
 
-def get_vector_store(data_name: str) -> ChromaVectorStore:
-    chroma_collection = get_collection(data_name)
-    return ChromaVectorStore(chroma_collection=chroma_collection)
-
-
-def get_vector_text(data_name, ids: list[str]):
+def get_doc_text(data_name, ids: list[str]):
     collection = get_collection(data_name)
     result = collection.get(ids)
     return result["documents"]
-
-
-def has_data(vector_store: ChromaVectorStore):
-    ids = vector_store.query(VectorStoreQuery()).ids
-    length = len(ids) if ids else 0
-    return length != 0
 
 
 def __clear_data_vector(data_name: str):
@@ -140,7 +127,7 @@ if __name__ == "__main__":
                     collection = get_collection(data_name)
                     __show_collection(collection)
                 else:
-                    vector_text = get_vector_text(data_name, [id])
+                    vector_text = get_doc_text(data_name, [id])
                     text = vector_text[0] if vector_text else ""
                     __show_document(text)
         else:

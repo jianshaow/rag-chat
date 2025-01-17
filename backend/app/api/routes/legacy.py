@@ -23,7 +23,7 @@ async def query_index(data: str, request: Request):
 
 @r.get("/{data}/get/{id}", tags=["legacy"])
 def get_data_text(data, id):
-    vector_texts = vector_db.get_vector_text(data, [id])
+    vector_texts = vector_db.get_doc_text(data, [id])
     text = vector_texts[0] if vector_texts else ""
     return {"text": text}
 
@@ -36,7 +36,7 @@ def download_file(data, filename):
 
 @r.get("/data", tags=["legacy"])
 def query_data():
-    return data_store.get_data_names()
+    return data_store.get_data_dirs()
 
 
 @r.get("/data_config", tags=["legacy"])

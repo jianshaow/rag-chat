@@ -43,15 +43,11 @@ def get_data_path(data_dir: str):
     return data_dir
 
 
-def get_data_type(data_name):
-    return get_data_config()[data_name]["data_type"]
-
-
 def get_default_question(data_name):
     return get_data_config()[data_name]["default_question"]
 
 
-def get_data_names():
+def get_data_dirs():
     return list(get_data_config().keys())
 
 
