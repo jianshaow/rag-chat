@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 data_base_dir = os.getenv("DATA_BASE_DIR", "data")
+data_dir = os.getenv("DATA_DIR", "en_novel")
 uploaded_data_dir = os.getenv("UPLOADED_DATA_DIR", "uploaded")
 chroma_base_dir = os.getenv("CHROMA_BASE_DIR", "chroma")
 model_provider = os.getenv("MODEL_PROVIDER", "ollama")

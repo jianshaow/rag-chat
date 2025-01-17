@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 def index_data(embed_model: BaseEmbedding, data_dir: str) -> VectorStoreIndex:
+    logger.info("Indexing data dir '%s'...", data_dir)
+
     vector_store = vector_db.get_vector_store(data_dir)
     data_path = data_store.get_data_path(data_dir)
 
@@ -19,9 +21,10 @@ def index_data(embed_model: BaseEmbedding, data_dir: str) -> VectorStoreIndex:
         metadata["data_dir"] = data_dir
         return metadata
 
-    documents = SimpleDirectoryReader(data_path, file_metadata=add_metadata).load_data(
-        show_progress=True
+    reader = SimpleDirectoryReader(
+        data_path, filename_as_id=True, file_metadata=add_metadata
     )
+    documents = reader.load_data(show_progress=True)
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
     callback_manager = CallbackManager([events.event_handler])
     logging.info("index data dir '%s' into vector store...", data_dir)

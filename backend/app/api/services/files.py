@@ -9,7 +9,7 @@ from llama_index.core.readers.file.base import default_file_metadata_func
 from llama_index.core.schema import Document
 
 from app.api import files_base_url
-from app.engine import config, indexes, uploaded_data_dir
+from app.engine import config, indexes, utils, uploaded_data_dir
 
 logger = logging.getLogger(__name__)
 
@@ -52,9 +52,7 @@ def save_file(
         raise ValueError("File is not supported!")
     new_file_name = f"{sanitized_name}_{file_id}.{extension}"
 
-    file_path = os.path.join(
-        os.path.join(config.get_data_base_path(), save_dir), new_file_name
-    )
+    file_path = os.path.join(config.data_base_dir, save_dir, new_file_name)
 
     if isinstance(content, str):
         content = content.encode()
@@ -114,7 +112,10 @@ def _load_file_to_documents(file: DocumentFile) -> List[Document]:
     assert file.path, "File path is not set!"
 
     documents = SimpleDirectoryReader.load_file(
-        Path(file.path), file_metadata=default_file_metadata_func, file_extractor={}
+        Path(file.path),
+        filename_as_id=True,
+        file_metadata=default_file_metadata_func,
+        file_extractor={},
     )
 
     for doc in documents:
@@ -127,6 +128,7 @@ def _load_file_to_documents(file: DocumentFile) -> List[Document]:
 def _add_documents_to_vector_store_index(
     documents: List[Document], index: VectorStoreIndex
 ) -> None:
+    utils.log_model_info(uploaded_data_dir)
     pipeline = IngestionPipeline()
     nodes = pipeline.run(documents=documents, show_progress=True)
 
