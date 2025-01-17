@@ -43,8 +43,8 @@ def get_data_path(data_dir: str):
     return data_dir
 
 
-def get_default_question(data_name):
-    return get_data_config()[data_name]["default_question"]
+def get_default_question(data_dir):
+    return get_data_config()[data_dir]["default_question"]
 
 
 def get_data_dirs():

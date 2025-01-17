@@ -2,7 +2,7 @@ from llama_index.core.base.response.schema import Response
 from fastapi import APIRouter, Request, status
 from fastapi.responses import FileResponse
 
-from app.engine import vector_db, data_store, config, models, engines, caches
+from app.engine import data_store, config, models, engines, caches, vectordb
 
 legacy_router = r = APIRouter()
 
@@ -23,7 +23,7 @@ async def query_index(data: str, request: Request):
 
 @r.get("/{data}/get/{id}", tags=["legacy"])
 def get_data_text(data, id):
-    vector_texts = vector_db.get_doc_text(data, [id])
+    vector_texts = vectordb.get_doc_text(data, [id])
     text = vector_texts[0] if vector_texts else ""
     return {"text": text}
 

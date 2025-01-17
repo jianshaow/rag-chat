@@ -54,15 +54,30 @@ def get_index(data_dir: str) -> VectorStoreIndex:
     return caches.get_index(new_index, index_key)
 
 
-if __name__ == "__main__":
-    import sys
-
-    data_name = len(sys.argv) >= 2 and sys.argv[1] or data_store.get_data_dirs()[0]
-    question = (
-        len(sys.argv) >= 3 and sys.argv[2] or data_store.get_default_question(data_name)
-    )
-    retriever = get_index(data_name).as_retriever()
+def __retrieve_data(data_dir: str):
+    question = data_store.get_default_question(data_dir)
+    retriever = get_index(data_dir).as_retriever()
     nodes = retriever.retrieve(question)
     for node in nodes:
         print("-" * 80)
         print(node)
+
+
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "index":
+            data_dir = len(sys.argv) == 3 and sys.argv[2] or None
+            if data_dir:
+                index_data(data_dir)
+            else:
+                print("Data directory not provided.")
+        elif sys.argv[1] == "retrieve":
+            data_dir = len(sys.argv) == 3 and sys.argv[2] or None
+            if data_dir:
+                __retrieve_data(data_dir)
+            else:
+                print("Data directory not provided.")
+    else:
+        __retrieve_data(data_store.get_data_dirs()[0])
