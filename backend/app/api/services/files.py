@@ -1,16 +1,12 @@
 import os, logging, uuid, re, mimetypes, base64
-from pathlib import Path
 from typing import List, Optional, Tuple
 from pydantic import BaseModel, Field
 
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
-from llama_index.core.ingestion import IngestionPipeline
-from llama_index.core.node_parser import SentenceSplitter
-from llama_index.core.readers.file.base import default_file_metadata_func
+from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import Document
 
 from app.api import files_base_url
-from app.engine import config, indexes, models, utils
+from app.engine import config, indexes, loaders, models, utils
 
 logger = logging.getLogger(__name__)
 
@@ -106,22 +102,11 @@ def _preprocess_base64_file(base64_content: str) -> Tuple[bytes, str | None]:
 
 
 def _load_file_to_documents(file: DocumentFile) -> List[Document]:
-    _, extension = os.path.splitext(file.name)
-    extension = extension.lstrip(".")
-
     assert file.path, "File path is not set!"
-
-    documents = SimpleDirectoryReader.load_file(
-        Path(file.path),
-        filename_as_id=True,
-        file_metadata=default_file_metadata_func,
-        file_extractor={},
-    )
-
+    documents = loaders.load_doc_from_file(file.path)
     for doc in documents:
         doc.metadata["private"] = "true"
         doc.metadata["data_dir"] = config.uploaded_data_dir
-
     return documents
 
 
@@ -129,14 +114,10 @@ def _add_documents_to_vector_store_index(
     documents: List[Document], index: VectorStoreIndex
 ) -> None:
     utils.log_model_info(config.uploaded_data_dir)
-    pipeline = IngestionPipeline(
-        transformations=[SentenceSplitter(), models.get_embed_model()],
-    )
-    nodes = pipeline.run(documents=documents, show_progress=True)
+
+    nodes = indexes.ingest(documents, config.uploaded_data_dir)
 
     if index is None:
         index = VectorStoreIndex(nodes=nodes, show_progress=True)
     else:
         index.insert_nodes(nodes=nodes, show_progress=True)
-
-    index.storage_context.persist(config.get_storage_path())

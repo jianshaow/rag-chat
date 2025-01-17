@@ -1,29 +1,37 @@
 from typing import List
+
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core.schema import Document
+from llama_index.core.ingestion import IngestionPipeline, DocstoreStrategy
+from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core import StorageContext, VectorStoreIndex
-
 from llama_index.core.callbacks import CallbackManager
 
 from app.engine import models, stores, loaders, data_store, events, caches, config
 
 
-def index_docs(
-    documents: List[Document], vector_store: ChromaVectorStore
-) -> VectorStoreIndex:
-    embed_model = models.get_embed_model()
-    storage_context = StorageContext.from_defaults(vector_store=vector_store)
-    callback_manager = CallbackManager([events.event_handler])
-    index = VectorStoreIndex.from_documents(
-        documents,
-        storage_context,
-        embed_model=embed_model,
-        callback_manager=callback_manager,
-        show_progress=True,
+def ingest(documents: List[Document], data_dir: str):
+    vector_store = stores.get_vector_store(data_dir)
+    docstore = stores.get_docstore(config.get_storage_path())
+    pipeline = IngestionPipeline(
+        transformations=[SentenceSplitter(), models.get_embed_model()],
+        docstore=docstore,
+        vector_store=vector_store,
+        docstore_strategy=DocstoreStrategy.UPSERTS_AND_DELETE,
     )
+    nodes = pipeline.run(documents=documents, show_progress=True)
+    StorageContext.from_defaults(docstore=docstore, vector_store=vector_store).persist(
+        config.get_storage_path()
+    )
+    return nodes
 
-    storage_context.persist(config.get_storage_path())
-    return index
+
+def index_data(data_dir: str):
+    documents = loaders.load_doc_from_dir(data_dir)
+    for doc in documents:
+        doc.metadata["private"] = "falses"
+        doc.metadata["data_dir"] = data_dir
+    return ingest(documents, data_dir)
 
 
 def load_index(vector_store: ChromaVectorStore) -> VectorStoreIndex:
@@ -41,15 +49,8 @@ def load_index(vector_store: ChromaVectorStore) -> VectorStoreIndex:
 def get_index(data_dir: str) -> VectorStoreIndex:
     embed_model_name = models.get_embed_model_name()
     index_key = f"{data_dir}@{embed_model_name}"
-
     vector_store = stores.get_vector_store(data_dir)
-
-    if stores.has_data(vector_store):
-        new_index = lambda: load_index(vector_store)
-    else:
-        documents = loaders.load_documents(data_dir)
-        new_index = lambda: index_docs(documents, vector_store)
-
+    new_index = lambda: load_index(vector_store)
     return caches.get_index(new_index, index_key)
 
 
