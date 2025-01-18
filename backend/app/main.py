@@ -27,7 +27,7 @@ app.include_router(legacy_router, prefix="/legacy")
 
 app.mount(
     files_url_prefix,
-    StaticFiles(directory=config.data_base_dir, check_dir=False),
+    StaticFiles(directory=config.get_data_base_dir(), check_dir=False),
     name="data_base_dir",
 )
 if os.path.exists(frontend):

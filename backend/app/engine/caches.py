@@ -34,7 +34,7 @@ def get_from_cache(cls: Type[T], builder: Callable[..., T], key: str = "") -> T:
 
 
 def get_cache_bucket() -> dict[str, Any]:
-    model_provider = config.model_provider
+    model_provider = config.get_model_provider()
     cache_bucket = __cache.get(model_provider)
     if cache_bucket is None:
         __cache[model_provider] = cache_bucket = {}

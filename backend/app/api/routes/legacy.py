@@ -21,9 +21,9 @@ async def query_index(data: str, request: Request):
     return {"text": str(response), "sources": sources}
 
 
-@r.get("/{data}/get/{id}", tags=["legacy"])
-def get_data_text(data, id):
-    vector_texts = vectordb.get_doc_text(data, [id])
+@r.get("/{data}/get/{node_id}", tags=["legacy"])
+def get_data_text(data, node_id):
+    vector_texts = vectordb.get_doc_text(data, [node_id])
     text = vector_texts[0] if vector_texts else ""
     return {"text": text}
 

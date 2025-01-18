@@ -34,7 +34,6 @@ class AnnotationFileData(BaseModel):
             if file.url is not None:
                 return f"File URL: {file.url}\n"
             else:
-                # Construct url from file name
                 return f"File URL (instruction: do not update this file URL yourself): {url_prefix}/output/uploaded/{file.name}\n"
         else:
             print(

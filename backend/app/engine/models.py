@@ -14,14 +14,14 @@ from llama_index.llms.ollama import Ollama
 from app.engine import (
     config,
     caches,
-    ollama_host,
-    ollama_base_url,
-    ollama_embed_model,
-    ollama_chat_model,
-    openai_embed_model,
-    openai_chat_model,
-    gemini_embed_model,
-    gemini_chat_model,
+    OLLAMA_HOST,
+    OLLAMA_BASE_URL,
+    OLLAMA_EMBED_MODEL,
+    OLLAMA_CHAT_MODEL,
+    OPENAI_EMBED_MODEL,
+    OPENAI_CHAT_MODEL,
+    GEMINI_EMBED_MODEL,
+    GEMINI_CHAT_MODEL,
 )
 
 
@@ -83,7 +83,7 @@ def gemini_chat_models() -> list[str]:
 
 
 def ollama_embed_models() -> list[str | None]:
-    client = ollama.Client(ollama_host)
+    client = ollama.Client(OLLAMA_HOST)
     response = client.list()
     return [
         model.model
@@ -93,7 +93,7 @@ def ollama_embed_models() -> list[str | None]:
 
 
 def ollama_chat_models() -> list[str | None]:
-    client = ollama.Client(ollama_host)
+    client = ollama.Client(OLLAMA_HOST)
     response = client.list()
     return [
         model.model
@@ -110,24 +110,24 @@ __model_specs = {
     "openai": {
         "embed": {
             "model_class": OpenAIEmbedding,
-            "model_args": {"model": openai_embed_model},
+            "model_args": {"model": OPENAI_EMBED_MODEL},
             "models_func": openai_embed_models,
         },
         "chat": {
             "model_class": OpenAI,
-            "model_args": {"model": openai_chat_model},
+            "model_args": {"model": OPENAI_CHAT_MODEL},
             "models_func": openai_chat_models,
         },
     },
     "gemini": {
         "embed": {
             "model_class": GeminiEmbedding,
-            "model_args": {"model": gemini_embed_model, "transport": "rest"},
+            "model_args": {"model": GEMINI_EMBED_MODEL, "transport": "rest"},
             "models_func": gemini_embed_models,
         },
         "chat": {
             "model_class": Gemini,
-            "model_args": {"model": gemini_chat_model, "transport": "rest"},
+            "model_args": {"model": GEMINI_CHAT_MODEL, "transport": "rest"},
             "models_func": gemini_chat_models,
         },
     },
@@ -135,16 +135,16 @@ __model_specs = {
         "embed": {
             "model_class": NormOllamaEmbedding,
             "model_args": {
-                "base_url": ollama_base_url,
-                "model_name": ollama_embed_model,
+                "base_url": OLLAMA_BASE_URL,
+                "model_name": OLLAMA_EMBED_MODEL,
             },
             "models_func": ollama_embed_models,
         },
         "chat": {
             "model_class": Ollama,
             "model_args": {
-                "base_url": ollama_base_url,
-                "model": ollama_chat_model,
+                "base_url": OLLAMA_BASE_URL,
+                "model": OLLAMA_CHAT_MODEL,
             },
             "models_func": ollama_chat_models,
         },
@@ -163,7 +163,7 @@ __model_lists: dict[str, dict[str, list[str]]] = {"embed": {}, "chat": {}}
 
 
 def get_models(model_type: str, reload: bool) -> list[str]:
-    model_provider = config.model_provider
+    model_provider = config.get_model_provider()
     model_list = __model_lists[model_type].get(model_provider)
     if model_list is None or reload:
         model_spec = __model_specs.get(model_provider)
@@ -179,11 +179,11 @@ def get_models(model_type: str, reload: bool) -> list[str]:
 
 
 def get_embed_model_name() -> str:
-    return get_model_config(config.model_provider)["embed_model"]
+    return get_model_config(config.get_model_provider())["embed_model"]
 
 
 def get_chat_model_name() -> str:
-    return get_model_config(config.model_provider)["chat_model"]
+    return get_model_config(config.get_model_provider())["chat_model"]
 
 
 def get_model_config(model_provider: str) -> dict:
@@ -217,7 +217,7 @@ def update_model_config(model_provider: str, conf: dict):
 
 
 def new_model(model_type: str) -> BaseEmbedding | LLM:
-    model_provider = config.model_provider
+    model_provider = config.get_model_provider()
     model_spec = __model_specs.get(model_provider)
     if model_spec:
         model_class = model_spec[model_type]["model_class"]

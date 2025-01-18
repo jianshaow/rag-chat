@@ -6,7 +6,7 @@ from llama_index.core.vector_stores.types import (
     FilterCondition,
 )
 
-from app.engine import uploaded_data_dir, data_dir
+from app.engine import UPLOADED_DATA_DIR, config
 
 
 def generate_filters(doc_ids: List[str]):
@@ -35,4 +35,4 @@ def generate_filters(doc_ids: List[str]):
             ]
         )
 
-    return data_dir if len(doc_ids) == 0 else uploaded_data_dir, filters
+    return (config.get_data_dir() if len(doc_ids) == 0 else UPLOADED_DATA_DIR), filters

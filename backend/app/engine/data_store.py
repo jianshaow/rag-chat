@@ -37,10 +37,7 @@ def update_data_config(data_config: dict):
 
 
 def get_data_path(data_dir: str):
-    data_dir = os.path.join(
-        config.data_base_dir, get_data_config()[data_dir]["data_dir"]
-    )
-    return data_dir
+    return config.get_data_path(data_dir)
 
 
 def get_default_question(data_dir):

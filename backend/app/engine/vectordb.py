@@ -9,11 +9,11 @@ __db_clients: dict[str, ClientAPI] = {}
 
 
 def get_db_client() -> ClientAPI:
-    client = __db_clients.get(config.model_provider)
+    client = __db_clients.get(config.get_model_provider())
     if client is None:
         path = config.get_db_path()
         client = chromadb.PersistentClient(path)
-        __db_clients[config.model_provider] = client
+        __db_clients[config.get_model_provider()] = client
     return client
 
 
