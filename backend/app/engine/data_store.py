@@ -21,9 +21,9 @@ __default_data_config: dict = {
 }
 
 __data_config: dict[str, dict[str, str]] = __default_data_config
-data_config = os.environ.get("DATA_CONFIG")
-if data_config and os.path.isfile(data_config):
-    with open(data_config, "r") as file:
+data_config_file = os.environ.get("DATA_CONFIG")
+if data_config_file and os.path.isfile(data_config_file):
+    with open(data_config_file, "r", encoding="utf-8") as file:
         __data_config = json.load(file)
 
 

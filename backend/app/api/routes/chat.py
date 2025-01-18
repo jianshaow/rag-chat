@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, HTTPException
 
 from app.engine import events, engines
 from app.api.routes.filters import generate_filters
@@ -38,4 +38,4 @@ def upload_file(request: FileUploadRequest) -> DocumentFile:
         return process_file(request.name, request.base64, request.params)
     except Exception as e:
         logger.error(e, exc_info=True)
-        raise HTTPException(status_code=500, detail="Error processing file")
+        raise HTTPException(status_code=500, detail="Error processing file") from e

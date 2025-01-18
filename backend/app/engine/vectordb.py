@@ -17,34 +17,34 @@ def get_db_client() -> ClientAPI:
     return client
 
 
-def get_collection(data_name: str) -> Collection:
+def get_collection(data_dir: str) -> Collection:
     client = get_db_client()
-    collection_name = _get_collection_name(data_name)
+    collection_name = _get_collection_name(data_dir)
     return client.get_or_create_collection(collection_name)
 
 
-def _get_collection_name(data_name: str) -> str:
+def _get_collection_name(data_dir: str) -> str:
     escaped = models.get_embed_model_name().replace(":", "_").replace("/", "_")
-    return data_name + "__" + escaped
+    return data_dir + "__" + escaped
 
 
-def get_doc_text(data_name, ids: list[str]):
-    collection = get_collection(data_name)
+def get_doc_text(data_dir, ids: list[str]):
+    collection = get_collection(data_dir)
     result = collection.get(ids)
     return result["documents"]
 
 
-def __clear_data_vector(data_name: str):
-    collection = get_collection(data_name)
+def __clear_data_vector(data_dir: str):
+    collection = get_collection(data_dir)
     ids = collection.peek()["ids"]
     while len(ids) > 0:
         collection.delete(ids)
         ids = collection.peek()["ids"]
 
 
-def __delete_data_collection(data_name):
+def __delete_data_collection(data_dir):
     client = get_db_client()
-    client.delete_collection(_get_collection_name(data_name))
+    client.delete_collection(_get_collection_name(data_dir))
 
 
 def __show_db():

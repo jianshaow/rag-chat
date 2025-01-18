@@ -1,7 +1,7 @@
 import re
 from typing import List
 from llama_index.core.prompts import PromptTemplate
-from llama_index.core.llms import LLM, ChatMessage, MessageRole
+from llama_index.core.llms import ChatMessage, MessageRole
 
 from app.engine import models
 from app.api.services.prompts import next_question_prompt

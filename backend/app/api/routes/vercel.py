@@ -1,6 +1,7 @@
 import json
+
+from typing import Awaitable
 from aiostream import stream
-from typing import Awaitable, List
 from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 from llama_index.core.schema import NodeWithScore
 from fastapi.responses import StreamingResponse
