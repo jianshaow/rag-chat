@@ -55,7 +55,7 @@ def save_file(
 
     try:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, "wb") as file:
+        with open(file_path, "wb", encoding="utf-8") as file:
             file.write(content)
     except PermissionError as e:
         logger.error("Permission denied when writing to file %s: %s", file_path, e)

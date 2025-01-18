@@ -1,4 +1,5 @@
-import logging, os, uvicorn
+import os, logging, logging.config
+import yaml, uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,6 +7,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.engine import config
 from app.api import frontend_base_url, files_url_prefix
 from app.api.routes import api_router, legacy_router
+
+with open('logging.yaml', 'r', encoding="utf-8") as file:
+    conf = yaml.safe_load(file)
+logging.config.dictConfig(conf)
 
 logger = logging.getLogger(__name__)
 

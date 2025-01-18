@@ -27,7 +27,7 @@ def get_config() -> dict:
 
 
 def update_config(conf: dict):
-    __config.__dict__ = conf
+    __config.__dict__.update(conf)
 
 
 def get_model_provider():
