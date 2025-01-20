@@ -197,6 +197,18 @@ class Setting extends Component<{}, SettingState> {
         <div className='setting-container'>
           <div className='setting'>
             <div>
+              <label className='config-lable'>Chroma Base Dir: </label>
+              <input
+                type='text'
+                value={chromaBaseDir}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  this.setState({ chromaBaseDir: e.target.value });
+                }}
+              />
+            </div>
+          </div>
+          <div className='setting'>
+            <div>
               <label className='config-lable'>Data Base Dir: </label>
               <input
                 type='text'
@@ -220,18 +232,6 @@ class Setting extends Component<{}, SettingState> {
           </div>
           <div className='setting'>
             <div>
-              <label className='config-lable'>Chroma Base Dir: </label>
-              <input
-                type='text'
-                value={chromaBaseDir}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  this.setState({ chromaBaseDir: e.target.value });
-                }}
-              />
-            </div>
-          </div>
-          <div className='setting'>
-            <div>
               <label className='config-lable'>Model Provider: </label>
               <select value={modelProvider} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                 this.setState({ modelProvider: e.target.value })
@@ -247,7 +247,7 @@ class Setting extends Component<{}, SettingState> {
             </div>
           </div>
         </div>
-        <label className='title'>API Config</label>
+        <label className='title'>Model Config</label>
         <div className='setting-container'>
           <div className='setting'>
             <div>
