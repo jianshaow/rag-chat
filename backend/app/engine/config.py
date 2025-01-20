@@ -3,19 +3,17 @@ import os
 from pydantic import BaseModel
 
 from app.engine import (
+    CHROMA_BASE_DIR,
     DATA_BASE_DIR,
     DATA_DIR,
-    UPLOADED_DATA_DIR,
-    STORAGE_BASE_DIR,
-    CHROMA_BASE_DIR,
     MODEL_PROVIDER,
+    STORAGE_BASE_DIR,
+    UPLOADED_DATA_DIR,
 )
 
 
 class Config(BaseModel):
-    data_base_dir: str = DATA_BASE_DIR
     data_dir: str = DATA_DIR
-    chroma_base_dir: str = CHROMA_BASE_DIR
     model_provider: str = MODEL_PROVIDER
 
 
@@ -35,7 +33,7 @@ def get_model_provider():
 
 
 def get_data_base_dir():
-    return __config.data_base_dir
+    return DATA_BASE_DIR
 
 
 def get_data_dir():
@@ -43,15 +41,15 @@ def get_data_dir():
 
 
 def get_db_path():
-    return os.path.join(__config.chroma_base_dir, __config.model_provider)
+    return os.path.join(CHROMA_BASE_DIR, __config.model_provider)
 
 
 def get_data_path(data: str = __config.data_dir):
-    return os.path.join(__config.data_base_dir, data)
+    return os.path.join(DATA_BASE_DIR, data)
 
 
 def get_uploaded_data_path():
-    return os.path.join(__config.data_base_dir, UPLOADED_DATA_DIR)
+    return os.path.join(DATA_BASE_DIR, UPLOADED_DATA_DIR)
 
 
 def get_data_file_path(data_dir: str, filename: str):

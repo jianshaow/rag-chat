@@ -17,8 +17,6 @@ import './Setting.css';
 
 interface SettingState {
   beBaseUrl: string;
-  chromaBaseDir: string;
-  dataBaseDir: string;
   dataDirs: string[];
   dataDir: string;
   modelProviders: string[];
@@ -34,8 +32,6 @@ class Setting extends Component<{}, SettingState> {
     super(props);
     this.state = {
       beBaseUrl: getBeBaseUrl(),
-      chromaBaseDir: '',
-      dataBaseDir: '',
       dataDirs: [],
       dataDir: '',
       modelProviders: [],
@@ -111,9 +107,7 @@ class Setting extends Component<{}, SettingState> {
     fetchConfig().then(config => {
       this.setState({
         modelProvider: config.model_provider,
-        dataBaseDir: config.data_base_dir,
         dataDir: config.data_dir,
-        chromaBaseDir: config.chroma_base_dir,
       });
       this.reloadApiConfig(config.model_provider);
     });
@@ -146,12 +140,10 @@ class Setting extends Component<{}, SettingState> {
   };
 
   handleSaveConfig = async (e: MouseEvent) => {
-    const { modelProvider, dataBaseDir, dataDir, chromaBaseDir } = this.state
+    const { modelProvider, dataDir } = this.state
     const config = {
       'model_provider': modelProvider,
-      'data_base_dir': dataBaseDir,
       'data_dir': dataDir,
-      'chroma_base_dir': chromaBaseDir,
     };
     updateConfig(JSON.stringify(config)).then(() => {
       alert('Setting Saved!');
@@ -173,7 +165,7 @@ class Setting extends Component<{}, SettingState> {
   };
 
   render() {
-    const { beBaseUrl, dataBaseDir, dataDirs, dataDir, chromaBaseDir, modelProviders, modelProvider, embedModel, chatModel, embedModels, chatModels } = this.state;
+    const { beBaseUrl, dataDirs, dataDir, modelProviders, modelProvider, embedModel, chatModel, embedModels, chatModels } = this.state;
 
     return (
       <div className='container-column'>
@@ -195,30 +187,6 @@ class Setting extends Component<{}, SettingState> {
         </div>
         <label className='title'>Backend</label>
         <div className='setting-container'>
-          <div className='setting'>
-            <div>
-              <label className='config-lable'>Chroma Base Dir: </label>
-              <input
-                type='text'
-                value={chromaBaseDir}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  this.setState({ chromaBaseDir: e.target.value });
-                }}
-              />
-            </div>
-          </div>
-          <div className='setting'>
-            <div>
-              <label className='config-lable'>Data Base Dir: </label>
-              <input
-                type='text'
-                value={dataBaseDir}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  this.setState({ dataBaseDir: e.target.value });
-                }}
-              />
-            </div>
-          </div>
           <div className='setting'>
             <div>
               <label className='config-lable'>Data Dir: </label>

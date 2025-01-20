@@ -1,7 +1,6 @@
-import chromadb
-from chromadb import Collection
+from chromadb import Collection, PersistentClient
 from chromadb.api import ClientAPI
-from chromadb.api.types import Document, Metadata, Embedding
+from chromadb.api.types import Document, Embedding, Metadata
 
 from app.engine import config, models
 
@@ -12,7 +11,7 @@ def get_db_client() -> ClientAPI:
     client = __db_clients.get(config.get_model_provider())
     if client is None:
         path = config.get_db_path()
-        client = chromadb.PersistentClient(path)
+        client = PersistentClient(path)
         __db_clients[config.get_model_provider()] = client
     return client
 
@@ -101,7 +100,7 @@ def __show_embeddings(embedding: Embedding):
     print(embedding[:4])
 
 
-if __name__ == "__main__":
+def main():
     import sys
 
     if len(sys.argv) > 1:
@@ -122,15 +121,19 @@ if __name__ == "__main__":
             if data_name is None:
                 print("provide the data_name")
             else:
-                id = len(sys.argv) >= 4 and sys.argv[3] or None
-                if id is None:
+                doc_id = len(sys.argv) >= 4 and sys.argv[3] or None
+                if doc_id is None:
                     collection = get_collection(data_name)
                     __show_collection(collection)
                 else:
-                    vector_text = get_doc_text(data_name, [id])
+                    vector_text = get_doc_text(data_name, [doc_id])
                     text = vector_text[0] if vector_text else ""
                     __show_document(text)
         else:
             print("cls, rm, get are supported cmd")
     else:
         __show_db()
+
+
+if __name__ == "__main__":
+    main()

@@ -105,13 +105,13 @@ class Home extends Component<{}, HomeState> {
         <h1 className='title'>RAG Q&A</h1>
         <div className='container'>
           <label className='config-lable'>Model Provider:</label>
-          <input value={modelProvider} readOnly style={{ maxWidth: '60px' }} />
+          <input value={modelProvider} readOnly style={{ maxWidth: '80px' }} />
+          <label className='config-lable'>Data Dir:</label>
+          <input value={dataDir} readOnly style={{ maxWidth: '100px' }} />
           <label className='config-lable'>Embed Model: </label>
           <input value={embedModel} readOnly />
           <label className='config-lable'>Chat Model: </label>
           <input value={chatModel} readOnly />
-          <label className='config-lable'>Data Dir:</label>
-          <input value={dataDir} readOnly />
         </div>
         <div className='container-column'>
           <div className='question-block'>
