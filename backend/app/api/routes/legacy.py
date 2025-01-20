@@ -1,8 +1,8 @@
-from llama_index.core.base.response.schema import Response
 from fastapi import APIRouter, Request, status
 from fastapi.responses import FileResponse
+from llama_index.core.base.response.schema import Response
 
-from app.engine import data_store, config, models, engines, caches, vectordb
+from app.engine import caches, config, data_store, engines, models, vectordb
 
 legacy_router = r = APIRouter()
 
@@ -42,12 +42,6 @@ def query_data():
 @r.get("/data_config", tags=["legacy"])
 def get_data_config():
     return data_store.get_data_config()
-
-
-@r.put("/data_config", tags=["legacy"], status_code=status.HTTP_204_NO_CONTENT)
-async def update_data_config(request: Request):
-    data_config = await request.json()
-    data_store.update_data_config(data_config)
 
 
 @r.get("/config", tags=["legacy"])

@@ -4,6 +4,7 @@ import {
   getBeBaseUrl,
   setBeBaseUrl,
   fetchConfig,
+  fetchDataConfig,
   updateConfig,
   fetchModelProviders,
   updateModelConfig,
@@ -16,8 +17,10 @@ import './Setting.css';
 
 interface SettingState {
   beBaseUrl: string;
-  dataBaseDir: string;
   chromaBaseDir: string;
+  dataBaseDir: string;
+  dataDirs: string[];
+  dataDir: string;
   modelProviders: string[];
   modelProvider: string;
   embedModels: string[];
@@ -31,8 +34,10 @@ class Setting extends Component<{}, SettingState> {
     super(props);
     this.state = {
       beBaseUrl: getBeBaseUrl(),
-      dataBaseDir: '',
       chromaBaseDir: '',
+      dataBaseDir: '',
+      dataDirs: [],
+      dataDir: '',
       modelProviders: [],
       modelProvider: '',
       embedModels: [],
@@ -48,6 +53,7 @@ class Setting extends Component<{}, SettingState> {
 
   initSetting() {
     this.initConfig();
+    this.initDataDir();
     this.initModelProviders();
     this.initEmbedModels()
     this.initChatModels();
@@ -92,11 +98,21 @@ class Setting extends Component<{}, SettingState> {
     this.setState({ beBaseUrl: url })
   };
 
+  initDataDir() {
+    fetchDataConfig().then(dataConfig => {
+      const dataDirs = Object.keys(dataConfig).map((data) => {
+        return data;
+      });
+      this.setState({ dataDirs: dataDirs });
+    });
+  }
+
   initConfig() {
     fetchConfig().then(config => {
       this.setState({
         modelProvider: config.model_provider,
         dataBaseDir: config.data_base_dir,
+        dataDir: config.data_dir,
         chromaBaseDir: config.chroma_base_dir,
       });
       this.reloadApiConfig(config.model_provider);
@@ -105,7 +121,6 @@ class Setting extends Component<{}, SettingState> {
 
   reloadApiConfig(modelProvider: string) {
     fetchModelConfig(modelProvider).then((config) => {
-      console.log(config);
       this.setState({
         embedModel: config.embed_model,
         chatModel: config.chat_model,
@@ -131,10 +146,11 @@ class Setting extends Component<{}, SettingState> {
   };
 
   handleSaveConfig = async (e: MouseEvent) => {
-    const { modelProvider, dataBaseDir, chromaBaseDir } = this.state
+    const { modelProvider, dataBaseDir, dataDir, chromaBaseDir } = this.state
     const config = {
       'model_provider': modelProvider,
       'data_base_dir': dataBaseDir,
+      'data_dir': dataDir,
       'chroma_base_dir': chromaBaseDir,
     };
     updateConfig(JSON.stringify(config)).then(() => {
@@ -157,7 +173,7 @@ class Setting extends Component<{}, SettingState> {
   };
 
   render() {
-    const { beBaseUrl, dataBaseDir, chromaBaseDir, modelProviders, modelProvider, embedModel, chatModel, embedModels, chatModels } = this.state;
+    const { beBaseUrl, dataBaseDir, dataDirs, dataDir, chromaBaseDir, modelProviders, modelProvider, embedModel, chatModel, embedModels, chatModels } = this.state;
 
     return (
       <div className='container-column'>
@@ -189,6 +205,17 @@ class Setting extends Component<{}, SettingState> {
                   this.setState({ dataBaseDir: e.target.value });
                 }}
               />
+            </div>
+          </div>
+          <div className='setting'>
+            <div>
+              <label className='config-lable'>Data Dir: </label>
+              <select value={dataDir} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                this.setState({ dataDir: e.target.value })
+              }}>{dataDirs.map(dataDir => (
+                <option key={dataDir} value={dataDir}>{dataDir}</option>
+              ))}
+              </select>
             </div>
           </div>
           <div className='setting'>

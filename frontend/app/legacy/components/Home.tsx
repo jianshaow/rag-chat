@@ -18,9 +18,9 @@ interface HomeState {
   modelProvider: string;
   embedModel: string;
   chatModel: string;
-  dataList: string[];
+  dataDirs: string[];
+  dataDir: string;
   dataConfig: any;
-  data: string;
   request: string;
   response: Response;
 }
@@ -33,8 +33,8 @@ class Home extends Component<{}, HomeState> {
       embedModel: '',
       chatModel: '',
       dataConfig: {},
-      dataList: [],
-      data: '',
+      dataDirs: [],
+      dataDir: '',
       request: '',
       response: { text: '', sources: [] },
     };
@@ -42,13 +42,14 @@ class Home extends Component<{}, HomeState> {
 
   componentDidMount() {
     this.initConfig()
-    this.initData();
+    // this.initData();
   }
 
   initConfig() {
     fetchConfig().then(config => {
       this.setState({
         modelProvider: config.model_provider,
+        dataDir: config.data_dir,
       });
       fetchModelConfig(config.model_provider).then(config => {
         this.setState({
@@ -56,47 +57,46 @@ class Home extends Component<{}, HomeState> {
           chatModel: config.chat_model,
         });
       });
+      this.updateData(config.data_dir);
     });
   }
 
-  initData() {
+  updateData(dataDir: string) {
     fetchDataConfig().then(dataConfig => {
-      const dataList = Object.keys(dataConfig).map((data) => {
-        return data;
-      });
-      const defaultName = dataList[0];
-      const defaultQuestion = dataConfig[defaultName].default_question;
-      this.setState({ dataConfig: dataConfig, dataList: dataList, data: defaultName, request: defaultQuestion });
+      console.log(dataDir);
+      console.log(dataConfig);
+      const defaultQuestion = dataConfig[dataDir].default_question;
+      this.setState({ request: defaultQuestion });
     });
   }
 
   handleQuestion = async (e: FormEvent) => {
     e.preventDefault();
-    const { data, request } = this.state;
+    const { dataDir, request } = this.state;
 
-    query(data, request).then(response => {
+    query(dataDir, request).then(response => {
       this.setState({ response: response });
     });
   }
 
   viewChrunk = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const { data } = this.state;
+    const { dataDir } = this.state;
     const id = (e.target as HTMLButtonElement).id
-    fetchChrunk(data, id).then(source => {
+    fetchChrunk(dataDir, id).then(source => {
       alert(source['text']);
     });
   }
 
   viewFull = (e: MouseEvent<HTMLButtonElement>) => {
-    const { data } = this.state;
+    const { dataDir } = this.state;
     const file_name = (e.target as HTMLButtonElement).id
-    const url = `${getBeBaseUrl()}/${data}/files/${file_name}`;
+    const url = `${getBeBaseUrl()}/${dataDir}/files/${file_name}`;
     window.open(url)
   }
 
   render() {
-    const { modelProvider, embedModel, chatModel, dataConfig, dataList, data, request, response } = this.state;
+    const { modelProvider, embedModel, chatModel, dataDir, request, response } = this.state;
     return (
       <div className='container-column'>
         <div className='header'>
@@ -110,13 +110,8 @@ class Home extends Component<{}, HomeState> {
           <input value={embedModel} readOnly />
           <label className='config-lable'>Chat Model: </label>
           <input value={chatModel} readOnly />
-          <label className='config-lable'>Data:</label>
-          <select value={data} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-            this.setState({ data: e.target.value, request: dataConfig[e.target.value].default_question });
-          }}>{dataList.map(data => (
-            <option key={data} value={data}>{data}</option>
-          ))}
-          </select>
+          <label className='config-lable'>Data Dir:</label>
+          <input value={dataDir} readOnly />
         </div>
         <div className='container-column'>
           <div className='question-block'>
