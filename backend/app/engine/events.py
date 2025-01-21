@@ -1,10 +1,13 @@
 import asyncio
 import json
+import logging
 from typing import Any, AsyncGenerator
 
 from llama_index.core.callbacks.base_handler import BaseCallbackHandler
 from llama_index.core.callbacks.schema import CBEventType
 from llama_index.core.tools.types import ToolOutput
+
+logger = logging.getLogger(__name__)
 
 
 class CallbackEvent:
@@ -67,7 +70,6 @@ class CallbackEvent:
         if response is not None:
             sources = response.sources
             for source in sources:
-                # Return the tool response here to include the toolCall information
                 if isinstance(source, ToolOutput):
                     if self._is_output_serializable(source.raw_output):
                         output = source.raw_output
@@ -82,7 +84,7 @@ class CallbackEvent:
                                 "isError": source.is_error,
                             },
                             "toolCall": {
-                                "id": None,  # There is no tool id in the ToolOutput
+                                "id": None,
                                 "name": source.tool_name,
                                 "input": source.raw_input,
                             },
@@ -96,6 +98,20 @@ class CallbackEvent:
             return True
         except TypeError:
             return False
+
+
+EVENT_START_TEMPLATE = """event %s start
+%s
+parent_id: %s
+event_type: %s
+%s"""
+
+EVENT_STOP_TEMPLATE = """event %s end
+%s
+event_type: %s
+%s"""
+
+LINE = "-" * 80
 
 
 class LogEventCallbackHandler(BaseCallbackHandler):
@@ -121,11 +137,7 @@ class LogEventCallbackHandler(BaseCallbackHandler):
         parent_id: str = "",
         **kwargs,
     ) -> str:
-        print("-" * 80)
-        print("event", event_id, "start")
-        print("parent_id:", parent_id)
-        print("event_type:", event_type)
-        print("-" * 80)
+        logger.info(EVENT_START_TEMPLATE, event_id, LINE, parent_id, event_type, LINE)
         return event_id
 
     def on_event_end(
@@ -135,20 +147,17 @@ class LogEventCallbackHandler(BaseCallbackHandler):
         event_id: str = "",
         **kwargs,
     ) -> None:
-        print("-" * 80)
-        print("event", event_id, "end")
-        print("event_type:", event_type)
-        print("-" * 80)
+        logger.info(EVENT_STOP_TEMPLATE, event_id, LINE, event_type, LINE)
 
     def start_trace(self, trace_id: str | None = None) -> None:
-        """No-op."""
+        logger.info("start trace %s", trace_id)
 
     def end_trace(
         self,
         trace_id: str | None = None,
         trace_map: dict[str, list[str]] | None = None,
     ) -> None:
-        """No-op."""
+        logger.info("end trace %s", trace_id)
 
 
 class QueueEventCallbackHandler(BaseCallbackHandler):
@@ -178,7 +187,7 @@ class QueueEventCallbackHandler(BaseCallbackHandler):
     ) -> str:
         event = CallbackEvent(event_id=event_id, event_type=event_type, payload=payload)
         if response := event.to_response():
-            print("response:", response)
+            logger.info("response: %s", response)
             self.queue.put_nowait(event)
         return event_id
 
@@ -191,7 +200,7 @@ class QueueEventCallbackHandler(BaseCallbackHandler):
     ) -> None:
         event = CallbackEvent(event_id=event_id, event_type=event_type, payload=payload)
         if response := event.to_response():
-            print("response:", response)
+            logger.info("response: %s", response)
             self.queue.put_nowait(event)
 
     def start_trace(self, trace_id: str | None = None) -> None:
