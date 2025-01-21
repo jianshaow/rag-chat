@@ -14,7 +14,11 @@ async def query_index(data: str, request: Request):
     query_engine, _ = engines.get_query_engine(data)
     response: Response = query_engine.query(query)
     sources = [
-        {"id": node.node_id, "file_name": node.metadata["file_name"]}
+        {
+            "id": node.node_id,
+            "data_dir": node.metadata["data_dir"],
+            "file_name": node.metadata["file_name"],
+        }
         for node in response.source_nodes
     ]
 
