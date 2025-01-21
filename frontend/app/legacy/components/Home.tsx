@@ -42,7 +42,6 @@ class Home extends Component<{}, HomeState> {
 
   componentDidMount() {
     this.initConfig()
-    // this.initData();
   }
 
   initConfig() {

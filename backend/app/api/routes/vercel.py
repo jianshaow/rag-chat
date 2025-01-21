@@ -118,13 +118,13 @@ class VercelStreamingResponse(StreamingResponse):
 
     @classmethod
     def _to_node_dict(cls, source_node: NodeWithScore):
-        data_dir = source_node.node.metadata.get("data_dir")
-        file_name = source_node.node.metadata.get("file_name")
+        data_dir = source_node.metadata.get("data_dir")
+        file_name = source_node.metadata.get("file_name")
         url = f"{files_base_url}/{data_dir}/{file_name}"
 
         return {
-            "id": source_node.node.node_id,
-            "metadata": source_node.node.metadata,
+            "id": source_node.node_id,
+            "metadata": source_node.metadata,
             "score": source_node.score,
             "text": source_node.text,
             "url": url,
