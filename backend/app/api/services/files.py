@@ -1,12 +1,17 @@
-import os, logging, uuid, re, mimetypes, base64
+import base64
+import logging
+import mimetypes
+import os
+import re
+import uuid
 from typing import List, Optional, Tuple
-from pydantic import BaseModel, Field
 
 from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import Document
+from pydantic import BaseModel, Field
 
 from app.api import files_base_url
-from app.engine import config, indexes, loaders, utils, UPLOADED_DATA_DIR
+from app.engine import UPLOADED_DATA_DIR, config, indexes, loaders, utils
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +35,7 @@ def process_file(
     file_data, _ = _preprocess_base64_file(content)
     document_file = save_file(file_data, name)
     documents = _load_file_to_documents(document_file)
-    index = indexes.get_index(UPLOADED_DATA_DIR)
+    index, _ = indexes.get_index(UPLOADED_DATA_DIR)
     _add_documents_to_vector_store_index(documents, index)
     document_file.refs = [doc.doc_id for doc in documents]
     return document_file

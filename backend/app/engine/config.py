@@ -60,8 +60,8 @@ def get_uploaded_data_file_path(filename: str):
     return os.path.join(get_uploaded_data_path(), filename)
 
 
-def get_storage_path() -> str:
-    return os.path.join(STORAGE_BASE_DIR, __config.model_provider)
+def get_storage_path(data_dir: str) -> str:
+    return os.path.join(STORAGE_BASE_DIR, __config.model_provider, data_dir)
 
 
 if __name__ == "__main__":
