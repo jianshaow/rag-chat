@@ -1,15 +1,18 @@
 import json
-
+import logging
 from typing import Awaitable
+
 from aiostream import stream
+from fastapi.responses import StreamingResponse
 from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 from llama_index.core.schema import NodeWithScore
-from fastapi.responses import StreamingResponse
 
-from app.engine import events
 from app.api import files_base_url
-from app.api.services.suggestion import suggest_next_questions
 from app.api.routes.payload import ChatMessages
+from app.api.services.suggestion import suggest_next_questions
+from app.engine import events
+
+logger = logging.getLogger(__name__)
 
 
 class VercelStreamingResponse(StreamingResponse):
@@ -20,7 +23,7 @@ class VercelStreamingResponse(StreamingResponse):
 
     def __init__(
         self,
-        event_handler: events.EventCallbackHandler,
+        event_handler: events.QueueEventCallbackHandler,
         messages: ChatMessages,
         response: Awaitable[StreamingAgentChatResponse],
     ):
@@ -46,7 +49,7 @@ class VercelStreamingResponse(StreamingResponse):
     @classmethod
     async def stream_generator(
         cls,
-        event_handler: events.EventCallbackHandler,
+        event_handler: events.QueueEventCallbackHandler,
         messages: ChatMessages,
         response: Awaitable[StreamingAgentChatResponse],
     ):
@@ -62,8 +65,8 @@ class VercelStreamingResponse(StreamingResponse):
                         is_stream_started = True
                         yield cls.to_text("")
                     yield output
-        except Exception as e:
-            print(e)
+        except Exception as e:  # pylint: disable=broad-except
+            logger.error(e, exc_info=True)
             yield cls.to_error(
                 "An unexpected error occurred while processing your request, preventing the creation of a final answer. Please try again."
             )
@@ -71,7 +74,9 @@ class VercelStreamingResponse(StreamingResponse):
             event_handler.is_done = True
 
     @classmethod
-    async def event_generator(cls, event_callback_handler: events.EventCallbackHandler):
+    async def event_generator(
+        cls, event_callback_handler: events.QueueEventCallbackHandler
+    ):
         async for event in event_callback_handler.async_event_gen():
             event_response = event.to_response()
             if event_response:
@@ -82,7 +87,7 @@ class VercelStreamingResponse(StreamingResponse):
         cls,
         messages: ChatMessages,
         response: Awaitable[StreamingAgentChatResponse],
-        event_handler: events.EventCallbackHandler,
+        event_handler: events.QueueEventCallbackHandler,
     ):
         result = await response
 

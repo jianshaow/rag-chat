@@ -1,11 +1,12 @@
 import logging
+
 from fastapi import APIRouter, HTTPException
 
-from app.engine import events, engines
 from app.api.routes.filters import generate_filters
-from app.api.services.files import DocumentFile, process_file
+from app.api.routes.payload import ChatMessages, FileUploadRequest
 from app.api.routes.vercel import VercelStreamingResponse
-from app.api.routes.payload import FileUploadRequest, ChatMessages
+from app.api.services.files import DocumentFile, process_file
+from app.engine import engines
 
 logger = logging.getLogger(__name__)
 
@@ -24,9 +25,9 @@ async def chat(chat_messages: ChatMessages):
     """
     doc_ids = chat_messages.get_chat_document_ids()
     data, filters = generate_filters(doc_ids)
-    engine = engines.get_chat_engine(data, filters)
+    engine, handler = engines.get_chat_engine(data, filters)
     response = engine.astream_chat(chat_messages.last_content, chat_messages.history)
-    return VercelStreamingResponse(events.event_handler, chat_messages, response)
+    return VercelStreamingResponse(handler, chat_messages, response)
 
 
 @r.post("/upload", tags=["chat"])

@@ -1,13 +1,81 @@
-from typing import List
+from contextvars import ContextVar
+from typing import Any, List, Tuple
 
-from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.core.schema import Document
-from llama_index.core.ingestion import IngestionPipeline, DocstoreStrategy
-from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.core.callbacks import CallbackManager
+from llama_index.core.callbacks.base_handler import BaseCallbackHandler
+from llama_index.core.callbacks.schema import CBEventType
+from llama_index.core.ingestion import DocstoreStrategy, IngestionPipeline
+from llama_index.core.node_parser import SentenceSplitter
+from llama_index.core.schema import Document
+from llama_index.vector_stores.chroma import ChromaVectorStore
 
-from app.engine import models, stores, loaders, data_store, events, caches, config
+from app.engine import caches, config, data_store, events, loaders, models, stores
+
+
+class ContextVarEventCallbackHandler(BaseCallbackHandler):
+
+    def __init__(self) -> None:
+        ignored_events = [
+            CBEventType.CHUNKING,
+            CBEventType.NODE_PARSING,
+            CBEventType.EMBEDDING,
+            CBEventType.LLM,
+            CBEventType.TEMPLATING,
+            CBEventType.AGENT_STEP,
+        ]
+        super().__init__(ignored_events, ignored_events)
+        self.handler_context: ContextVar[events.QueueEventCallbackHandler] = ContextVar(
+            "handler_context"
+        )
+
+    @property
+    def context(self) -> ContextVar[events.QueueEventCallbackHandler]:
+        return self.handler_context
+
+    def on_event_start(
+        self,
+        event_type: CBEventType,
+        payload: dict[str, Any] | None = None,
+        event_id: str = "",
+        parent_id: str = "",
+        **kwargs,
+    ) -> str:
+        event_handler = self.handler_context.get(None)
+        if event_handler:
+            return event_handler.on_event_start(
+                event_type, payload, event_id, parent_id, **kwargs
+            )
+        else:
+            return event_id
+
+    def on_event_end(
+        self,
+        event_type: CBEventType,
+        payload: dict[str, Any] | None = None,
+        event_id: str = "",
+        **kwargs,
+    ) -> None:
+        event_handler = self.handler_context.get(None)
+        if event_handler:
+            event_handler.on_event_end(event_type, payload, event_id, **kwargs)
+
+    def start_trace(self, trace_id: str | None = None) -> None:
+        event_handler = self.handler_context.get(None)
+        if event_handler:
+            event_handler.start_trace(trace_id)
+
+    def end_trace(
+        self,
+        trace_id: str | None = None,
+        trace_map: dict[str, list[str]] | None = None,
+    ) -> None:
+        event_handler = self.handler_context.get(None)
+        if event_handler:
+            event_handler.end_trace(trace_id, trace_map)
+
+
+contextvar_event_handler = ContextVarEventCallbackHandler()
 
 
 def ingest(documents: List[Document], data_dir: str):
@@ -34,9 +102,11 @@ def index_data(data_dir: str):
     return ingest(documents, data_dir)
 
 
-def load_index(vector_store: ChromaVectorStore) -> VectorStoreIndex:
+def _load_index(vector_store: ChromaVectorStore) -> VectorStoreIndex:
     embed_model = models.get_embed_model()
-    callback_manager = CallbackManager([events.event_handler])
+    callback_manager = CallbackManager(
+        [events.LogEventCallbackHandler(), contextvar_event_handler]
+    )
     index = VectorStoreIndex.from_vector_store(
         vector_store,
         embed_model,
@@ -46,24 +116,27 @@ def load_index(vector_store: ChromaVectorStore) -> VectorStoreIndex:
     return index
 
 
-def get_index(data_dir: str) -> VectorStoreIndex:
+def get_index(
+    data_dir: str,
+) -> Tuple[VectorStoreIndex, ContextVar[events.QueueEventCallbackHandler]]:
     embed_model_name = models.get_embed_model_name()
     index_key = f"{data_dir}@{embed_model_name}"
     vector_store = stores.get_vector_store(data_dir)
-    new_index = lambda: load_index(vector_store)
-    return caches.get_index(new_index, index_key)
+    index_builder = lambda: _load_index(vector_store)
+    return caches.get_index(index_builder, index_key), contextvar_event_handler.context
 
 
 def __retrieve_data(data_dir: str):
     question = data_store.get_default_question(data_dir)
-    retriever = get_index(data_dir).as_retriever()
+    inext, _ = get_index(data_dir)
+    retriever = inext.as_retriever()
     nodes = retriever.retrieve(question)
     for node in nodes:
         print("-" * 80)
         print(node)
 
 
-if __name__ == "__main__":
+def _main():
     import sys
 
     if len(sys.argv) > 1:
@@ -81,3 +154,7 @@ if __name__ == "__main__":
                 print("Data directory not provided.")
     else:
         __retrieve_data(data_store.get_data_dirs()[0])
+
+
+if __name__ == "__main__":
+    _main()

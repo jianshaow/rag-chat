@@ -1,14 +1,18 @@
-import os, logging, logging.config
-import yaml, uvicorn
+import logging
+import logging.config
+import os
+
+import uvicorn
+import yaml
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
-from app.engine import config
-from app.api import frontend_base_url, files_url_prefix
+from app.api import files_url_prefix, frontend_base_url
 from app.api.routes import api_router, legacy_router
+from app.engine import config, events, indexes
 
-with open('logging.yaml', 'r', encoding="utf-8") as file:
+with open("logging.yaml", "r", encoding="utf-8") as file:
     conf = yaml.safe_load(file)
 logging.config.dictConfig(conf)
 
@@ -26,6 +30,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def add_handler_context(request, call_next):
+    eventhandler = events.QueueEventCallbackHandler()
+    context = indexes.contextvar_event_handler.context
+    token = context.set(eventhandler)
+    try:
+        response = await call_next(request)
+    finally:
+        context.reset(token)
+    return response
+
 
 app.include_router(api_router, prefix="/api")
 app.include_router(legacy_router, prefix="/legacy")

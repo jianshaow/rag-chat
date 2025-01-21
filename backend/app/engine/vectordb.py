@@ -100,7 +100,7 @@ def __show_embeddings(embedding: Embedding):
     print(embedding[:4])
 
 
-def main():
+def _main():
     import sys
 
     if len(sys.argv) > 1:
@@ -136,4 +136,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    _main()

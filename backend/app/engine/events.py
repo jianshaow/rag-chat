@@ -1,4 +1,5 @@
-import json, asyncio
+import asyncio
+import json
 from typing import Any, AsyncGenerator
 
 from llama_index.core.callbacks.base_handler import BaseCallbackHandler
@@ -97,7 +98,60 @@ class CallbackEvent:
             return False
 
 
-class EventCallbackHandler(BaseCallbackHandler):
+class LogEventCallbackHandler(BaseCallbackHandler):
+
+    def __init__(
+        self,
+    ):
+        ignored_events = [
+            CBEventType.CHUNKING,
+            CBEventType.NODE_PARSING,
+            CBEventType.EMBEDDING,
+            CBEventType.LLM,
+            CBEventType.TEMPLATING,
+            CBEventType.AGENT_STEP,
+        ]
+        super().__init__(ignored_events, ignored_events)
+
+    def on_event_start(
+        self,
+        event_type: CBEventType,
+        payload: dict[str, Any] | None = None,
+        event_id: str = "",
+        parent_id: str = "",
+        **kwargs,
+    ) -> str:
+        print("-" * 80)
+        print("event", event_id, "start")
+        print("parent_id:", parent_id)
+        print("event_type:", event_type)
+        print("-" * 80)
+        return event_id
+
+    def on_event_end(
+        self,
+        event_type: CBEventType,
+        payload: dict[str, Any] | None = None,
+        event_id: str = "",
+        **kwargs,
+    ) -> None:
+        print("-" * 80)
+        print("event", event_id, "end")
+        print("event_type:", event_type)
+        print("-" * 80)
+
+    def start_trace(self, trace_id: str | None = None) -> None:
+        """No-op."""
+
+    def end_trace(
+        self,
+        trace_id: str | None = None,
+        trace_map: dict[str, list[str]] | None = None,
+    ) -> None:
+        """No-op."""
+
+
+class QueueEventCallbackHandler(BaseCallbackHandler):
 
     def __init__(
         self,
@@ -119,16 +173,13 @@ class EventCallbackHandler(BaseCallbackHandler):
         event_type: CBEventType,
         payload: dict[str, Any] | None = None,
         event_id: str = "",
+        parent_id: str = "",
         **kwargs,
     ) -> str:
-        print("*" * 80)
-        print("event", event_id, "start")
-        print("event_type:", event_type)
         event = CallbackEvent(event_id=event_id, event_type=event_type, payload=payload)
         if response := event.to_response():
             print("response:", response)
             self.queue.put_nowait(event)
-        print("*" * 80)
         return event_id
 
     def on_event_end(
@@ -138,14 +189,10 @@ class EventCallbackHandler(BaseCallbackHandler):
         event_id: str = "",
         **kwargs,
     ) -> None:
-        print("*" * 80)
-        print("event", event_id, "end")
-        print("event_type:", event_type)
         event = CallbackEvent(event_id=event_id, event_type=event_type, payload=payload)
         if response := event.to_response():
             print("response:", response)
             self.queue.put_nowait(event)
-        print("*" * 80)
 
     def start_trace(self, trace_id: str | None = None) -> None:
         """No-op."""
@@ -163,6 +210,3 @@ class EventCallbackHandler(BaseCallbackHandler):
                 yield await asyncio.wait_for(self.queue.get(), timeout=0.1)
             except asyncio.TimeoutError:
                 pass
-
-
-event_handler = EventCallbackHandler()

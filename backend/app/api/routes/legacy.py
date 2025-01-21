@@ -11,7 +11,7 @@ legacy_router = r = APIRouter()
 async def query_index(data: str, request: Request):
     raw_data = await request.body()
     query = raw_data.decode("utf-8")
-    query_engine = engines.get_query_engine(data)
+    query_engine, _ = engines.get_query_engine(data)
     response: Response = query_engine.query(query)
     sources = [
         {"id": node.node_id, "file_name": node.metadata["file_name"]}
