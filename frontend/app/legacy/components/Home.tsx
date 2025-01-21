@@ -97,7 +97,7 @@ class Home extends Component<{}, HomeState> {
   render() {
     const { modelProvider, embedModel, chatModel, dataDir, request, response } = this.state;
     return (
-      <div className='container-column'>
+      <div className='container-column' style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div className='header'>
           <Link to='/legacy/setting'>Setting</Link>
         </div>
