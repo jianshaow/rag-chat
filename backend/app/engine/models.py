@@ -1,28 +1,31 @@
-from openai import OpenAI as OriginalOpenAI
+from typing import Type, TypeVar
+
 import google.generativeai as genai
 import ollama
-
-from llama_index.core.llms import LLM
 from llama_index.core.base.embeddings.base import BaseEmbedding
-from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.core.llms import LLM
 from llama_index.embeddings.gemini import GeminiEmbedding
 from llama_index.embeddings.ollama import OllamaEmbedding
-from llama_index.llms.openai import OpenAI
+from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.gemini import Gemini
 from llama_index.llms.ollama import Ollama
+from llama_index.llms.openai import OpenAI
+from openai import OpenAI as OriginalOpenAI
 
 from app.engine import (
-    config,
-    caches,
-    OLLAMA_HOST,
-    OLLAMA_BASE_URL,
-    OLLAMA_EMBED_MODEL,
-    OLLAMA_CHAT_MODEL,
-    OPENAI_EMBED_MODEL,
-    OPENAI_CHAT_MODEL,
-    GEMINI_EMBED_MODEL,
     GEMINI_CHAT_MODEL,
+    GEMINI_EMBED_MODEL,
+    OLLAMA_BASE_URL,
+    OLLAMA_CHAT_MODEL,
+    OLLAMA_EMBED_MODEL,
+    OLLAMA_HOST,
+    OPENAI_CHAT_MODEL,
+    OPENAI_EMBED_MODEL,
+    caches,
+    config,
 )
+
+T = TypeVar("T", BaseEmbedding, LLM)
 
 
 class NormOllamaEmbedding(OllamaEmbedding):
@@ -216,7 +219,7 @@ def update_model_config(model_provider: str, conf: dict):
         ext.update_model_config(model_provider, conf)
 
 
-def new_model(model_type: str) -> BaseEmbedding | LLM:
+def new_model(model_type: str) -> Type[T]:
     model_provider = config.get_model_provider()
     model_spec = __model_specs.get(model_provider)
     if model_spec:

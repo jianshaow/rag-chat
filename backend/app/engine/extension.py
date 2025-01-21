@@ -1,4 +1,6 @@
-from llama_index.core.llms import LLM
+from typing import Type
+
+from app.engine.models import T
 
 
 def get_model_providers() -> list[str]:
@@ -19,7 +21,7 @@ def get_models(model_provider: str, model_type: str) -> list:
     )
 
 
-def new_model(model_provider, model_type) -> LLM:
+def new_model(model_provider, model_type) -> Type[T]:
     raise NotImplementedError(
         f"Model type '{model_type}' on model provider '{model_provider}' is not implemented"
     )
