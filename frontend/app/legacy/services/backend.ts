@@ -5,19 +5,19 @@ function setBeBaseUrl(beBaseUrl: string) {
 function getBeBaseUrl() {
     var beBaseUrl = localStorage.getItem('beBaseUrl');
     if (beBaseUrl === null) {
-        beBaseUrl = "http://localhost:8000/legacy";
+        beBaseUrl = "http://localhost:8000";
         setBeBaseUrl(beBaseUrl);
     }
     return beBaseUrl;
 }
 
 async function fetchConfig() {
-    const url = `${getBeBaseUrl()}/config`;
+    const url = `${getBeBaseUrl()}/legacy/config`;
     return fetch(url).then(response => response.json());
 }
 
 async function updateConfig(config: string) {
-    const url = `${getBeBaseUrl()}/config`;
+    const url = `${getBeBaseUrl()}/legacy/config`;
     fetch(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -26,17 +26,17 @@ async function updateConfig(config: string) {
 }
 
 async function fetchData() {
-    const url = `${getBeBaseUrl()}/data`;
+    const url = `${getBeBaseUrl()}/legacy/data`;
     return fetch(url).then(response => response.json());
 }
 
 async function fetchDataConfig() {
-    const url = `${getBeBaseUrl()}/data_config`;
+    const url = `${getBeBaseUrl()}/legacy/data_config`;
     return fetch(url).then(response => response.json());
 }
 
 async function updateDataConfig(data_config: string) {
-    const url = `${getBeBaseUrl()}/config`;
+    const url = `${getBeBaseUrl()}/legacy/config`;
     fetch(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -45,18 +45,18 @@ async function updateDataConfig(data_config: string) {
 }
 
 async function fetchModelProviders() {
-    const url = `${getBeBaseUrl()}/model_provider`
+    const url = `${getBeBaseUrl()}/legacy/model_provider`
     return fetch(url).then(response => response.json());
 }
 
 
 async function fetchModelConfig(model_provider: string) {
-    const url = `${getBeBaseUrl()}/model_provider/${model_provider}`;
+    const url = `${getBeBaseUrl()}/legacy/model_provider/${model_provider}`;
     return fetch(url).then(response => response.json());
 }
 
 async function updateModelConfig(model_provider: string, config: string) {
-    const url = `${getBeBaseUrl()}/model_provider/${model_provider}`;
+    const url = `${getBeBaseUrl()}/legacy/model_provider/${model_provider}`;
     fetch(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -65,17 +65,17 @@ async function updateModelConfig(model_provider: string, config: string) {
 }
 
 async function fetchEmbedModels(reload: boolean) {
-    const url = `${getBeBaseUrl()}/embed_models?reload=${reload}`
+    const url = `${getBeBaseUrl()}/legacy/embed_models?reload=${reload}`
     return fetch(url).then(response => response.json());
 }
 
 async function fetchChatModels(reload: boolean) {
-    const url = `${getBeBaseUrl()}/chat_models?reload=${reload}`
+    const url = `${getBeBaseUrl()}/legacy/chat_models?reload=${reload}`
     return fetch(url).then(response => response.json());
 }
 
 async function query(data: string, query: string) {
-    const url = `${getBeBaseUrl()}/${data}/query`;
+    const url = `${getBeBaseUrl()}/legacy/${data}/query`;
     return fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'plain/text' },
@@ -84,7 +84,7 @@ async function query(data: string, query: string) {
 }
 
 async function fetchChrunk(data: string, id: string) {
-    const url = `${getBeBaseUrl()}/${data}/get/${id}`;
+    const url = `${getBeBaseUrl()}/legacy/${data}/node/${id}`;
     return fetch(url).then(response => response.json());
 }
 

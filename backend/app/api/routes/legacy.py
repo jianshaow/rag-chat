@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Request, status
-from fastapi.responses import FileResponse
 from llama_index.core.base.response.schema import Response
 
 from app.engine import caches, config, data_store, engines, models, vectordb
@@ -25,17 +24,11 @@ async def query_index(data: str, request: Request):
     return {"text": str(response), "sources": sources}
 
 
-@r.get("/{data}/get/{node_id}", tags=["legacy"])
+@r.get("/{data}/node/{node_id}", tags=["legacy"])
 def get_data_text(data, node_id):
     vector_texts = vectordb.get_doc_text(data, [node_id])
     text = vector_texts[0] if vector_texts else ""
     return {"text": text}
-
-
-@r.get("/{data}/files/{filename}", tags=["legacy"])
-def download_file(data, filename):
-    path = config.get_data_file_path(data, filename)
-    return FileResponse(path=path)
 
 
 @r.get("/data", tags=["legacy"])

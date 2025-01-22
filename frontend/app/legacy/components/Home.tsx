@@ -90,7 +90,7 @@ class Home extends Component<{}, HomeState> {
   viewFull = (e: MouseEvent<HTMLButtonElement>) => {
     const { dataDir } = this.state;
     const file_name = (e.target as HTMLButtonElement).id
-    const url = `${getBeBaseUrl()}/${dataDir}/files/${file_name}`;
+    const url = `${getBeBaseUrl()}/api/files/${dataDir}/${file_name}`;
     window.open(url)
   }
 
