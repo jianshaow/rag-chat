@@ -111,6 +111,7 @@ def _load_index(vector_store: ChromaVectorStore) -> VectorStoreIndex:
         vector_store,
         embed_model,
         callback_manager=callback_manager,
+        show_progress=True,
     )
 
     return index
