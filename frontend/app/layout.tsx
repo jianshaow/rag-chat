@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "RAG chatbot",
-  description: "Chat with data",
+  description: "Chat on top of data",
 };
 
 export default function RootLayout({

@@ -99,7 +99,7 @@ class Home extends Component<{}, HomeState> {
     return (
       <div className='container-column' style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div className='header'>
-          <Link to='/legacy/setting'>Setting</Link>
+          <Link to='/setting'>Setting</Link>
         </div>
         <h1 className='title'>RAG Q&A</h1>
         <div className='container'>

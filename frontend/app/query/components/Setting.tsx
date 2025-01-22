@@ -170,7 +170,7 @@ class Setting extends Component<{}, SettingState> {
     return (
       <div className='container-column' style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div className='header'>
-          <Link to='/legacy'>Return Home</Link>
+          <Link to='/query'>Return Home</Link>
         </div>
         <h1 className='title'>Settings</h1>
         <div className='container'>
