@@ -105,28 +105,28 @@ def _main():
 
     if len(sys.argv) > 1:
         if sys.argv[1] == "cls":
-            data_name = len(sys.argv) == 3 and sys.argv[2] or None
-            if data_name:
-                __clear_data_vector(data_name)
+            data_dir = len(sys.argv) == 3 and sys.argv[2] or None
+            if data_dir:
+                __clear_data_vector(data_dir)
             else:
                 print("provide the data name")
         elif sys.argv[1] == "rm":
-            data_name = len(sys.argv) == 3 and sys.argv[2] or None
-            if data_name is None:
+            data_dir = len(sys.argv) == 3 and sys.argv[2] or None
+            if data_dir is None:
                 print("provide the collection name")
             else:
-                __delete_data_collection(data_name)
+                __delete_data_collection(data_dir)
         elif sys.argv[1] == "get":
-            data_name = len(sys.argv) >= 3 and sys.argv[2] or None
-            if data_name is None:
+            data_dir = len(sys.argv) >= 3 and sys.argv[2] or None
+            if data_dir is None:
                 print("provide the data_name")
             else:
                 doc_id = len(sys.argv) >= 4 and sys.argv[3] or None
                 if doc_id is None:
-                    collection = get_collection(data_name)
+                    collection = get_collection(data_dir)
                     __show_collection(collection)
                 else:
-                    vector_text = get_doc_text(data_name, [doc_id])
+                    vector_text = get_doc_text(data_dir, [doc_id])
                     text = vector_text[0] if vector_text else ""
                     __show_document(text)
         else:
