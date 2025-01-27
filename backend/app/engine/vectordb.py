@@ -48,17 +48,18 @@ def __delete_data_collection(data_dir):
 
 def __show_db():
     collections = get_db_client().list_collections()
-    print("collections size:", len(collections))
     print("=" * 80)
+    print("collections size:", len(collections))
     for collection in collections:
-        __show_collection(collection)
+        __show_collection(collection, 1)
 
 
-def __show_collection(collection: Collection):
+def __show_collection(collection: Collection, top_k: int = 2):
+    print("+" * 80)
     print("collection name:", collection.name)
     count = collection.count()
     print("record count:", count)
-    result = collection.peek(1)
+    result = collection.peek(top_k)
     metadatas = result["metadatas"] if result["metadatas"] else []
     embeddings = result["embeddings"] if result["embeddings"] is not None else []
     documents = result["documents"] if result["documents"] else []
@@ -67,13 +68,13 @@ def __show_collection(collection: Collection):
         __show_metadata(metadatas)
         __show_embeddings(embeddings[i])  # type: ignore
         __show_document(documents[i])
-    print("-" * 80)
+    print("+" * 80)
 
 
 def __show_metadata(metadata: Metadata):
     import json
 
-    print("+" * 80)
+    print("-" * 80)
     node_content_json = metadata["_node_content"]
     node_content = json.loads(str(node_content_json) if node_content_json else "")
     node_metadata = node_content["metadata"]
@@ -90,12 +91,12 @@ def __show_metadata(metadata: Metadata):
 def __show_document(document: Document):
     import textwrap
 
-    print("+" * 80)
+    print("-" * 80)
     print(f"document:\n{textwrap.fill(document[:347])}...")
 
 
 def __show_embeddings(embedding: Embedding):
-    print("+" * 80)
+    print("-" * 80)
     print("embedding dimension:", len(embedding))
     print(embedding[:4])
 
@@ -104,27 +105,35 @@ def _main():
     import sys
 
     if len(sys.argv) > 1:
-        if sys.argv[1] == "cls":
-            data_dir = len(sys.argv) == 3 and sys.argv[2] or None
+        cmd = sys.argv[1]
+        if cmd == "cls":
+            data_dir = len(sys.argv) > 2 and sys.argv[2] or None
             if data_dir:
                 __clear_data_vector(data_dir)
             else:
                 print("provide the data name")
-        elif sys.argv[1] == "rm":
-            data_dir = len(sys.argv) == 3 and sys.argv[2] or None
+        elif cmd == "rm":
+            data_dir = len(sys.argv) > 2 and sys.argv[2] or None
             if data_dir is None:
                 print("provide the collection name")
             else:
                 __delete_data_collection(data_dir)
-        elif sys.argv[1] == "get":
-            data_dir = len(sys.argv) >= 3 and sys.argv[2] or None
+        elif cmd == "get":
+            data_dir = len(sys.argv) > 2 and sys.argv[2] or None
             if data_dir is None:
                 print("provide the data_name")
             else:
-                doc_id = len(sys.argv) >= 4 and sys.argv[3] or None
+                collection = get_collection(data_dir)
+                top_k = len(sys.argv) > 3 and int(sys.argv[3]) or 2
+                __show_collection(collection, top_k)
+        elif cmd == "doc":
+            data_dir = len(sys.argv) > 2 and sys.argv[2] or None
+            if data_dir is None:
+                print("provide the data_name")
+            else:
+                doc_id = len(sys.argv) > 4 and sys.argv[4] or None
                 if doc_id is None:
-                    collection = get_collection(data_dir)
-                    __show_collection(collection)
+                    print("provide the doc_id")
                 else:
                     vector_text = get_doc_text(data_dir, [doc_id])
                     text = vector_text[0] if vector_text else ""
