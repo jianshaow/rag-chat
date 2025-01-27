@@ -139,7 +139,7 @@ def _main():
                     text = vector_text[0] if vector_text else ""
                     __show_document(text)
         else:
-            print("cls, rm, get are supported cmd")
+            print("'cls, rm, get, doc' the cmd are supported")
     else:
         __show_db()
 
