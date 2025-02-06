@@ -2,6 +2,7 @@ from typing import Type, TypeVar
 
 import google.generativeai as genai
 import ollama
+from google.generativeai.types import ModelsIterable
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
 from llama_index.embeddings.gemini import GeminiEmbedding
@@ -47,40 +48,40 @@ class NormOllamaEmbedding(OllamaEmbedding):
 
 def openai_embed_models() -> list[str]:
     client = OriginalOpenAI()
-    response = client.models.list()
+    models = client.models.list()
     return [
-        model.model_dump()["root"]
-        for model in response.data
-        if str(model.model_dump()["root"]).startswith("text-embedding")
+        model.id
+        for model in models
+        if model.owned_by == "openai" and model.id.startswith("text-embedding")
     ]
 
 
 def openai_chat_models() -> list[str]:
     client = OriginalOpenAI()
-    response = client.models.list()
+    models = client.models.list()
     return [
-        model.model_dump()["root"]
-        for model in response.data
-        if str(model.model_dump()["root"]).startswith("gpt")
+        model.id
+        for model in models
+        if model.owned_by == "openai" and not model.id.startswith("text-embedding")
     ]
 
 
 def gemini_embed_models() -> list[str]:
     genai.configure(transport="rest")
-    response = genai.list_models()
+    models: ModelsIterable = genai.list_models()
     return [
         model.name
-        for model in response
+        for model in models
         if "embedContent" in model.supported_generation_methods
     ]
 
 
 def gemini_chat_models() -> list[str]:
     genai.configure(transport="rest")
-    response = genai.list_models()
+    models: ModelsIterable = genai.list_models()
     return [
         model.name
-        for model in response
+        for model in models
         if "generateContent" in model.supported_generation_methods
     ]
 
