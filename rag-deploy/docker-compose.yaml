@@ -18,6 +18,6 @@ services:
       - ${CHROMA_BASE_DIR}:/home/devel/chroma
       - ${DATA_BASE_DIR}:/home/devel/data
     ports:
-      - 5000:5000
+      - 8000:8000
     extra_hosts:
       - host.docker.internal:host-gateway
