@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "rag-chat"
+name = "app"
 version = "0.2.0"
 description = "A RAG-based Chatbot"
 authors = ["Jianshao"]
