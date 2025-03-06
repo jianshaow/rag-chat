@@ -14,5 +14,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 ENV PYTHONPATH=${HOME}/backend
 ENV FRONTEND_DIR=${HOME}/frontend
+ENV LOGGING_CONF=${HOME}/backend/logging.conf
 
-CMD [ "python", "-m", "web.app" ]
+CMD [ "uvicorn", "app.main:app", "--host", "0.0.0.0"]
