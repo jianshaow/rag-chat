@@ -7,7 +7,7 @@ ARG VERSION=snapshot
 LABEL version=${VERSION}
 
 COPY --chown=devel:devel backend backend
-COPY --chown=devel:devel frontend/build frontend
+COPY --chown=devel:devel frontend/out frontend
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -e backend
