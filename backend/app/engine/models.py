@@ -1,4 +1,4 @@
-from typing import Type, TypeVar
+from typing import Any, Callable, Dict, Generic, Type, TypeVar
 
 import google.generativeai as genai
 import ollama
@@ -12,6 +12,7 @@ from llama_index.llms.gemini import Gemini
 from llama_index.llms.ollama import Ollama
 from llama_index.llms.openai import OpenAI
 from openai import OpenAI as OriginalOpenAI
+from pydantic import BaseModel
 
 from app.engine import (
     GEMINI_CHAT_MODEL,
@@ -86,17 +87,17 @@ def gemini_chat_models() -> list[str]:
     ]
 
 
-def ollama_embed_models() -> list[str | None]:
+def ollama_embed_models() -> list[str]:
     client = ollama.Client(OLLAMA_HOST)
     response = client.list()
     return [
         model.model
         for model in response.models
         if (model.details and model.details.family and "bert" in model.details.family)
-    ]
+    ]  # type: ignore
 
 
-def ollama_chat_models() -> list[str | None]:
+def ollama_chat_models() -> list[str]:
     client = ollama.Client(OLLAMA_HOST)
     response = client.list()
     return [
@@ -107,51 +108,57 @@ def ollama_chat_models() -> list[str | None]:
             or model.details.family is None
             or "bert" not in model.details.family
         )
-    ]
+    ]  # type: ignore
 
 
-__model_specs = {
+class ModelSpec(BaseModel, Generic[T]):
+    model_class: Type[T]
+    model_args: Dict[str, Any]
+    models_func: Callable[[], list[str]]
+
+
+__model_configs: Dict[str, Dict[str, ModelSpec]] = {
     "openai": {
-        "embed": {
-            "model_class": OpenAIEmbedding,
-            "model_args": {"model": OPENAI_EMBED_MODEL},
-            "models_func": openai_embed_models,
-        },
-        "chat": {
-            "model_class": OpenAI,
-            "model_args": {"model": OPENAI_CHAT_MODEL},
-            "models_func": openai_chat_models,
-        },
+        "embed": ModelSpec(
+            model_class=OpenAIEmbedding,
+            model_args={"model": OPENAI_EMBED_MODEL},
+            models_func=openai_embed_models,
+        ),
+        "chat": ModelSpec(
+            model_class=OpenAI,
+            model_args={"model": OPENAI_CHAT_MODEL},
+            models_func=openai_chat_models,
+        ),
     },
     "gemini": {
-        "embed": {
-            "model_class": GeminiEmbedding,
-            "model_args": {"model": GEMINI_EMBED_MODEL, "transport": "rest"},
-            "models_func": gemini_embed_models,
-        },
-        "chat": {
-            "model_class": Gemini,
-            "model_args": {"model": GEMINI_CHAT_MODEL, "transport": "rest"},
-            "models_func": gemini_chat_models,
-        },
+        "embed": ModelSpec(
+            model_class=GeminiEmbedding,
+            model_args={"model": GEMINI_EMBED_MODEL, "transport": "rest"},
+            models_func=gemini_embed_models,
+        ),
+        "chat": ModelSpec(
+            model_class=Gemini,
+            model_args={"model": GEMINI_CHAT_MODEL, "transport": "rest"},
+            models_func=gemini_chat_models,
+        ),
     },
     "ollama": {
-        "embed": {
-            "model_class": NormOllamaEmbedding,
-            "model_args": {
+        "embed": ModelSpec(
+            model_class=NormOllamaEmbedding,
+            model_args={
                 "base_url": OLLAMA_BASE_URL,
                 "model_name": OLLAMA_EMBED_MODEL,
             },
-            "models_func": ollama_embed_models,
-        },
-        "chat": {
-            "model_class": Ollama,
-            "model_args": {
+            models_func=ollama_embed_models,
+        ),
+        "chat": ModelSpec(
+            model_class=Ollama,
+            model_args={
                 "base_url": OLLAMA_BASE_URL,
                 "model": OLLAMA_CHAT_MODEL,
             },
-            "models_func": ollama_chat_models,
-        },
+            models_func=ollama_chat_models,
+        ),
     },
 }
 
@@ -160,7 +167,7 @@ def get_model_providers() -> list[str]:
     import engine.extension as ext
 
     ext_model_providers = ext.get_model_providers()
-    return list(__model_specs.keys()) + ext_model_providers
+    return list(__model_configs.keys()) + ext_model_providers
 
 
 __model_lists: dict[str, dict[str, list[str]]] = {"embed": {}, "chat": {}}
@@ -170,9 +177,9 @@ def get_models(model_type: str, reload: bool) -> list[str]:
     model_provider = setting.get_model_provider()
     model_list = __model_lists[model_type].get(model_provider)
     if model_list is None or reload:
-        model_spec = __model_specs.get(model_provider)
-        if model_spec:
-            model_list = model_spec[model_type]["models_func"]()
+        model_config = __model_configs.get(model_provider)
+        if model_config:
+            model_list = model_config[model_type].models_func()
             __model_lists[model_type][model_provider] = model_list
         else:
             import engine.extension as ext
@@ -191,13 +198,13 @@ def get_chat_model_name() -> str:
 
 
 def get_model_config(model_provider: str) -> dict:
-    model_spec = __model_specs.get(model_provider)
-    if model_spec:
-        embed_model_args: dict = model_spec["embed"]["model_args"]
+    model_config = __model_configs.get(model_provider)
+    if model_config:
+        embed_model_args: dict = model_config["embed"].model_args
         embed_model = embed_model_args.get("model") or embed_model_args.get(
             "model_name"
         )
-        chat_model = model_spec["chat"]["model_args"]["model"]
+        chat_model = model_config["chat"].model_args["model"]
         return {"embed_model": embed_model, "chat_model": chat_model}
     else:
         import engine.extension as ext
@@ -206,14 +213,14 @@ def get_model_config(model_provider: str) -> dict:
 
 
 def update_model_config(model_provider: str, conf: dict):
-    model_spec = __model_specs.get(model_provider)
-    if model_spec:
-        embed_model_args = model_spec["embed"]["model_args"]
+    model_config = __model_configs.get(model_provider)
+    if model_config:
+        embed_model_args = model_config["embed"].model_args
         if "model" in embed_model_args:
             embed_model_args["model"] = conf.get("embed_model")
         if "model_name" in embed_model_args:
             embed_model_args["model_name"] = conf.get("embed_model")
-        model_spec["chat"]["model_args"]["model"] = conf.get("chat_model")
+        model_config["chat"].model_args["model"] = conf.get("chat_model")
     else:
         import engine.extension as ext
 
@@ -222,10 +229,10 @@ def update_model_config(model_provider: str, conf: dict):
 
 def new_model(model_type: str) -> Type[T]:
     model_provider = setting.get_model_provider()
-    model_spec = __model_specs.get(model_provider)
-    if model_spec:
-        model_class = model_spec[model_type]["model_class"]
-        model_args = model_spec[model_type]["model_args"]
+    model_config = __model_configs.get(model_provider)
+    if model_config:
+        model_class = model_config[model_type].model_class
+        model_args = model_config[model_type].model_args
         return model_class(**model_args)
     else:
         import engine.extension as ext
@@ -242,4 +249,4 @@ def get_chat_model() -> LLM:
 
 
 if __name__ == "__main__":
-    print(__model_specs)
+    print(__model_configs)

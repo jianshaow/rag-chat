@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Request, status
+from fastapi import APIRouter, status
 
 from app.engine import setting
+from app.engine.setting import Setting
 
 setting_router = r = APIRouter()
 
@@ -11,6 +12,5 @@ def get_config():
 
 
 @r.put("", tags=["setting"], status_code=status.HTTP_204_NO_CONTENT)
-async def update_config(request: Request):
-    conf = await request.json()
-    setting.update_config(conf)
+async def update_config(new_setting: Setting):
+    setting.update_config(new_setting)

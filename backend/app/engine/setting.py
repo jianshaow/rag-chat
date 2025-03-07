@@ -20,12 +20,12 @@ class Setting(BaseModel):
 __setting = Setting()
 
 
-def get_config() -> dict:
-    return __setting.model_dump()
+def get_config() -> Setting:
+    return __setting
 
 
-def update_config(conf: dict):
-    __setting.__dict__.update(conf)
+def update_config(new_setting: Setting):
+    __setting.__dict__.update(new_setting.model_dump())
 
 
 def get_model_provider():
