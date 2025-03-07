@@ -12,12 +12,12 @@ function getBeBaseUrl() {
 }
 
 async function fetchConfig() {
-    const url = `${getBeBaseUrl()}/legacy/config`;
+    const url = `${getBeBaseUrl()}/api/setting`;
     return fetch(url).then(response => response.json());
 }
 
 async function updateConfig(config: string) {
-    const url = `${getBeBaseUrl()}/legacy/config`;
+    const url = `${getBeBaseUrl()}/api/setting`;
     fetch(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -26,17 +26,17 @@ async function updateConfig(config: string) {
 }
 
 async function fetchData() {
-    const url = `${getBeBaseUrl()}/legacy/data`;
+    const url = `${getBeBaseUrl()}/api/data`;
     return fetch(url).then(response => response.json());
 }
 
 async function fetchDataConfig() {
-    const url = `${getBeBaseUrl()}/legacy/data_config`;
+    const url = `${getBeBaseUrl()}/api/data/config`;
     return fetch(url).then(response => response.json());
 }
 
 async function updateDataConfig(data_config: string) {
-    const url = `${getBeBaseUrl()}/legacy/config`;
+    const url = `${getBeBaseUrl()}/api/data/config`;
     fetch(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -45,18 +45,18 @@ async function updateDataConfig(data_config: string) {
 }
 
 async function fetchModelProviders() {
-    const url = `${getBeBaseUrl()}/legacy/model_provider`
+    const url = `${getBeBaseUrl()}/api/model/provider`
     return fetch(url).then(response => response.json());
 }
 
 
 async function fetchModelConfig(model_provider: string) {
-    const url = `${getBeBaseUrl()}/legacy/model_provider/${model_provider}`;
+    const url = `${getBeBaseUrl()}/api/model/provider/${model_provider}`;
     return fetch(url).then(response => response.json());
 }
 
 async function updateModelConfig(model_provider: string, config: string) {
-    const url = `${getBeBaseUrl()}/legacy/model_provider/${model_provider}`;
+    const url = `${getBeBaseUrl()}/api/model/provider/${model_provider}`;
     fetch(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -65,17 +65,17 @@ async function updateModelConfig(model_provider: string, config: string) {
 }
 
 async function fetchEmbedModels(reload: boolean) {
-    const url = `${getBeBaseUrl()}/legacy/embed_models?reload=${reload}`
+    const url = `${getBeBaseUrl()}/api/model/embed?reload=${reload}`
     return fetch(url).then(response => response.json());
 }
 
 async function fetchChatModels(reload: boolean) {
-    const url = `${getBeBaseUrl()}/legacy/chat_models?reload=${reload}`
+    const url = `${getBeBaseUrl()}/api/model/chat?reload=${reload}`
     return fetch(url).then(response => response.json());
 }
 
 async function query(data: string, query: string) {
-    const url = `${getBeBaseUrl()}/legacy/${data}/query`;
+    const url = `${getBeBaseUrl()}/api/query/${data}/query`;
     return fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'plain/text' },
@@ -84,23 +84,10 @@ async function query(data: string, query: string) {
 }
 
 async function fetchChrunk(data: string, id: string) {
-    const url = `${getBeBaseUrl()}/legacy/${data}/node/${id}`;
+    const url = `${getBeBaseUrl()}/api/data/${data}/node/${id}`;
     return fetch(url).then(response => response.json());
 }
 
 export {
-    getBeBaseUrl,
-    setBeBaseUrl,
-    fetchData,
-    fetchConfig,
-    updateConfig,
-    fetchDataConfig,
-    updateDataConfig,
-    fetchModelProviders,
-    fetchModelConfig,
-    updateModelConfig,
-    fetchEmbedModels,
-    fetchChatModels,
-    query,
-    fetchChrunk,
-}
+    fetchChatModels, fetchChrunk, fetchConfig, fetchData, fetchDataConfig, fetchEmbedModels, fetchModelConfig, fetchModelProviders, getBeBaseUrl, query, setBeBaseUrl, updateConfig, updateDataConfig, updateModelConfig
+};

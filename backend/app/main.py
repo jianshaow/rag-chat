@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import FileResponse
 
 from app.api import files_url_prefix, frontend_base_url
-from app.api.routes import api_router, legacy_router
+from app.api.routes import api_router
 from app.engine import config, events, indexes
 
 logging_conf = os.getenv("LOGGING_CONF", "logging.conf")
@@ -44,7 +44,6 @@ async def add_handler_context(request, call_next):
 
 
 app.include_router(api_router, prefix="/api")
-app.include_router(legacy_router, prefix="/legacy")
 
 
 app.mount(
