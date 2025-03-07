@@ -1,17 +1,17 @@
 from typing import Type
 
-from app.engine.models import T
+from app.engine.models import ModelConfig, T
 
 
 def get_model_providers() -> list[str]:
     return []
 
 
-def get_model_config(model_provider: str) -> dict[str, str]:
+def get_model_config(model_provider: str) -> ModelConfig:
     raise NotImplementedError(f"model provider '{model_provider}' is not implemented")
 
 
-def update_model_config(model_provider: str, conf: dict):
+def update_model_config(model_provider: str, conf: ModelConfig):
     raise NotImplementedError(f"model provider '{model_provider}' is not implemented")
 
 

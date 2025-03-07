@@ -8,6 +8,17 @@ from pydantic.alias_generators import to_camel
 from app.api.services.files import DocumentFile
 
 
+class SourceNode(BaseModel):
+    id: str
+    data_dir: str
+    file_name: str
+
+
+class QueryResult(BaseModel):
+    text: str
+    sources: List[SourceNode]
+
+
 class AnnotationFileData(BaseModel):
     files: List[DocumentFile] = Field(
         default=[],

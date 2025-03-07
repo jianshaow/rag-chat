@@ -190,14 +190,19 @@ def get_models(model_type: str, reload: bool) -> list[str]:
 
 
 def get_embed_model_name() -> str:
-    return get_model_config(setting.get_model_provider())["embed_model"]
+    return get_model_config(setting.get_model_provider()).embed_model
 
 
 def get_chat_model_name() -> str:
-    return get_model_config(setting.get_model_provider())["chat_model"]
+    return get_model_config(setting.get_model_provider()).chat_model
 
 
-def get_model_config(model_provider: str) -> dict[str, str]:
+class ModelConfig(BaseModel):
+    embed_model: str
+    chat_model: str
+
+
+def get_model_config(model_provider: str) -> ModelConfig:
     model_config = __model_configs.get(model_provider)
     if model_config:
         embed_model_args: dict = model_config["embed"].model_args
@@ -205,22 +210,22 @@ def get_model_config(model_provider: str) -> dict[str, str]:
             "model_name", ""
         )
         chat_model = model_config["chat"].model_args["model"]
-        return {"embed_model": embed_model, "chat_model": chat_model}
+        return ModelConfig(embed_model=embed_model, chat_model=chat_model)
     else:
         import engine.extension as ext
 
         return ext.get_model_config(model_provider)
 
 
-def update_model_config(model_provider: str, conf: dict):
+def update_model_config(model_provider: str, conf: ModelConfig):
     model_config = __model_configs.get(model_provider)
     if model_config:
         embed_model_args = model_config["embed"].model_args
         if "model" in embed_model_args:
-            embed_model_args["model"] = conf.get("embed_model")
+            embed_model_args["model"] = conf.embed_model
         if "model_name" in embed_model_args:
-            embed_model_args["model_name"] = conf.get("embed_model")
-        model_config["chat"].model_args["model"] = conf.get("chat_model")
+            embed_model_args["model_name"] = conf.embed_model
+        model_config["chat"].model_args["model"] = conf.chat_model
     else:
         import engine.extension as ext
 

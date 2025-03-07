@@ -7,7 +7,7 @@ setting_router = r = APIRouter()
 
 
 @r.get("", tags=["setting"])
-async def get_config():
+async def get_config() -> Setting:
     return setting.get_config()
 
 
