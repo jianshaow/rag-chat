@@ -10,12 +10,12 @@ model_router = r = APIRouter()
 
 
 @r.get("/provider", tags=["model"])
-def get_model_providers() -> list[str]:
+async def get_model_providers() -> list[str]:
     return models.get_model_providers()
 
 
 @r.get("/provider/{model_provider}", tags=["model"])
-def get_model_config(model_provider) -> dict[str, str]:
+async def get_model_config(model_provider) -> dict[str, str]:
     return models.get_model_config(model_provider)
 
 
@@ -29,10 +29,10 @@ async def update_model_config(model_provider, request: Request):
 
 
 @r.get("/embed", tags=["model"])
-def get_embed_models(reload):
+async def get_embed_models(reload):
     return models.get_models("embed", reload == "true")
 
 
 @r.get("/chat", tags=["model"])
-def get_chat_models(reload):
+async def get_chat_models(reload):
     return models.get_models("chat", reload == "true")

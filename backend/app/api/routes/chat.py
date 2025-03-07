@@ -31,7 +31,7 @@ async def chat(chat_messages: ChatMessages):
 
 
 @r.post("/upload", tags=["chat"])
-def upload_file(request: FileUploadRequest) -> DocumentFile:
+async def upload_file(request: FileUploadRequest) -> DocumentFile:
     """
     To upload a file from frontend.
     """
