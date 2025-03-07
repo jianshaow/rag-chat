@@ -74,8 +74,8 @@ async function fetchChatModels(reload: boolean) {
     return fetch(url).then(response => response.json());
 }
 
-async function query(data: string, query: string) {
-    const url = `${getBeBaseUrl()}/api/query/${data}/query`;
+async function query(query: string) {
+    const url = `${getBeBaseUrl()}/api/query`;
     return fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'plain/text' },

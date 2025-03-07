@@ -71,9 +71,9 @@ class Home extends Component<{}, HomeState> {
 
   handleQuestion = async (e: FormEvent) => {
     e.preventDefault();
-    const { dataDir, request } = this.state;
+    const { request } = this.state;
 
-    query(dataDir, request).then(response => {
+    query(request).then(response => {
       this.setState({ response: response });
     });
   }
