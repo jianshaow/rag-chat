@@ -10,12 +10,12 @@ model_router = r = APIRouter()
 
 
 @r.get("/provider", tags=["model"])
-def get_model_providers():
+def get_model_providers() -> list[str]:
     return models.get_model_providers()
 
 
 @r.get("/provider/{model_provider}", tags=["model"])
-def get_model_config(model_provider):
+def get_model_config(model_provider) -> dict[str, str]:
     return models.get_model_config(model_provider)
 
 

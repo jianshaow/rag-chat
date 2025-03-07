@@ -7,7 +7,7 @@ def get_model_providers() -> list[str]:
     return []
 
 
-def get_model_config(model_provider: str) -> dict:
+def get_model_config(model_provider: str) -> dict[str, str]:
     raise NotImplementedError(f"model provider '{model_provider}' is not implemented")
 
 

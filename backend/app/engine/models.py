@@ -197,12 +197,12 @@ def get_chat_model_name() -> str:
     return get_model_config(setting.get_model_provider())["chat_model"]
 
 
-def get_model_config(model_provider: str) -> dict:
+def get_model_config(model_provider: str) -> dict[str, str]:
     model_config = __model_configs.get(model_provider)
     if model_config:
         embed_model_args: dict = model_config["embed"].model_args
         embed_model = embed_model_args.get("model") or embed_model_args.get(
-            "model_name"
+            "model_name", ""
         )
         chat_model = model_config["chat"].model_args["model"]
         return {"embed_model": embed_model, "chat_model": chat_model}
