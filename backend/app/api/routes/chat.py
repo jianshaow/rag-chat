@@ -14,7 +14,7 @@ chat_router = r = APIRouter()
 
 
 @r.get("/config", tags=["chat"])
-def chat_config():
+async def chat_config():
     return {"starterQuestions": None}
 
 
