@@ -12,24 +12,24 @@ from app.engine import (
 )
 
 
-class Config(BaseModel):
+class Setting(BaseModel):
     data_dir: str = DATA_DIR
     model_provider: str = MODEL_PROVIDER
 
 
-__config = Config()
+__setting = Setting()
 
 
 def get_config() -> dict:
-    return __config.model_dump()
+    return __setting.model_dump()
 
 
 def update_config(conf: dict):
-    __config.__dict__.update(conf)
+    __setting.__dict__.update(conf)
 
 
 def get_model_provider():
-    return __config.model_provider
+    return __setting.model_provider
 
 
 def get_data_base_dir():
@@ -37,14 +37,14 @@ def get_data_base_dir():
 
 
 def get_data_dir():
-    return __config.data_dir
+    return __setting.data_dir
 
 
 def get_db_path():
-    return os.path.join(CHROMA_BASE_DIR, __config.model_provider)
+    return os.path.join(CHROMA_BASE_DIR, __setting.model_provider)
 
 
-def get_data_path(data: str = __config.data_dir):
+def get_data_path(data: str = __setting.data_dir):
     return os.path.join(DATA_BASE_DIR, data)
 
 
@@ -61,7 +61,7 @@ def get_uploaded_data_file_path(filename: str):
 
 
 def get_storage_path(data_dir: str) -> str:
-    return os.path.join(STORAGE_BASE_DIR, __config.model_provider, data_dir)
+    return os.path.join(STORAGE_BASE_DIR, __setting.model_provider, data_dir)
 
 
 if __name__ == "__main__":

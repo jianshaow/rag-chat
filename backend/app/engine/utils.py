@@ -1,5 +1,5 @@
 import logging
-from app.engine import config, models
+from app.engine import models, setting
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ def log_model_info(data_dir: str):
     logger.info(
         MODEL_INFO_LOG_TEMPLATE,
         "-" * 80,
-        config.get_model_provider(),
+        setting.get_model_provider(),
         data_dir,
         models.get_embed_model_name(),
         models.get_chat_model_name(),

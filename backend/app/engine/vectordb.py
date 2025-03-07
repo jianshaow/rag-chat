@@ -2,17 +2,17 @@ from chromadb import Collection, PersistentClient
 from chromadb.api import ClientAPI
 from chromadb.api.types import Document, Embedding, Metadata
 
-from app.engine import config, models
+from app.engine import models, setting
 
 __db_clients: dict[str, ClientAPI] = {}
 
 
 def get_db_client() -> ClientAPI:
-    client = __db_clients.get(config.get_model_provider())
+    client = __db_clients.get(setting.get_model_provider())
     if client is None:
-        path = config.get_db_path()
+        path = setting.get_db_path()
         client = PersistentClient(path)
-        __db_clients[config.get_model_provider()] = client
+        __db_clients[setting.get_model_provider()] = client
     return client
 
 

@@ -11,7 +11,7 @@ from llama_index.core.schema import Document
 from pydantic import BaseModel, Field
 
 from app.api import files_base_url
-from app.engine import UPLOADED_DATA_DIR, config, indexes, loaders, utils
+from app.engine import UPLOADED_DATA_DIR, indexes, loaders, setting, utils
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ def save_file(
         raise ValueError("File is not supported!")
     new_file_name = f"{sanitized_name}_{file_id}.{extension}"
 
-    file_path = config.get_uploaded_data_file_path(new_file_name)
+    file_path = setting.get_uploaded_data_file_path(new_file_name)
 
     if isinstance(content, str):
         content = content.encode()

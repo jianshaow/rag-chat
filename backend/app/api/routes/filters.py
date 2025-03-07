@@ -1,12 +1,13 @@
 from typing import List
+
 from llama_index.core.vector_stores.types import (
+    FilterCondition,
+    FilterOperator,
     MetadataFilter,
     MetadataFilters,
-    FilterOperator,
-    FilterCondition,
 )
 
-from app.engine import UPLOADED_DATA_DIR, config
+from app.engine import UPLOADED_DATA_DIR, setting
 
 
 def generate_filters(doc_ids: List[str]):
@@ -35,4 +36,4 @@ def generate_filters(doc_ids: List[str]):
             ]
         )
 
-    return (config.get_data_dir() if len(doc_ids) == 0 else UPLOADED_DATA_DIR), filters
+    return (setting.get_data_dir() if len(doc_ids) == 0 else UPLOADED_DATA_DIR), filters

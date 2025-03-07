@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request
 from llama_index.core.base.response.schema import Response
 
-from app.engine import config, engines
+from app.engine import engines, setting
 
 query_router = r = APIRouter()
 
@@ -10,7 +10,7 @@ query_router = r = APIRouter()
 async def query_index(request: Request):
     raw_request = await request.body()
     query = raw_request.decode("utf-8")
-    data = config.get_data_dir()
+    data = setting.get_data_dir()
     query_engine, _ = engines.get_query_engine(data)
     response: Response = query_engine.query(query)
     sources = [

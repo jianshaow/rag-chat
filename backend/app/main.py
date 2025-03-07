@@ -10,7 +10,7 @@ from starlette.responses import FileResponse
 
 from app.api import files_url_prefix, frontend_base_url
 from app.api.routes import api_router
-from app.engine import config, events, indexes
+from app.engine import events, indexes, setting
 
 logging_conf = os.getenv("LOGGING_CONF", "logging.conf")
 logging.config.fileConfig(logging_conf, disable_existing_loggers=False)
@@ -48,7 +48,7 @@ app.include_router(api_router, prefix="/api")
 
 app.mount(
     files_url_prefix,
-    StaticFiles(directory=config.get_data_base_dir(), check_dir=False),
+    StaticFiles(directory=setting.get_data_base_dir(), check_dir=False),
     name="data_base_dir",
 )
 

@@ -1,10 +1,10 @@
-from typing import Type, Any, Callable, TypeVar
+from typing import Any, Callable, Type, TypeVar
 
+from llama_index.core import VectorStoreIndex
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
-from llama_index.core import VectorStoreIndex
 
-from app.engine import config
+from app.engine import setting
 
 T = TypeVar("T", BaseEmbedding, LLM, VectorStoreIndex)
 
@@ -34,7 +34,7 @@ def get_from_cache(cls: Type[T], builder: Callable[..., T], key: str = "") -> T:
 
 
 def get_cache_bucket() -> dict[str, Any]:
-    model_provider = config.get_model_provider()
+    model_provider = setting.get_model_provider()
     cache_bucket = __cache.get(model_provider)
     if cache_bucket is None:
         __cache[model_provider] = cache_bucket = {}

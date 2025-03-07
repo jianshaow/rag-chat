@@ -2,7 +2,7 @@ import os
 
 import yaml
 
-from app.engine import config, UPLOADED_DATA_DIR
+from app.engine import UPLOADED_DATA_DIR, setting
 
 DEFAULT_DATA_CONFIG = {"default_question": "What is the document about?"}
 
@@ -18,7 +18,7 @@ __builtin_data_config: dict = {
 __data_config: dict[str, dict[str, str]] = __builtin_data_config
 
 data_config_file = os.environ.get(
-    "DATA_CONFIG", os.path.join(config.get_data_base_dir(), "data_config.yaml")
+    "DATA_CONFIG", os.path.join(setting.get_data_base_dir(), "data_config.yaml")
 )
 
 if data_config_file and os.path.isfile(data_config_file):
@@ -28,7 +28,7 @@ if data_config_file and os.path.isfile(data_config_file):
 
 def get_data_config():
     data_config: dict = {}
-    data_base_dir = config.get_data_base_dir()
+    data_base_dir = setting.get_data_base_dir()
     if os.path.exists(data_base_dir) and os.path.isdir(data_base_dir):
         data_dirs = os.listdir(data_base_dir)
         for data_dir in data_dirs:
@@ -44,7 +44,7 @@ def get_data_config():
 
 
 def get_data_path(data_dir: str):
-    return config.get_data_path(data_dir)
+    return setting.get_data_path(data_dir)
 
 
 def get_default_question(data_dir):

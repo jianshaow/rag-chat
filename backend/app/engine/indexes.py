@@ -10,7 +10,7 @@ from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.schema import Document
 from llama_index.vector_stores.chroma import ChromaVectorStore
 
-from app.engine import caches, config, data_store, events, loaders, models, stores
+from app.engine import caches, data_store, events, loaders, models, setting, stores
 
 
 class ContextVarEventCallbackHandler(BaseCallbackHandler):
@@ -80,7 +80,7 @@ contextvar_event_handler = ContextVarEventCallbackHandler()
 
 def ingest(documents: List[Document], data_dir: str):
     vector_store = stores.get_vector_store(data_dir)
-    docstore = stores.get_docstore(config.get_storage_path(data_dir))
+    docstore = stores.get_docstore(setting.get_storage_path(data_dir))
     pipeline = IngestionPipeline(
         transformations=[SentenceSplitter(), models.get_embed_model()],
         docstore=docstore,
@@ -89,7 +89,7 @@ def ingest(documents: List[Document], data_dir: str):
     )
     nodes = pipeline.run(documents=documents, show_progress=True)
     StorageContext.from_defaults(docstore=docstore, vector_store=vector_store).persist(
-        config.get_storage_path(data_dir)
+        setting.get_storage_path(data_dir)
     )
     return nodes
 

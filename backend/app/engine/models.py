@@ -23,7 +23,7 @@ from app.engine import (
     OPENAI_CHAT_MODEL,
     OPENAI_EMBED_MODEL,
     caches,
-    config,
+    setting,
 )
 
 T = TypeVar("T", BaseEmbedding, LLM)
@@ -167,7 +167,7 @@ __model_lists: dict[str, dict[str, list[str]]] = {"embed": {}, "chat": {}}
 
 
 def get_models(model_type: str, reload: bool) -> list[str]:
-    model_provider = config.get_model_provider()
+    model_provider = setting.get_model_provider()
     model_list = __model_lists[model_type].get(model_provider)
     if model_list is None or reload:
         model_spec = __model_specs.get(model_provider)
@@ -183,11 +183,11 @@ def get_models(model_type: str, reload: bool) -> list[str]:
 
 
 def get_embed_model_name() -> str:
-    return get_model_config(config.get_model_provider())["embed_model"]
+    return get_model_config(setting.get_model_provider())["embed_model"]
 
 
 def get_chat_model_name() -> str:
-    return get_model_config(config.get_model_provider())["chat_model"]
+    return get_model_config(setting.get_model_provider())["chat_model"]
 
 
 def get_model_config(model_provider: str) -> dict:
@@ -221,7 +221,7 @@ def update_model_config(model_provider: str, conf: dict):
 
 
 def new_model(model_type: str) -> Type[T]:
-    model_provider = config.get_model_provider()
+    model_provider = setting.get_model_provider()
     model_spec = __model_specs.get(model_provider)
     if model_spec:
         model_class = model_spec[model_type]["model_class"]
