@@ -6,6 +6,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.responses import FileResponse
 
 from app.api import files_url_prefix, frontend_base_url
 from app.api.routes import api_router, legacy_router
@@ -45,22 +46,25 @@ async def add_handler_context(request, call_next):
 app.include_router(api_router, prefix="/api")
 app.include_router(legacy_router, prefix="/legacy")
 
+
 app.mount(
     files_url_prefix,
     StaticFiles(directory=config.get_data_base_dir(), check_dir=False),
     name="data_base_dir",
 )
-if os.path.exists(frontend):
-    app.mount(
-        "/",
-        StaticFiles(directory=frontend, check_dir=False, html=True),
-        name="frontend",
-    )
-else:
-    logger.warning(
-        "Frontend directory %s does not exist. Please build the frontend first if needed.",
-        frontend,
-    )
+
+
+@app.get("/{path:path}")
+async def fe_index(path: str):
+    if path == "query" or path == "setting":
+        file_path = os.path.join(frontend, "query", "index.html")
+        return FileResponse(file_path)
+    elif path == "":
+        file_path = os.path.join(frontend, "index.html")
+        return FileResponse(file_path)
+    else:
+        file_path = os.path.join(frontend, path)
+        return FileResponse(file_path)
 
 
 if __name__ == "__main__":
