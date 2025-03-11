@@ -5,6 +5,7 @@ from typing import AsyncGenerator, Awaitable, Callable, List, Tuple
 from aiostream import stream
 from fastapi.responses import StreamingResponse
 from llama_index.core.chat_engine.types import StreamingAgentChatResponse
+from llama_index.core.base.response.schema import AsyncStreamingResponse
 from llama_index.core.schema import NodeWithScore
 
 from app.api import files_base_url
@@ -41,6 +42,19 @@ class VercelStreamingResponse(StreamingResponse):
     def from_chat_response(
         cls,
         response: Awaitable[StreamingAgentChatResponse],
+        event_handler: events.QueueEventCallbackHandler,
+        messages: ChatMessages | None = None,
+    ):
+        async def await_response():
+            result = await response
+            return result.source_nodes, result.async_response_gen()
+
+        return cls(await_response, event_handler, messages)
+
+    @classmethod
+    def from_query_response(
+        cls,
+        response: Awaitable[AsyncStreamingResponse],
         event_handler: events.QueueEventCallbackHandler,
         messages: ChatMessages | None = None,
     ):

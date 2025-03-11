@@ -13,7 +13,10 @@ def get_query_engine(
     utils.log_model_info(data_dir)
     chat_model = models.get_chat_model()
     index, context = indexes.get_index(data_dir)
-    return index.as_query_engine(llm=chat_model, verbose=True), context.get()
+    return (
+        index.as_query_engine(llm=chat_model, streaming=True, verbose=True),
+        context.get(),
+    )
 
 
 def get_chat_engine(

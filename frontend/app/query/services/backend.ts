@@ -1,3 +1,5 @@
+import { MessageAnnotation, MessageAnnotationType, SourceData, SourceNode } from "@llamaindex/chat-ui";
+
 function setBeBaseUrl(beBaseUrl: string) {
     localStorage.setItem('beBaseUrl', beBaseUrl);
 }
@@ -83,11 +85,59 @@ async function query(query: string) {
     }).then(response => response.json());
 }
 
+async function streamQuery(query: string, onTextProcess: (answer: string) => void, onSoucesProcess: (sources: SourceNode[]) => void,) {
+    const url = `${getBeBaseUrl()}/api/query/stream`;
+    const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'plain/text' },
+        body: query,
+    });
+
+    const reader = resp.body?.getReader();
+    if (!reader) {
+        return;
+    }
+
+    const decoder = new TextDecoder();
+    let accumulatedText = "";
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+        lines.forEach(line => {
+            if (line.length === 0) return;
+            const index = line.indexOf(':');
+            if (index !== -1) {
+                const streamTypePart = line.substring(0, index);
+                const streamContextPart = line.substring(index + 1);
+                const streamContext = JSON.parse(streamContextPart);
+                if (streamTypePart === '0') {
+                    accumulatedText += streamContext;
+                    onTextProcess(accumulatedText)
+                } else if (streamTypePart === '8') {
+                    const annotations: MessageAnnotation[] = streamContext as MessageAnnotation[]
+                    annotations.forEach(annotation => {
+                        if (annotation.type === MessageAnnotationType.SOURCES) {
+                            const sourceData = annotation.data as SourceData;
+                            onSoucesProcess(sourceData.nodes)
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+}
+
 async function fetchChrunk(data: string, id: string) {
     const url = `${getBeBaseUrl()}/api/data/${data}/node/${id}`;
     return fetch(url).then(response => response.json());
 }
 
 export {
-    fetchChatModels, fetchChrunk, fetchConfig, fetchData, fetchDataConfig, fetchEmbedModels, fetchModelConfig, fetchModelProviders, getBeBaseUrl, query, setBeBaseUrl, updateConfig, updateDataConfig, updateModelConfig
+    fetchChatModels, fetchChrunk, fetchConfig, fetchData, fetchDataConfig, fetchEmbedModels, fetchModelConfig, fetchModelProviders, getBeBaseUrl, query, setBeBaseUrl, streamQuery, updateConfig, updateDataConfig, updateModelConfig
 };
+
