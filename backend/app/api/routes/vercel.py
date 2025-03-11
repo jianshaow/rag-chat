@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Awaitable
+from typing import AsyncGenerator, Awaitable, Callable, List, Tuple
 
 from aiostream import stream
 from fastapi.responses import StreamingResponse
@@ -23,13 +23,32 @@ class VercelStreamingResponse(StreamingResponse):
 
     def __init__(
         self,
+        await_response: Callable[
+            [], Awaitable[Tuple[List[NodeWithScore], AsyncGenerator]]
+        ],
         event_handler: events.QueueEventCallbackHandler,
-        messages: ChatMessages,
-        response: Awaitable[StreamingAgentChatResponse],
+        messages: ChatMessages | None = None,
     ):
         super().__init__(
-            self.__class__.stream_generator(event_handler, messages, response)
+            self.__class__.stream_generator(
+                await_response,
+                event_handler,
+                messages,
+            ),
         )
+
+    @classmethod
+    def from_chat_response(
+        cls,
+        response: Awaitable[StreamingAgentChatResponse],
+        event_handler: events.QueueEventCallbackHandler,
+        messages: ChatMessages | None = None,
+    ):
+        async def await_response():
+            result = await response
+            return result.source_nodes, result.async_response_gen()
+
+        return cls(await_response, event_handler, messages)
 
     @classmethod
     def to_text(cls, token: str):
@@ -49,12 +68,16 @@ class VercelStreamingResponse(StreamingResponse):
     @classmethod
     async def stream_generator(
         cls,
+        await_response: Callable[
+            [], Awaitable[Tuple[List[NodeWithScore], AsyncGenerator]]
+        ],
         event_handler: events.QueueEventCallbackHandler,
-        messages: ChatMessages,
-        response: Awaitable[StreamingAgentChatResponse],
+        messages: ChatMessages | None = None,
     ):
         event_handler.is_done = False
-        response_generator = cls.response_generator(messages, response, event_handler)
+        response_generator = cls.response_generator(
+            await_response, event_handler, messages
+        )
         event_generator = cls.event_generator(event_handler)
         combine = stream.merge(response_generator, event_generator)
         is_stream_started = False
@@ -85,36 +108,36 @@ class VercelStreamingResponse(StreamingResponse):
     @classmethod
     async def response_generator(
         cls,
-        messages: ChatMessages,
-        response: Awaitable[StreamingAgentChatResponse],
+        await_response: Callable[
+            [], Awaitable[Tuple[List[NodeWithScore], AsyncGenerator]]
+        ],
         event_handler: events.QueueEventCallbackHandler,
+        messages: ChatMessages | None = None,
     ):
-        result = await response
-
-        sources_data = cls.extract_sources(result)
-        yield cls.to_data(sources_data)
+        source_nodes, response_gen = await await_response()
+        yield cls.extract_sources_data(source_nodes)
 
         final_response = ""
-        async for chunk in result.async_response_gen():
+        async for chunk in response_gen:
             final_response += chunk
             yield cls.to_text(chunk)
 
-        yield cls.to_data(await cls.next_questions(messages, final_response))
+        if messages:
+            yield await cls.next_questions_data(messages, final_response)
 
         event_handler.is_done = True
 
     @classmethod
-    def extract_sources(cls, response: StreamingAgentChatResponse):
+    def extract_sources_data(cls, source_nodes: List[NodeWithScore]):
         sources_data = {
             "type": "sources",
             "data": {
                 "nodes": [
-                    cls._to_node_dict(source_node)
-                    for source_node in response.source_nodes
+                    cls._to_node_dict(source_node) for source_node in source_nodes
                 ]
             },
         }
-        return sources_data
+        return cls.to_data(sources_data)
 
     @classmethod
     def _to_node_dict(cls, source_node: NodeWithScore):
@@ -131,8 +154,10 @@ class VercelStreamingResponse(StreamingResponse):
         }
 
     @classmethod
-    async def next_questions(cls, messages: ChatMessages, response: str):
-        return {
-            "type": "suggested_questions",
-            "data": await suggest_next_questions(messages.chat_messages, response),
-        }
+    async def next_questions_data(cls, messages: ChatMessages, response: str):
+        return cls.to_data(
+            {
+                "type": "suggested_questions",
+                "data": await suggest_next_questions(messages.chat_messages, response),
+            }
+        )

@@ -27,7 +27,7 @@ async def chat(chat_messages: ChatMessages):
     data, filters = generate_filters(doc_ids)
     engine, handler = engines.get_chat_engine(data, filters)
     response = engine.astream_chat(chat_messages.last_content, chat_messages.history)
-    return VercelStreamingResponse(handler, chat_messages, response)
+    return VercelStreamingResponse.from_chat_response(response, handler, chat_messages)
 
 
 @r.post("/upload", tags=["chat"])
