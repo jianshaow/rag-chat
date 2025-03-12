@@ -55,21 +55,14 @@ app.mount(
 
 class FrontendStaticFiles(StaticFiles):
     async def get_response(self, path: str, scope):
-        if path in ["query", "setting"]:
+        if path == "setting":
             file_path = os.path.join(frontend, "query", "index.html")
             return FileResponse(file_path)
-        elif path == "":
-            file_path = os.path.join(frontend, "index.html")
-            return FileResponse(file_path)
-        else:
-            file_path = os.path.join(frontend, path)
-            if os.path.exists(file_path) and os.path.isfile(file_path):
-                return FileResponse(file_path)
 
         return await super().get_response(path, scope)
 
 
-app.mount("/", FrontendStaticFiles(directory=frontend), name="static")
+app.mount("/", FrontendStaticFiles(directory=frontend, html=True), name="frontend")
 
 
 if __name__ == "__main__":
