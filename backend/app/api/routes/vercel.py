@@ -4,12 +4,11 @@ from typing import AsyncGenerator, Awaitable, Callable, List, Tuple
 
 from aiostream import stream
 from fastapi.responses import StreamingResponse
-from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 from llama_index.core.base.response.schema import AsyncStreamingResponse
+from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 from llama_index.core.schema import NodeWithScore
 
-from app.api import files_base_url
-from app.api.routes.payload import ChatMessages
+from app.api.routes.payload import ChatMessages, SourceNodes
 from app.api.services.suggestion import suggest_next_questions
 from app.engine import events
 
@@ -147,25 +146,12 @@ class VercelStreamingResponse(StreamingResponse):
             "type": "sources",
             "data": {
                 "nodes": [
-                    cls._to_node_dict(source_node) for source_node in source_nodes
+                    SourceNodes.from_source_node(source_node).model_dump()
+                    for source_node in source_nodes
                 ]
             },
         }
         return cls.to_data(sources_data)
-
-    @classmethod
-    def _to_node_dict(cls, source_node: NodeWithScore):
-        data_dir = source_node.metadata.get("data_dir")
-        file_name = source_node.metadata.get("file_name")
-        url = f"{files_base_url}/{data_dir}/{file_name}"
-
-        return {
-            "id": source_node.node_id,
-            "metadata": source_node.metadata,
-            "score": source_node.score,
-            "text": source_node.text,
-            "url": url,
-        }
 
     @classmethod
     async def next_questions_data(cls, messages: ChatMessages, response: str):

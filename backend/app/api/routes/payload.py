@@ -1,22 +1,16 @@
+import logging
 import os
 from typing import Any, Dict, List, Optional
 
 from llama_index.core.llms import ChatMessage, MessageRole
+from llama_index.core.schema import NodeWithScore
 from pydantic import BaseModel, Field
 from pydantic.alias_generators import to_camel
 
+from app.api import files_base_url
 from app.api.services.files import DocumentFile
 
-
-class SourceNode(BaseModel):
-    id: str
-    data_dir: str
-    file_name: str
-
-
-class QueryResult(BaseModel):
-    text: str
-    sources: List[SourceNode]
+logger = logging.getLogger(__name__)
 
 
 class AnnotationFileData(BaseModel):
@@ -166,6 +160,42 @@ class ChatMessages(BaseModel):
 
     def __repr__(self) -> str:
         return str(self.messages)
+
+
+class SourceNodes(BaseModel):
+    id: str
+    metadata: Dict[str, Any]
+    score: Optional[float]
+    text: str
+    url: Optional[str]
+
+    @classmethod
+    def from_source_node(cls, source_node: NodeWithScore):
+        metadata = source_node.node.metadata
+        url = cls.get_url_from_metadata(metadata)
+
+        return cls(
+            id=source_node.node.node_id,
+            metadata=metadata,
+            score=source_node.score,
+            text=source_node.node.text,  # type: ignore
+            url=url,
+        )
+
+    @classmethod
+    def get_url_from_metadata(cls, metadata: Dict[str, Any]) -> Optional[str]:
+        data_dir = metadata.get("data_dir")
+        file_name = metadata.get("file_name")
+        return f"{files_base_url}/{data_dir}/{file_name}"
+
+    @classmethod
+    def from_source_nodes(cls, source_nodes: List[NodeWithScore]):
+        return [cls.from_source_node(node) for node in source_nodes]
+
+
+class QueryResult(BaseModel):
+    answer: str
+    sources: List[SourceNodes]
 
 
 class FileUploadRequest(BaseModel):

@@ -1,19 +1,9 @@
 import { SourceNode } from '@llamaindex/chat-ui';
 import { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchChrunk, fetchConfig, fetchDataConfig, fetchModelConfig, getBeBaseUrl, query, streamQuery } from '../services/backend';
+import { fetchConfig, fetchDataConfig, fetchModelConfig, getBeBaseUrl, streamQuery } from '../services/backend';
 import './Common.css';
 import './Home.css';
-
-interface Node {
-  id: string;
-  file_name: string;
-}
-
-interface Response {
-  text: string;
-  sources: Node[];
-}
 
 interface HomeState {
   modelProvider: string;
@@ -23,7 +13,6 @@ interface HomeState {
   dataDir: string;
   dataConfig: any;
   request: string;
-  response: Response;
   text: string;
   sources: SourceNode[];
 }
@@ -39,7 +28,6 @@ class Home extends Component<{}, HomeState> {
       dataDirs: [],
       dataDir: '',
       request: '',
-      response: { text: '', sources: [] },
       text: "",
       sources: [],
     };
@@ -72,16 +60,8 @@ class Home extends Component<{}, HomeState> {
     });
   }
 
-  handleQuestion = async (e: FormEvent) => {
+  handleStreamQuestion = async (e: FormEvent) => {
     e.preventDefault();
-    const { request } = this.state;
-
-    query(request).then(response => {
-      this.setState({ response: response });
-    });
-  }
-
-  handleStreamQuestion = async () => {
     const { request } = this.state;
     streamQuery(request, (answer: string) => {
       this.setState({ text: answer })
@@ -89,15 +69,6 @@ class Home extends Component<{}, HomeState> {
       this.setState({ sources: sources })
     })
   };
-
-  viewChrunk = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const { dataDir } = this.state;
-    const id = (e.target as HTMLButtonElement).id
-    fetchChrunk(dataDir, id).then(source => {
-      alert(source['text']);
-    });
-  }
 
   viewFull = (e: MouseEvent<HTMLButtonElement>) => {
     const { dataDir } = this.state;
@@ -107,7 +78,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { modelProvider, embedModel, chatModel, dataDir, request, response, text, sources } = this.state;
+    const { modelProvider, embedModel, chatModel, dataDir, request, text, sources } = this.state;
     return (
       <div className='container-column' style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div className='header'>
@@ -127,7 +98,7 @@ class Home extends Component<{}, HomeState> {
         <div className='container-column'>
           <div className='question-block'>
             <label>Question</label>
-            <form onSubmit={this.handleQuestion}>
+            <form onSubmit={this.handleStreamQuestion}>
               <div className='question-bar'>
                 <input type='text' value={request}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -141,35 +112,18 @@ class Home extends Component<{}, HomeState> {
           <div className='answer-block'>
             <label>Answer</label>
             <div>
-              <textarea value={response.text} readOnly rows={10} style={{ width: '100%' }} />
-            </div>
-          </div>
-          <div className='answer-block'>
-            <label>Stream Answer</label>
-            <div>
               <textarea value={text} readOnly rows={10} style={{ width: '100%' }} />
-              <button onClick={this.handleStreamQuestion}>Submit</button>
             </div>
           </div>
           <div className='reference-block'>
             <label>Reference</label>
             <div>
-              {response.sources.map(source => (
-                <li key={source.id}>
-                  <label style={{ marginRight: '10px' }}>{source.file_name}</label>
-                  <button id={source.id} onClick={this.viewChrunk}>chunk</button>
-                  <button id={source.file_name} onClick={this.viewFull}>full</button>
-                </li>
-              ))}
-            </div>
-          </div>
-          <div className='reference-block'>
-            <label>Stream Reference</label>
-            <div>
               {sources.map(source => (
                 <li key={source.id}>
                   <label style={{ marginRight: '10px' }}>{source.metadata["file_name"] as string}</label>
-                  <button id={source.id} onClick={this.viewChrunk}>chunk</button>
+                  <button id={source.id} onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                    alert(source.text);
+                  }}>chunk</button>
                   <button id={source.metadata["file_name"] as string} onClick={this.viewFull}>full</button>
                 </li>
               ))}
