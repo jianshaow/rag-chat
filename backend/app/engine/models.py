@@ -182,7 +182,7 @@ def get_models(model_type: str, reload: bool) -> list[str]:
             model_list = model_config[model_type].models_func()
             __model_lists[model_type][model_provider] = model_list
         else:
-            import engine.extension as ext
+            import app.engine.extension as ext
 
             model_list = ext.get_models(model_provider, model_type)
             __model_lists[model_type][model_provider] = model_list
@@ -212,7 +212,7 @@ def get_model_config(model_provider: str) -> ModelConfig:
         chat_model = model_config["chat"].model_args["model"]
         return ModelConfig(embed_model=embed_model, chat_model=chat_model)
     else:
-        import engine.extension as ext
+        import app.engine.extension as ext
 
         return ext.get_model_config(model_provider)
 
@@ -227,7 +227,7 @@ def update_model_config(model_provider: str, conf: ModelConfig):
             embed_model_args["model_name"] = conf.embed_model
         model_config["chat"].model_args["model"] = conf.chat_model
     else:
-        import engine.extension as ext
+        import app.engine.extension as ext
 
         ext.update_model_config(model_provider, conf)
 
@@ -240,7 +240,7 @@ def new_model(model_type: str) -> Type[T]:
         model_args = model_config[model_type].model_args
         return model_class(**model_args)
     else:
-        import engine.extension as ext
+        import app.engine.extension as ext
 
         return ext.new_model(model_provider, model_type)
 
