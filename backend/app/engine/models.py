@@ -164,7 +164,7 @@ __model_configs: Dict[str, Dict[str, ModelSpec]] = {
 
 
 def get_model_providers() -> list[str]:
-    import engine.extension as ext
+    import app.engine.extension as ext
 
     ext_model_providers = ext.get_model_providers()
     return list(__model_configs.keys()) + ext_model_providers
