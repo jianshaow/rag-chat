@@ -154,7 +154,7 @@ def _main():
             else:
                 print("Data directory not provided.")
     else:
-        __retrieve_data(data_store.get_data_dirs()[0])
+        print("Usage: [index|retrieve] [data_dir]")
 
 
 if __name__ == "__main__":
