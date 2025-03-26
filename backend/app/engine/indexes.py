@@ -153,6 +153,8 @@ def _main():
                 __retrieve_data(data_dir)
             else:
                 print("Data directory not provided.")
+        else:
+            print("Usage: [index|retrieve] [data_dir]")
     else:
         print("Usage: [index|retrieve] [data_dir]")
 
