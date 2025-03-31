@@ -8,6 +8,7 @@ services:
       - https_proxy=${https_proxy:-}
       - CHROMA_BASE_DIR=/home/devel/chroma
       - DATA_BASE_DIR=/home/devel/data
+      - MODEL_PROVIDER=${MODEL_PROVIDER:-openai}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_API_BASE=${OPENAI_API_BASE}
       - OPENAI_BASE_URL=${OPENAI_API_BASE}
