@@ -23,8 +23,7 @@ def get_collection(data_dir: str) -> Collection:
 
 
 def _get_collection_name(data_dir: str) -> str:
-    escaped = models.get_embed_model_name().replace(":", "_").replace("/", "_")
-    return data_dir + "__" + escaped
+    return data_dir + "__" + models.get_escaped_embed_model_name()
 
 
 def get_doc_text(data_dir, ids: list[str]):

@@ -80,7 +80,9 @@ contextvar_event_handler = ContextVarEventCallbackHandler()
 
 def ingest(documents: List[Document], data_dir: str):
     vector_store = stores.get_vector_store(data_dir)
-    docstore = stores.get_docstore(setting.get_storage_path(data_dir))
+    docstore = stores.get_docstore(
+        setting.get_storage_path(data_dir, models.get_escaped_embed_model_name())
+    )
     pipeline = IngestionPipeline(
         transformations=[SentenceSplitter(), models.get_embed_model()],
         docstore=docstore,
@@ -89,7 +91,7 @@ def ingest(documents: List[Document], data_dir: str):
     )
     nodes = pipeline.run(documents=documents, show_progress=True)
     StorageContext.from_defaults(docstore=docstore, vector_store=vector_store).persist(
-        setting.get_storage_path(data_dir)
+        setting.get_storage_path(data_dir, models.get_escaped_embed_model_name())
     )
     return nodes
 

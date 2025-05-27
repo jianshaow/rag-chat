@@ -193,6 +193,10 @@ def get_embed_model_name() -> str:
     return get_model_config(setting.get_model_provider()).embed_model
 
 
+def get_escaped_embed_model_name() -> str:
+    return get_embed_model_name().replace(":", "_").replace("/", "_")
+
+
 def get_chat_model_name() -> str:
     return get_model_config(setting.get_model_provider()).chat_model
 
