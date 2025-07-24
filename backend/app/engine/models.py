@@ -1,22 +1,21 @@
 from typing import Any, Callable, Dict, Generic, Type, TypeVar
 
-import google.generativeai as genai
 import ollama
-from google.generativeai.types import ModelsIterable
+from google import genai
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
-from llama_index.embeddings.gemini import GeminiEmbedding
+from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from llama_index.embeddings.ollama import OllamaEmbedding
 from llama_index.embeddings.openai import OpenAIEmbedding
-from llama_index.llms.gemini import Gemini
+from llama_index.llms.google_genai import GoogleGenAI
 from llama_index.llms.ollama import Ollama
 from llama_index.llms.openai import OpenAI
 from openai import OpenAI as OriginalOpenAI
 from pydantic import BaseModel
 
 from app.engine import (
-    GEMINI_CHAT_MODEL,
-    GEMINI_EMBED_MODEL,
+    GOOGLE_CHAT_MODEL,
+    GOOGLE_EMBED_MODEL,
     OLLAMA_BASE_URL,
     OLLAMA_CHAT_MODEL,
     OLLAMA_EMBED_MODEL,
@@ -67,23 +66,23 @@ def openai_chat_models() -> list[str]:
     ]
 
 
-def gemini_embed_models() -> list[str]:
-    genai.configure(transport="rest")
-    models: ModelsIterable = genai.list_models()
+def google_embed_models() -> list[str]:
+    client = genai.Client()
+    models = client.models.list()
     return [
-        model.name
+        model.name or ""
         for model in models
-        if "embedContent" in model.supported_generation_methods
+        if "embedContent" in model.supported_actions  # type: ignore
     ]
 
 
-def gemini_chat_models() -> list[str]:
-    genai.configure(transport="rest")
-    models: ModelsIterable = genai.list_models()
+def google_chat_models() -> list[str]:
+    client = genai.Client()
+    models = client.models.list()
     return [
-        model.name
+        model.name or ""
         for model in models
-        if "generateContent" in model.supported_generation_methods
+        if "generateContent" in model.supported_actions  # type: ignore
     ]
 
 
@@ -130,16 +129,16 @@ __model_configs: Dict[str, Dict[str, ModelSpec]] = {
             models_func=openai_chat_models,
         ),
     },
-    "gemini": {
+    "google": {
         "embed": ModelSpec(
-            model_class=GeminiEmbedding,
-            model_args={"model": GEMINI_EMBED_MODEL, "transport": "rest"},
-            models_func=gemini_embed_models,
+            model_class=GoogleGenAIEmbedding,
+            model_args={"model": GOOGLE_EMBED_MODEL, "transport": "rest"},
+            models_func=google_embed_models,
         ),
         "chat": ModelSpec(
-            model_class=Gemini,
-            model_args={"model": GEMINI_CHAT_MODEL, "transport": "rest"},
-            models_func=gemini_chat_models,
+            model_class=GoogleGenAI,
+            model_args={"model": GOOGLE_CHAT_MODEL, "transport": "rest"},
+            models_func=google_chat_models,
         ),
     },
     "ollama": {

@@ -1,24 +1,27 @@
-[tool.poetry]
+[project]
 name = "app"
 version = "0.2.0"
 description = "A RAG-based Chatbot"
-authors = ["Jianshao"]
+authors = [
+    {name="Jianshao"}
+]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-llama-index-core = "^0.12.5"
-llama-index-readers-file = "^0.4.1"
-llama-index-vector-stores-chroma = "^0.4.1"
+llama-index-core = "^0.12.52.post1"
+llama-index-readers-file = "^0.4.11"
+llama-index-vector-stores-chroma = "^0.4.2"
 llama-index-embeddings-openai = "^0.3.1"
-llama-index-embeddings-gemini = "^0.3.0"
-llama-index-embeddings-ollama = "^0.5.0"
-llama-index-llms-openai = "^0.3.4"
-llama-index-llms-gemini = "^0.4.0"
-llama-index-llms-ollama = "^0.5.0"
-llama-index-agent-openai = "^0.4.1"
-fastapi = "^0.115.6"
-aiostream = "^0.6.4"
+llama-index-embeddings-google-genai = "^0.2.1"
+llama-index-embeddings-ollama = "^0.6.0"
+llama-index-llms-openai = "^0.4.7"
+llama-index-llms-google-genai = "^0.2.5"
+llama-index-llms-ollama = "^0.6.2"
+llama-index-agent-openai = "^0.4.12"
+fastapi = "^0.116.1"
+aiostream = "^0.7.0"
+chromadb = "^1.0.15"
 
 [tool.poetry.group.dev.dependencies]
 
