@@ -59,11 +59,14 @@ def __show_collection(collection: Collection, top_k: int = 2):
     count = collection.count()
     print("record count:", count)
     result = collection.peek(top_k)
+    ids = result["ids"]
     metadatas = result["metadatas"] if result["metadatas"] else []
     embeddings = result["embeddings"] if result["embeddings"] is not None else []
     documents = result["documents"] if result["documents"] else []
     print("top", len(metadatas), "results")
     for i, metadatas in enumerate(metadatas):
+        print("-" * 80)
+        print("id:", ids[i])
         __show_metadata(metadatas)
         __show_embeddings(embeddings[i])  # type: ignore
         __show_document(documents[i])
@@ -87,11 +90,15 @@ def __show_metadata(metadata: Metadata):
     )
 
 
-def __show_document(document: Document):
+def __show_document(document: Document, unwrap=False):
     import textwrap
 
     print("-" * 80)
-    print(f"document:\n{textwrap.fill(document[:347])}...")
+    print("document:")
+    if unwrap:
+        print(document)
+    else:
+        print(f"{textwrap.fill(document[:347])}...")
 
 
 def __show_embeddings(embedding: Embedding):
@@ -130,13 +137,14 @@ def _main():
             if data_dir is None:
                 print("provide the data_name")
             else:
-                doc_id = len(sys.argv) > 4 and sys.argv[4] or None
+                doc_id = len(sys.argv) > 3 and sys.argv[3] or None
                 if doc_id is None:
                     print("provide the doc_id")
                 else:
                     vector_text = get_doc_text(data_dir, [doc_id])
                     text = vector_text[0] if vector_text else ""
-                    __show_document(text)
+                    unwrap = len(sys.argv) > 4 and sys.argv[4] == "unwrap" or False
+                    __show_document(text, unwrap)
         else:
             print("'cls, rm, get, doc' the cmd are supported")
     else:
