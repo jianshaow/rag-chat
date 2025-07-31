@@ -47,14 +47,13 @@ def __delete_data_collection(data_dir):
 
 def __show_db():
     collections = get_db_client().list_collections()
-    print("=" * 80)
     print("collections size:", len(collections))
+    print("=" * 80)
     for collection in collections:
-        __show_collection(collection, 1)
+        __show_collection(collection, 2)
 
 
 def __show_collection(collection: Collection, top_k: int = 2):
-    print("+" * 80)
     print("collection name:", collection.name)
     count = collection.count()
     print("record count:", count)
@@ -76,7 +75,6 @@ def __show_collection(collection: Collection, top_k: int = 2):
 def __show_metadata(metadata: Metadata):
     import json
 
-    print("-" * 80)
     node_content_json = metadata["_node_content"]
     node_content = json.loads(str(node_content_json) if node_content_json else "")
     node_metadata = node_content["metadata"]
@@ -93,18 +91,15 @@ def __show_metadata(metadata: Metadata):
 def __show_document(document: Document, unwrap=False):
     import textwrap
 
-    print("-" * 80)
-    print("document:")
     if unwrap:
-        print(document)
+        print("full text:\n", document)
     else:
-        print(f"{textwrap.fill(document[:347])}...")
+        print(f"{textwrap.fill("text: " + document[:347] + "...")}")
 
 
 def __show_embeddings(embedding: Embedding):
-    print("-" * 80)
     print("embedding dimension:", len(embedding))
-    print(embedding[:4])
+    print("embedding:", embedding[:5])
 
 
 def _main():
