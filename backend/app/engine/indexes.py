@@ -131,8 +131,11 @@ def get_index(
 
 def __retrieve_data(data_dir: str):
     question = data_store.get_default_question(data_dir)
-    inext, _ = get_index(data_dir)
-    retriever = inext.as_retriever()
+    index, _ = get_index(data_dir)
+    print("-" * 80)
+    print("embed model:", index._embed_model.model_name)
+    print("Question: ", question)
+    retriever = index.as_retriever()
     nodes = retriever.retrieve(question)
     for node in nodes:
         print("-" * 80)
@@ -144,17 +147,11 @@ def _main():
 
     if len(sys.argv) > 1:
         if sys.argv[1] == "index":
-            data_dir = len(sys.argv) == 3 and sys.argv[2] or None
-            if data_dir:
-                index_data(data_dir)
-            else:
-                print("Data directory not provided.")
+            data_dir = len(sys.argv) == 3 and sys.argv[2] or setting.get_data_dir()
+            index_data(data_dir)
         elif sys.argv[1] == "retrieve":
-            data_dir = len(sys.argv) == 3 and sys.argv[2] or None
-            if data_dir:
-                __retrieve_data(data_dir)
-            else:
-                print("Data directory not provided.")
+            data_dir = len(sys.argv) == 3 and sys.argv[2] or setting.get_data_dir()
+            __retrieve_data(data_dir)
         else:
             print("Usage: [index|retrieve] [data_dir]")
     else:
