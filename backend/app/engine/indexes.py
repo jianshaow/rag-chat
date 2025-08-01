@@ -101,6 +101,8 @@ def index_data(data_dir: str):
     for doc in documents:
         doc.metadata["private"] = "false"
         doc.metadata["data_dir"] = data_dir
+        doc.excluded_embed_metadata_keys.append("file_path")
+        doc.excluded_llm_metadata_keys.append("file_path")
     return ingest(documents, data_dir)
 
 
