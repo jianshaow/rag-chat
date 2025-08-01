@@ -85,8 +85,8 @@ def ingest(documents: List[Document], data_dir: str):
     )
     pipeline = IngestionPipeline(
         transformations=[SentenceSplitter(), models.get_embed_model()],
-        docstore=docstore,
         vector_store=vector_store,
+        docstore=docstore,
         docstore_strategy=DocstoreStrategy.UPSERTS_AND_DELETE,
     )
     nodes = pipeline.run(documents=documents, show_progress=True)
