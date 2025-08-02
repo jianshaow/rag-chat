@@ -16,12 +16,11 @@ llama-index-embeddings-openai = "^0.3.1"
 llama-index-embeddings-google-genai = "^0.2.1"
 llama-index-embeddings-ollama = "^0.6.0"
 llama-index-llms-openai = "^0.4.7"
-llama-index-llms-google-genai = "^0.2.5"
+llama-index-llms-google-genai = "^0.2.6"
 llama-index-llms-ollama = "^0.6.2"
-llama-index-agent-openai = "^0.4.12"
+chromadb = "^1.0.15"
 fastapi = "^0.116.1"
 aiostream = "^0.7.0"
-chromadb = "^1.0.15"
 
 [tool.poetry.group.dev.dependencies]
 
