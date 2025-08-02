@@ -133,7 +133,7 @@ def __retrieve_data(data_dir: str):
     question = data_store.get_default_question(data_dir)
     index, _ = get_index(data_dir)
     print("-" * 80)
-    print("embed model:", index._embed_model.model_name)
+    print("embed model:", models.get_embed_model_name())
     print("Question: ", question)
     retriever = index.as_retriever()
     nodes = retriever.retrieve(question)

@@ -1,7 +1,6 @@
 from typing import Any, Callable, Dict, Generic, Type, TypeVar
 
-import ollama
-from google import genai
+from google.genai import Client as GoogleClient
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
 from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
@@ -10,7 +9,8 @@ from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.google_genai import GoogleGenAI
 from llama_index.llms.ollama import Ollama
 from llama_index.llms.openai import OpenAI
-from openai import OpenAI as OriginalOpenAI
+from ollama import Client as OllamaClient
+from openai import OpenAI as OpenAIClient
 from pydantic import BaseModel
 
 from app.engine import (
@@ -47,7 +47,7 @@ class NormOllamaEmbedding(OllamaEmbedding):
 
 
 def openai_embed_models() -> list[str]:
-    client = OriginalOpenAI()
+    client = OpenAIClient()
     models = client.models.list()
     return [
         model.id
@@ -57,7 +57,7 @@ def openai_embed_models() -> list[str]:
 
 
 def openai_chat_models() -> list[str]:
-    client = OriginalOpenAI()
+    client = OpenAIClient()
     models = client.models.list()
     return [
         model.id
@@ -67,7 +67,7 @@ def openai_chat_models() -> list[str]:
 
 
 def google_embed_models() -> list[str]:
-    client = genai.Client()
+    client = GoogleClient()
     models = client.models.list()
     return [
         model.name or ""
@@ -77,7 +77,7 @@ def google_embed_models() -> list[str]:
 
 
 def google_chat_models() -> list[str]:
-    client = genai.Client()
+    client = GoogleClient()
     models = client.models.list()
     return [
         model.name or ""
@@ -87,7 +87,7 @@ def google_chat_models() -> list[str]:
 
 
 def ollama_embed_models() -> list[str]:
-    client = ollama.Client(OLLAMA_HOST)
+    client = OllamaClient(OLLAMA_HOST)
     response = client.list()
     return [
         model.model
@@ -97,7 +97,7 @@ def ollama_embed_models() -> list[str]:
 
 
 def ollama_chat_models() -> list[str]:
-    client = ollama.Client(OLLAMA_HOST)
+    client = OllamaClient(OLLAMA_HOST)
     response = client.list()
     return [
         model.model
