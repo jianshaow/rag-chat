@@ -155,6 +155,7 @@ __model_configs: Dict[str, Dict[str, ModelSpec]] = {
             model_args={
                 "base_url": OLLAMA_BASE_URL,
                 "model": OLLAMA_CHAT_MODEL,
+                "thinking": False,
             },
             models_func=ollama_chat_models,
         ),
