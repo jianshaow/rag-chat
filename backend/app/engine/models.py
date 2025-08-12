@@ -29,23 +29,6 @@ from app.engine import (
 T = TypeVar("T", BaseEmbedding, LLM)
 
 
-class NormOllamaEmbedding(OllamaEmbedding):
-
-    def get_general_text_embedding(self, texts: str) -> list[float]:
-        """Get Ollama embedding."""
-        result = self._client.embed(
-            model=self.model_name, input=texts, options=self.ollama_additional_kwargs
-        )
-        return result["embeddings"][0]
-
-    async def aget_general_text_embedding(self, prompt: str) -> list[float]:
-        """Asynchronously get Ollama embedding."""
-        result = await self._async_client.embed(
-            model=self.model_name, input=prompt, options=self.ollama_additional_kwargs
-        )
-        return result["embeddings"][0]
-
-
 def openai_embed_models() -> list[str]:
     client = OpenAIClient()
     models = client.models.list()
@@ -143,7 +126,7 @@ __model_configs: Dict[str, Dict[str, ModelSpec]] = {
     },
     "ollama": {
         "embed": ModelSpec(
-            model_class=NormOllamaEmbedding,
+            model_class=OllamaEmbedding,
             model_args={
                 "base_url": OLLAMA_BASE_URL,
                 "model_name": OLLAMA_EMBED_MODEL,
