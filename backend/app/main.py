@@ -4,11 +4,10 @@ import os
 
 import uvicorn
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import FileResponse
 
-from app.api import files_url_prefix, frontend_base_url
+from app.api import files_url_prefix
 from app.api.routes import api_router
 from app.engine import events, indexes, setting
 
@@ -21,14 +20,6 @@ frontend = os.path.abspath(os.path.join("../frontend", "out"))
 frontend = os.getenv("FRONTEND_DIR", frontend)
 
 app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[frontend_base_url],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 @app.middleware("http")
@@ -69,4 +60,4 @@ if __name__ == "__main__":
     app_host = os.getenv("APP_HOST", "0.0.0.0")
     app_port = int(os.getenv("APP_PORT", "8000"))
 
-    uvicorn.run(app="app.main:app", host=app_host, port=app_port, reload=True)
+    uvicorn.run(app="app.main:app", host=app_host, port=app_port)
