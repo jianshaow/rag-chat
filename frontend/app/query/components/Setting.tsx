@@ -1,17 +1,18 @@
-import { Component, ChangeEvent, MouseEvent } from 'react';
+import { ChangeEvent, Component, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  getBeBaseUrl,
-  setBeBaseUrl,
+  fetchChatModels,
   fetchConfig,
   fetchDataConfig,
-  updateConfig,
-  fetchModelProviders,
-  updateModelConfig,
-  fetchModelConfig,
   fetchEmbedModels,
-  fetchChatModels,
-} from '../services/backend'
+  fetchModelConfig,
+  fetchModelProviders,
+  getBeBaseUrl,
+  indexData,
+  setBeBaseUrl,
+  updateConfig,
+  updateModelConfig,
+} from '../services/backend';
 import './Common.css';
 import './Setting.css';
 
@@ -140,7 +141,7 @@ class Setting extends Component<{}, SettingState> {
   };
 
   handleSaveConfig = async (e: MouseEvent) => {
-    const { modelProvider, dataDir } = this.state
+    const { modelProvider, dataDir } = this.state;
     const config = {
       'model_provider': modelProvider,
       'data_dir': dataDir,
@@ -153,8 +154,15 @@ class Setting extends Component<{}, SettingState> {
     })
   };
 
+  handleIndexData = async (e: MouseEvent) => {
+    const { dataDir } = this.state;
+    indexData(dataDir).then(() => {
+      alert('Data Indexed!')
+    });
+  }
+
   handleSaveModelConfig = async (e: MouseEvent) => {
-    const { modelProvider, embedModel, chatModel } = this.state
+    const { modelProvider, embedModel, chatModel } = this.state;
     const config = {
       'embed_model': embedModel,
       'chat_model': chatModel,
@@ -196,6 +204,7 @@ class Setting extends Component<{}, SettingState> {
                 <option key={dataDir} value={dataDir}>{dataDir}</option>
               ))}
               </select>
+              <button onClick={this.handleIndexData}>Index</button>
             </div>
           </div>
           <div className='setting'>

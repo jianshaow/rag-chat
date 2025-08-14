@@ -1,8 +1,8 @@
 import logging
 
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
-from app.engine import data_store, vectordb
+from app.engine import data_store, indexes, vectordb
 from app.engine.data_store import DataConfig
 
 logger = logging.getLogger(__name__)
@@ -13,6 +13,11 @@ data_router = r = APIRouter()
 @r.get("", tags=["data"])
 async def query_data() -> list[str]:
     return data_store.get_data_dirs()
+
+
+@r.post("/{data}", tags=["data"], status_code=status.HTTP_204_NO_CONTENT)
+async def ingest_data(data) -> None:
+    indexes.index_data(data)
 
 
 @r.get("/{data}/node/{node_id}", tags=["data"])

@@ -46,6 +46,15 @@ async function updateDataConfig(data_config: string) {
     })
 }
 
+async function indexData(data: string) {
+    const url = `${getBeBaseUrl()}/api/data/${data}`;
+    return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'plain/text' },
+        body: data,
+    }).then(response => { return });
+}
+
 async function fetchModelProviders() {
     const url = `${getBeBaseUrl()}/api/model/provider`
     return fetch(url).then(response => response.json());
@@ -129,7 +138,6 @@ async function streamQuery(query: string, onTextProcess: (answer: string) => voi
             }
         });
     }
-
 }
 
 async function fetchChrunk(data: string, id: string) {
@@ -138,6 +146,6 @@ async function fetchChrunk(data: string, id: string) {
 }
 
 export {
-    fetchChatModels, fetchChrunk, fetchConfig, fetchData, fetchDataConfig, fetchEmbedModels, fetchModelConfig, fetchModelProviders, getBeBaseUrl, query, setBeBaseUrl, streamQuery, updateConfig, updateDataConfig, updateModelConfig
+    fetchChatModels, fetchChrunk, fetchConfig, fetchData, fetchDataConfig, fetchEmbedModels, fetchModelConfig, fetchModelProviders, getBeBaseUrl, indexData, query, setBeBaseUrl, streamQuery, updateConfig, updateDataConfig, updateModelConfig
 };
 
