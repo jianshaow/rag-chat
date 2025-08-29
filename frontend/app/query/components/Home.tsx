@@ -1,7 +1,7 @@
 import { SourceNode } from '@llamaindex/chat-ui';
 import { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchConfig, fetchDataConfig, fetchModelConfig, getBeBaseUrl, streamQuery } from '../services/backend';
+import { fetchConfig, fetchDataConfig, fetchModelConfig, getBeBaseUrl, query, streamQuery } from '../services/backend';
 import './Common.css';
 import './Home.css';
 
@@ -12,6 +12,7 @@ interface HomeState {
   dataDirs: string[];
   dataDir: string;
   dataConfig: any;
+  streaming: boolean;
   request: string;
   text: string;
   sources: SourceNode[];
@@ -27,6 +28,7 @@ class Home extends Component<{}, HomeState> {
       dataConfig: {},
       dataDirs: [],
       dataDir: '',
+      streaming: true,
       request: '',
       text: "",
       sources: [],
@@ -60,15 +62,23 @@ class Home extends Component<{}, HomeState> {
     });
   }
 
-  handleStreamQuestion = async (e: FormEvent) => {
+  handleQuestion = async (e: FormEvent) => {
     e.preventDefault();
-    const { request } = this.state;
-    streamQuery(request, (answer: string) => {
-      this.setState({ text: answer })
-    }, (sources: SourceNode[]) => {
-      this.setState({ sources: sources })
-    })
-  };
+    const { request, streaming } = this.state;
+
+    if (streaming) {
+      streamQuery(request, (answer: string) => {
+        this.setState({ text: answer })
+      }, (sources: SourceNode[]) => {
+        this.setState({ sources: sources })
+      });
+    } else {
+      query(request).then(response => {
+        console.log(response);
+        this.setState({ text: response.answer, sources: response.sources });
+      });
+    }
+  }
 
   viewFull = (e: MouseEvent<HTMLButtonElement>) => {
     const { dataDir } = this.state;
@@ -78,7 +88,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { modelProvider, embedModel, chatModel, dataDir, request, text, sources } = this.state;
+    const { modelProvider, embedModel, chatModel, dataDir, streaming, request, text, sources } = this.state;
     return (
       <div className='container-column' style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div className='header'>
@@ -98,7 +108,7 @@ class Home extends Component<{}, HomeState> {
         <div className='container-column'>
           <div className='question-block'>
             <label>Question</label>
-            <form onSubmit={this.handleStreamQuestion}>
+            <form onSubmit={this.handleQuestion}>
               <div className='question-bar'>
                 <input type='text' value={request}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -110,7 +120,16 @@ class Home extends Component<{}, HomeState> {
             </form>
           </div>
           <div className='answer-block'>
-            <label>Answer</label>
+            <div className='between-container'>
+              <label>Answer</label>
+              <div className='right-group'>
+                <label className='config-lable'>Streaming: </label>
+                <input type='checkbox' onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  this.setState({ streaming: e.target.checked })
+                }}
+                  checked={streaming} />
+              </div>
+            </div>
             <div>
               <textarea value={text} readOnly rows={10} style={{ width: '100%' }} />
             </div>

@@ -13,6 +13,19 @@
   margin: 0 20px;
 }
 
+.between-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.right-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .container-column {
   display: flex;
   flex-direction: column;
