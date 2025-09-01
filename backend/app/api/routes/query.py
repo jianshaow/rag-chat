@@ -13,7 +13,7 @@ async def query_index(request: Request) -> QueryResult:
     raw_request = await request.body()
     query = raw_request.decode("utf-8")
     data = setting.get_data_dir()
-    query_engine, _ = engines.get_query_engine(data)
+    query_engine, _ = engines.get_query_engine(data, streaming=False)
     response: Response = query_engine.query(query)
     return QueryResult(
         answer=str(response),

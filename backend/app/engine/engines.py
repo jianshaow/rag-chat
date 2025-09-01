@@ -8,13 +8,13 @@ from app.engine import events, indexes, models, utils
 
 
 def get_query_engine(
-    data_dir: str,
+    data_dir: str, streaming=True
 ) -> Tuple[BaseQueryEngine, events.QueueEventCallbackHandler]:
     utils.log_model_info(data_dir)
     chat_model = models.get_chat_model()
     index, context = indexes.get_index(data_dir)
     return (
-        index.as_query_engine(llm=chat_model, streaming=True, verbose=True),
+        index.as_query_engine(llm=chat_model, streaming=streaming, verbose=True),
         context.get(),
     )
 
