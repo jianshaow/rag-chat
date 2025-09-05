@@ -1,13 +1,11 @@
 .answer-block {
   display: flex;
   flex-direction: column;
-  margin: 0 20px;
 }
 
 .question-block {
   display: flex;
   flex-direction: column;
-  margin: 0 20px;
 }
 
 .question-bar {
@@ -17,5 +15,4 @@
 .reference-block {
   display: flex;
   flex-direction: column;
-  margin: 0 20px;
 }

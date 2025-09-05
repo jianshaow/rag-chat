@@ -7,7 +7,7 @@
 .setting-container {
     display: flex;
     flex-direction: column;
-    margin: 0 20px;
     border-radius: 5px;
-    border: 2px solid #000;
+    border: 1px solid #000;
+    margin-bottom: 10px;
 }

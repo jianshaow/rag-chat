@@ -176,22 +176,27 @@ class Setting extends Component<{}, SettingState> {
     const { beBaseUrl, dataDirs, dataDir, modelProviders, modelProvider, embedModel, chatModel, embedModels, chatModels } = this.state;
 
     return (
-      <div className='container-column' style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div className='main-frame'>
         <div className='header'>
           <Link to='/query'>Return Home</Link>
         </div>
         <h1 className='title'>Settings</h1>
-        <div className='container'>
-          <label className='config-lable'>Backend Base URL: </label>
-          <input
-            type='text'
-            value={beBaseUrl}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              this.setState({ beBaseUrl: e.target.value });
-            }}
-          />
-          <button onClick={this.handleSaveBeBaseUrl}>Save</button>
-          <button onClick={this.handleDetectBeBaseUrl}>Detect</button>
+        <label className='title'>General</label>
+        <div className='setting-container'>
+          <div className='setting'>
+            <div>
+              <label className='config-lable'>Backend Base URL: </label>
+              <input
+                type='text'
+                value={beBaseUrl}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  this.setState({ beBaseUrl: e.target.value });
+                }}
+              />
+              <button onClick={this.handleSaveBeBaseUrl}>Save</button>
+              <button onClick={this.handleDetectBeBaseUrl}>Detect</button>
+            </div>
+          </div>
         </div>
         <label className='title'>Backend</label>
         <div className='setting-container'>

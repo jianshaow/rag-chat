@@ -1,16 +1,23 @@
+.main-frame {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: top;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .header {
   text-align: right;
-  margin: 0 20px;
 }
 
 .title {
-  margin: 10px 20px;
   text-align: left;
 }
 
 .container {
   display: flex;
-  margin: 0 20px;
 }
 
 .between-container {
@@ -31,8 +38,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: top;
-  margin: 10px 0;
-}
+} 
 
 .config-lable {
   margin-right: 5px;
@@ -45,11 +51,10 @@ h1 {
   line-height: 1.2;
 }
 
-
 input,
 textarea,
 select {
-  border: 2px solid black;
+  border: 1px solid black;
   border-radius: 5px;
   margin-right: 5px;
 }
@@ -62,4 +67,13 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-right: 5px;
+}
+
+body {
+  margin: 20px 20px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #f0f0f0;
 }
