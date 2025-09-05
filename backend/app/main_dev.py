@@ -3,12 +3,11 @@ import os
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import frontend_base_url
 from app.main import app
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[frontend_base_url],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
