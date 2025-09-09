@@ -1,5 +1,5 @@
 import { SourceNode } from '@llamaindex/chat-ui';
-import { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
+import React, { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchConfig, fetchDataConfig, fetchModelConfig, getBeBaseUrl, query, streamQuery } from '../services/backend';
 import './Common.css';
@@ -35,8 +35,10 @@ class Home extends Component<{}, HomeState> {
     };
   }
 
+  textRef = React.createRef<HTMLTextAreaElement>();
+
   componentDidMount() {
-    this.initConfig()
+    this.initConfig();
   }
 
   initConfig() {
@@ -68,14 +70,20 @@ class Home extends Component<{}, HomeState> {
 
     if (streaming) {
       streamQuery(request, (answer: string) => {
-        this.setState({ text: answer })
+        this.setState({ text: answer });
+        if (this.textRef.current) {
+          this.textRef.current.scrollTop = this.textRef.current.scrollHeight;
+        }
       }, (sources: SourceNode[]) => {
-        this.setState({ sources: sources })
+        this.setState({ sources: sources });
       });
     } else {
       query(request).then(response => {
         console.log(response);
         this.setState({ text: response.answer, sources: response.sources });
+        if (this.textRef.current) {
+          this.textRef.current.scrollTop = this.textRef.current.scrollHeight;
+        }
       });
     }
   }
@@ -131,7 +139,7 @@ class Home extends Component<{}, HomeState> {
               </div>
             </div>
             <div>
-              <textarea value={text} readOnly rows={10} style={{ width: '100%' }} />
+              <textarea ref={this.textRef} value={text} readOnly rows={10} style={{ width: '100%' }} />
             </div>
           </div>
           <div className='reference-block'>
