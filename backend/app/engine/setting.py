@@ -13,11 +13,11 @@ from app.engine import (
 
 
 class Setting(BaseModel):
-    data_dir: str = DATA_DIR
-    model_provider: str = MODEL_PROVIDER
+    data_dir: str
+    model_provider: str
 
 
-__setting = Setting()
+__setting = Setting(data_dir=DATA_DIR, model_provider=MODEL_PROVIDER)
 
 
 def get_config() -> Setting:
