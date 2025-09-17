@@ -94,8 +94,12 @@ async function query(query: string) {
     }).then(response => response.json());
 }
 
-async function streamQuery(query: string, onTextProcess: (answer: string) => void, onSoucesProcess: (sources: SourceNode[]) => void,) {
-    const url = `${getBeBaseUrl()}/api/query/stream`;
+async function streamQuery(query: string, agentic: boolean, onTextProcess: (answer: string) => void, onSoucesProcess: (sources: SourceNode[]) => void,) {
+    var path = '/api/query/stream';
+    if (agentic) {
+        path = '/api/query/agent_stream';
+    }
+    const url = `${getBeBaseUrl()}${path}`;
     const resp = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'plain/text' },

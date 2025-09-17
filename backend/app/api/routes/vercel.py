@@ -4,9 +4,12 @@ from typing import AsyncGenerator, Awaitable, Callable, List, Tuple
 
 from aiostream import stream
 from fastapi.responses import StreamingResponse
+from llama_index.core.agent.workflow import AgentStream, ToolCallResult
 from llama_index.core.base.response.schema import AsyncStreamingResponse
 from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 from llama_index.core.schema import NodeWithScore
+from llama_index.core.tools.retriever_tool import DEFAULT_NAME
+from workflows.handler import WorkflowHandler
 
 from app.api.routes.payload import ChatMessages, SourceNodes
 from app.api.services.suggestion import suggest_next_questions
@@ -23,17 +26,13 @@ class VercelStreamingResponse(StreamingResponse):
 
     def __init__(
         self,
-        await_response: Callable[
-            [], Awaitable[Tuple[List[NodeWithScore], AsyncGenerator]]
-        ],
+        response_generator: AsyncGenerator[str, None],
+        event_generator: AsyncGenerator[str, None],
         event_handler: events.QueueEventCallbackHandler,
-        messages: ChatMessages | None = None,
     ):
         super().__init__(
             self.__class__.stream_generator(
-                await_response,
-                event_handler,
-                messages,
+                response_generator, event_generator, event_handler
             ),
         )
 
@@ -48,7 +47,11 @@ class VercelStreamingResponse(StreamingResponse):
             result = await response
             return result.source_nodes, result.async_response_gen()
 
-        return cls(await_response, event_handler, messages)
+        response_generator = __class__.response_generator(
+            await_response, event_handler, messages
+        )
+        event_generator = __class__.event_generator(event_handler)
+        return cls(response_generator, event_generator, event_handler)
 
     @classmethod
     def from_query_response(
@@ -61,7 +64,39 @@ class VercelStreamingResponse(StreamingResponse):
             result = await response
             return result.source_nodes, result.async_response_gen()
 
-        return cls(await_response, event_handler, messages)
+        response_generator = __class__.response_generator(
+            await_response, event_handler, messages
+        )
+        event_generator = __class__.event_generator(event_handler)
+
+        return cls(response_generator, event_generator, event_handler)
+
+    @classmethod
+    def from_agent_response(
+        cls,
+        response: WorkflowHandler,
+        event_handler: events.QueueEventCallbackHandler,
+        messages: ChatMessages | None = None,
+    ):
+        async def response_generator():
+            final_response = ""
+            async for event in response.stream_events():
+                if (
+                    isinstance(event, ToolCallResult)
+                    and event.tool_name == DEFAULT_NAME
+                ):
+                    yield cls.extract_sources_data(event.tool_output.raw_output)
+                elif isinstance(event, AgentStream):
+                    final_response = event.response
+                    yield cls.to_text(event.delta)
+            if messages:
+                yield await cls.next_questions_data(messages, final_response)
+
+            event_handler.is_done = True
+
+        event_generator = cls.event_generator(event_handler)
+
+        return cls(response_generator(), event_generator, event_handler)
 
     @classmethod
     def to_text(cls, token: str):
@@ -81,17 +116,11 @@ class VercelStreamingResponse(StreamingResponse):
     @classmethod
     async def stream_generator(
         cls,
-        await_response: Callable[
-            [], Awaitable[Tuple[List[NodeWithScore], AsyncGenerator]]
-        ],
+        response_generator: AsyncGenerator[str, None],
+        event_generator: AsyncGenerator[str, None],
         event_handler: events.QueueEventCallbackHandler,
-        messages: ChatMessages | None = None,
     ):
         event_handler.is_done = False
-        response_generator = cls.response_generator(
-            await_response, event_handler, messages
-        )
-        event_generator = cls.event_generator(event_handler)
         combine = stream.merge(response_generator, event_generator)
         is_stream_started = False
         try:

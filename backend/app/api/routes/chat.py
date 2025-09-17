@@ -6,7 +6,7 @@ from app.api.routes.filters import generate_filters
 from app.api.routes.payload import ChatMessages, FileUploadRequest
 from app.api.routes.vercel import VercelStreamingResponse
 from app.api.services.files import DocumentFile, process_file
-from app.engine import engines
+from app.engine import agents
 
 logger = logging.getLogger(__name__)
 
@@ -25,9 +25,9 @@ async def chat(chat_messages: ChatMessages):
     """
     doc_ids = chat_messages.get_chat_document_ids()
     data, filters = generate_filters(doc_ids)
-    engine, handler = engines.get_chat_engine(data, filters)
-    response = engine.astream_chat(chat_messages.last_content, chat_messages.history)
-    return VercelStreamingResponse.from_chat_response(response, handler, chat_messages)
+    engine, handler = agents.get_agent(data, filters)
+    response = engine.run(chat_messages.last_content, chat_messages.history)
+    return VercelStreamingResponse.from_agent_response(response, handler, chat_messages)
 
 
 @r.post("/upload", tags=["chat"])

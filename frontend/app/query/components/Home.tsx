@@ -12,6 +12,7 @@ interface HomeState {
   dataDirs: string[];
   dataDir: string;
   dataConfig: any;
+  agentic: boolean;
   streaming: boolean;
   request: string;
   text: string;
@@ -28,9 +29,10 @@ class Home extends Component<{}, HomeState> {
       dataConfig: {},
       dataDirs: [],
       dataDir: '',
+      agentic: true,
       streaming: true,
       request: '',
-      text: "",
+      text: '',
       sources: [],
     };
   }
@@ -66,10 +68,12 @@ class Home extends Component<{}, HomeState> {
 
   handleQuestion = async (e: FormEvent) => {
     e.preventDefault();
-    const { request, streaming } = this.state;
+    this.setState({ text: '', sources: [] })
 
-    if (streaming) {
-      streamQuery(request, (answer: string) => {
+    const { request, agentic, streaming } = this.state;
+
+    if (agentic || streaming) {
+      streamQuery(request, agentic, (answer: string) => {
         this.setState({ text: answer });
         if (this.textRef.current) {
           this.textRef.current.scrollTop = this.textRef.current.scrollHeight;
@@ -96,7 +100,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { modelProvider, embedModel, chatModel, dataDir, streaming, request, text, sources } = this.state;
+    const { modelProvider, embedModel, chatModel, dataDir, agentic: agent, streaming, request, text, sources } = this.state;
     return (
       <div className='main-frame'>
         <div className='header'>
@@ -131,11 +135,14 @@ class Home extends Component<{}, HomeState> {
             <div className='between-container'>
               <label>Answer</label>
               <div className='right-group'>
+                <label className='config-lable'>Agentic: </label>
+                <input type='checkbox' onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  this.setState({ agentic: e.target.checked });
+                }} checked={agent} />
                 <label className='config-lable'>Streaming: </label>
                 <input type='checkbox' onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  this.setState({ streaming: e.target.checked })
-                }}
-                  checked={streaming} />
+                  this.setState({ streaming: e.target.checked });
+                }} checked={streaming} disabled={agent} />
               </div>
             </div>
             <div>
