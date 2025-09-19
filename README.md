@@ -6,11 +6,11 @@ Demo a RAG besed Q&A system.
 ~~~shell
 # install dependencies
 docker run -v $PWD/frontend:/home/node/frontend \
-       --rm jianshao/node-dev:lts-slim \
+       --rm jianshao/node-dev:lts \
        npm --prefix /home/node/frontend install
 # build package
 docker run -v $PWD/frontend:/home/node/frontend \
-       --rm jianshao/node-dev:lts-slim \
+       --rm jianshao/node-dev:lts \
        npm --prefix /home/node/frontend run build
 ~~~
 
