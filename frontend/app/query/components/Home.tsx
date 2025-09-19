@@ -1,4 +1,4 @@
-import { SourceNode } from '@llamaindex/chat-ui';
+import { SourceNode } from "@llamaindex/chat-ui/widgets";
 import React, { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchConfig, fetchDataConfig, fetchModelConfig, getBeBaseUrl, query, streamQuery } from '../services/backend';

@@ -1,4 +1,5 @@
-import { MessageAnnotation, MessageAnnotationType, SourceData, SourceNode } from "@llamaindex/chat-ui";
+import { MessageAnnotation, MessageAnnotationType } from "@llamaindex/chat-ui";
+import { SourceData, SourceNode } from "@llamaindex/chat-ui/widgets";
 
 function setBeBaseUrl(beBaseUrl: string) {
     localStorage.setItem('beBaseUrl', beBaseUrl);

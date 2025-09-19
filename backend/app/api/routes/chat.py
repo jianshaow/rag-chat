@@ -6,7 +6,7 @@ from app.api.routes.filters import generate_filters
 from app.api.routes.payload import ChatMessages, FileUploadRequest
 from app.api.routes.vercel import VercelStreamingResponse
 from app.api.services.files import DocumentFile, process_file
-from app.engine import agents
+from app.engine import agents, data_store, setting
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,13 @@ chat_router = r = APIRouter()
 
 @r.get("/config", tags=["chat"])
 async def chat_config():
-    return {"starterQuestions": None}
+    default_question = data_store.get_default_question(setting.get_data_dir())
+    return {
+        "starterQuestions": [
+            default_question,
+            "What is the document about?",
+        ]
+    }
 
 
 @r.post("", tags=["chat"])
