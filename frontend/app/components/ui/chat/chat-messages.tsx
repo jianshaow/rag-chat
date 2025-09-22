@@ -15,8 +15,16 @@ export default function CustomChatMessages() {
             message={message}
             isLast={index === messages.length - 1}
           >
-            <ChatMessageAvatar />
-            <ChatMessage.Content />
+            {message.role === "user"
+              ? [
+                <ChatMessage.Content key="content" />,
+                <ChatMessageAvatar key="avatar" />
+              ]
+              : [
+                <ChatMessageAvatar key="avatar" />,
+                <ChatMessage.Content key="content" />
+              ]
+            }
             <ChatMessage.Actions />
           </ChatMessage>
         ))}

@@ -16,8 +16,8 @@ export function ChatMessageAvatar() {
     <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border bg-black text-white shadow">
       <Image
         className="rounded-md"
-        src="/github.png"
-        alt="Github Logo"
+        src="/llama.png"
+        alt="Llama Logo"
         width={24}
         height={24}
         priority
