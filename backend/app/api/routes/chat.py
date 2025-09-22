@@ -31,8 +31,8 @@ async def chat(chat_messages: ChatMessages):
     """
     doc_ids = chat_messages.get_chat_document_ids()
     data, filters = generate_filters(doc_ids)
-    engine, handler = agents.get_agent(data, filters)
-    response = engine.run(chat_messages.last_content, chat_messages.history)
+    agent, handler = agents.get_agent(data, filters)
+    response = agent.run(chat_messages.last_content, chat_messages.history)
     return VercelStreamingResponse.from_agent_response(response, handler, chat_messages)
 
 
