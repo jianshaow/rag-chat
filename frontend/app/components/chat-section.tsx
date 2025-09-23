@@ -3,7 +3,7 @@
 import { ChatSection } from "@llamaindex/chat-ui";
 import "@llamaindex/chat-ui/styles/markdown.css";
 import "@llamaindex/chat-ui/styles/pdf.css";
-import { useChat } from "ai/react";
+import { useChat } from "@ai-sdk/react";
 import CustomChatInput from "./ui/chat/chat-input";
 import CustomChatMessages from "./ui/chat/chat-messages";
 import { useClientConfig } from "./ui/chat/hooks/use-config";
