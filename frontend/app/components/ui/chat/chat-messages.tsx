@@ -1,8 +1,8 @@
 "use client";
 
 import { ChatMessage, ChatMessages, useChatUI } from "@llamaindex/chat-ui";
-import { ChatMessageAvatar } from "./chat-avatar";
 import { ChatStarter } from "./chat-starter";
+import Image from "next/image";
 
 export default function CustomChatMessages() {
   const { messages } = useChatUI();
@@ -15,16 +15,17 @@ export default function CustomChatMessages() {
             message={message}
             isLast={index === messages.length - 1}
           >
-            {message.role === "user"
-              ? [
-                <ChatMessage.Content key="content" />,
-                <ChatMessageAvatar key="avatar" />
-              ]
-              : [
-                <ChatMessageAvatar key="avatar" />,
-                <ChatMessage.Content key="content" />
-              ]
-            }
+            <ChatMessage.Avatar key="avatar">
+              <Image
+                className="rounded-md"
+                src="/llama.png"
+                alt="Llama Logo"
+                width={24}
+                height={24}
+                priority
+              />
+            </ChatMessage.Avatar>
+            <ChatMessage.Content key="content" />
             <ChatMessage.Actions />
           </ChatMessage>
         ))}
