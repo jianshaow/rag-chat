@@ -15,7 +15,7 @@ export default function CustomChatMessages() {
             message={message}
             isLast={index === messages.length - 1}
           >
-            <ChatMessage.Avatar key="avatar">
+            <ChatMessage.Avatar>
               <Image
                 className="rounded-md"
                 src="/llama.png"
@@ -25,7 +25,7 @@ export default function CustomChatMessages() {
                 priority
               />
             </ChatMessage.Avatar>
-            <ChatMessage.Content key="content" />
+            <ChatMessage.Content />
             <ChatMessage.Actions />
           </ChatMessage>
         ))}
