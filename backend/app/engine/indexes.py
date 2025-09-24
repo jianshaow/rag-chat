@@ -132,7 +132,7 @@ def get_index(
 
 
 def __retrieve_data(data_dir: str):
-    question = data_store.get_default_question(data_dir)
+    question = data_store.get_starter_question(data_dir)
     index, _ = get_index(data_dir)
     print("-" * 80)
     print("embed model:", models.get_embed_model_name())

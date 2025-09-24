@@ -15,11 +15,11 @@ chat_router = r = APIRouter()
 
 @r.get("/config", tags=["chat"])
 async def chat_config():
-    default_question = data_store.get_default_question(setting.get_data_dir())
+    starter_question = data_store.get_starter_question(setting.get_data_dir())
     return {
         "starterQuestions": [
-            default_question,
-            "What is the document about?",
+            starter_question,
+            data_store.DEFAULT_DATA_CONFIG.starter_question,
         ]
     }
 
