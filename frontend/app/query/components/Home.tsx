@@ -61,8 +61,8 @@ class Home extends Component<{}, HomeState> {
 
   updateData(dataDir: string) {
     fetchDataConfig().then(dataConfig => {
-      const defaultQuestion = dataConfig[dataDir].default_question;
-      this.setState({ request: defaultQuestion });
+      const starterQuestion = dataConfig[dataDir].starter_question;
+      this.setState({ request: starterQuestion });
     });
   }
 
