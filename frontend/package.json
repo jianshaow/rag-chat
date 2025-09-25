@@ -10,8 +10,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@apidevtools/swagger-parser": "^10.1.1",
-    "@e2b/code-interpreter": "0.0.9-beta.3",
     "@llamaindex/chat-ui": "^0.5.17",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-select": "^2.2.6",
@@ -22,9 +20,6 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.6.1",
-    "duck-duck-scrape": "^2.2.5",
-    "formdata-node": "^6.0.3",
-    "got": "^14.4.1",
     "llamaindex": "^0.11.29",
     "lucide-react": "^0.460.0",
     "marked": "^14.1.2",
@@ -35,11 +30,9 @@
     "react-router-dom": "^7.9.1",
     "supports-color": "^8.1.1",
     "tailwind-merge": "^2.6.0",
-    "tiktoken": "^1.0.15",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@llamaindex/workflow": "^0.0.3",
     "@types/node": "^20.10.3",
     "@types/papaparse": "^5.3.16",
     "@types/react": "^18.3.24",
@@ -50,7 +43,6 @@
     "eslint": "^9.36.0",
     "eslint-config-next": "^15.5.3",
     "eslint-config-prettier": "^9.1.2",
-    "node": "^20.19.5",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
