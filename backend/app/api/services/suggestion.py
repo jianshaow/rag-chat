@@ -30,5 +30,5 @@ def _extract_questions(text: str) -> list[str] | None:
     content_match = re.search(r"```(.*?)```", text, re.DOTALL)
     content = content_match.group(1) if content_match else None
     if not content:
-        return None
+        return []
     return [q.strip() for q in content.split("\n") if q.strip()]
