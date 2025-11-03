@@ -47,10 +47,10 @@ class VercelStreamingResponse(StreamingResponse):
             result = await response
             return result.source_nodes, result.async_response_gen()
 
-        response_generator = __class__.response_generator(
+        response_generator = cls.response_generator(
             await_response, event_handler, messages
         )
-        event_generator = __class__.event_generator(event_handler)
+        event_generator = cls.event_generator(event_handler)
         return cls(response_generator, event_generator, event_handler)
 
     @classmethod
@@ -64,10 +64,10 @@ class VercelStreamingResponse(StreamingResponse):
             result = await response
             return result.source_nodes, result.async_response_gen()
 
-        response_generator = __class__.response_generator(
+        response_generator = cls.response_generator(
             await_response, event_handler, messages
         )
-        event_generator = __class__.event_generator(event_handler)
+        event_generator = cls.event_generator(event_handler)
 
         return cls(response_generator, event_generator, event_handler)
 
