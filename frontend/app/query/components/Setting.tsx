@@ -7,11 +7,12 @@ import {
   fetchEmbedModels,
   fetchModelConfig,
   fetchModelProviders,
+  fetchToolSets,
   getBeBaseUrl,
   indexData,
   setBeBaseUrl,
   updateConfig,
-  updateModelConfig,
+  updateModelConfig
 } from '../services/backend';
 import './Common.css';
 import './Setting.css';
@@ -26,6 +27,9 @@ interface SettingState {
   embedModel: string;
   chatModels: string[];
   chatModel: string;
+  toolSets: string[];
+  toolSet: string;
+  mcpUrl: string;
 }
 
 class Setting extends Component<{}, SettingState> {
@@ -41,6 +45,9 @@ class Setting extends Component<{}, SettingState> {
       embedModel: '',
       chatModels: [],
       chatModel: '',
+      toolSets: [],
+      toolSet: '',
+      mcpUrl: '',
     };
   }
 
@@ -51,6 +58,7 @@ class Setting extends Component<{}, SettingState> {
   initSetting() {
     this.initConfig();
     this.initDataDir();
+    this.initToolSets();
     this.initModelProviders();
     this.initEmbedModels()
     this.initChatModels();
@@ -104,11 +112,20 @@ class Setting extends Component<{}, SettingState> {
     });
   }
 
+
+  initToolSets() {
+    fetchToolSets().then(toolSets => {
+      this.setState({ toolSets: toolSets });
+    });
+  }
+
   initConfig() {
     fetchConfig().then(config => {
       this.setState({
         modelProvider: config.model_provider,
         dataDir: config.data_dir,
+        toolSet: config.tool_set,
+        mcpUrl: config.mcp_url,
       });
       this.reloadApiConfig(config.model_provider);
     });
@@ -141,10 +158,12 @@ class Setting extends Component<{}, SettingState> {
   };
 
   handleSaveConfig = async (e: MouseEvent) => {
-    const { modelProvider, dataDir } = this.state;
+    const { modelProvider, dataDir, toolSet, mcpUrl } = this.state;
     const config = {
       'model_provider': modelProvider,
       'data_dir': dataDir,
+      'tool_set': toolSet,
+      'mcp_url': mcpUrl,
     };
     updateConfig(JSON.stringify(config)).then(() => {
       alert('Setting Saved!');
@@ -173,7 +192,7 @@ class Setting extends Component<{}, SettingState> {
   };
 
   render() {
-    const { beBaseUrl, dataDirs, dataDir, modelProviders, modelProvider, embedModel, chatModel, embedModels, chatModels } = this.state;
+    const { beBaseUrl, dataDirs, dataDir, modelProviders, modelProvider, embedModel, chatModel, embedModels, chatModels, toolSets, toolSet, mcpUrl } = this.state;
 
     return (
       <div className='main-frame'>
@@ -202,6 +221,17 @@ class Setting extends Component<{}, SettingState> {
         <div className='setting-container'>
           <div className='setting'>
             <div>
+              <label className='config-lable'>Tool Set: </label>
+              <select value={toolSet} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                this.setState({ toolSet: e.target.value })
+              }}>{toolSets.map(toolSet => (
+                <option key={toolSet} value={toolSet}>{toolSet}</option>
+              ))}
+              </select>
+            </div>
+          </div>
+          <div className='setting'>
+            <div>
               <label className='config-lable'>Data Dir: </label>
               <select value={dataDir} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                 this.setState({ dataDir: e.target.value })
@@ -210,6 +240,18 @@ class Setting extends Component<{}, SettingState> {
               ))}
               </select>
               <button onClick={this.handleIndexData}>Index</button>
+            </div>
+          </div>
+          <div className='setting'>
+            <div>
+              <label className='config-lable'>MCP URL: </label>
+              <input
+                type='text'
+                value={mcpUrl}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  this.setState({ mcpUrl: e.target.value });
+                }}
+              />
             </div>
           </div>
           <div className='setting'>

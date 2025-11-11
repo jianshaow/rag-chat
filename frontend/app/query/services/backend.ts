@@ -38,13 +38,9 @@ async function fetchDataConfig() {
     return fetch(url).then(response => response.json());
 }
 
-async function updateDataConfig(data_config: string) {
-    const url = `${getBeBaseUrl()}/api/data/config`;
-    fetch(url, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: data_config,
-    })
+async function fetchChatConfig() {
+    const url = `${getBeBaseUrl()}/api/chat/config`;
+    return fetch(url).then(response => response.json());
 }
 
 async function indexData(data: string) {
@@ -58,6 +54,11 @@ async function indexData(data: string) {
 
 async function fetchModelProviders() {
     const url = `${getBeBaseUrl()}/api/model/provider`
+    return fetch(url).then(response => response.json());
+}
+
+async function fetchToolSets() {
+    const url = `${getBeBaseUrl()}/api/tools`
     return fetch(url).then(response => response.json());
 }
 
@@ -150,7 +151,5 @@ async function fetchChrunk(data: string, id: string) {
     return fetch(url).then(response => response.json());
 }
 
-export {
-    fetchChatModels, fetchChrunk, fetchConfig, fetchData, fetchDataConfig, fetchEmbedModels, fetchModelConfig, fetchModelProviders, getBeBaseUrl, indexData, query, setBeBaseUrl, streamQuery, updateConfig, updateDataConfig, updateModelConfig
-};
+export { fetchChatConfig, fetchChatModels, fetchChrunk, fetchConfig, fetchData, fetchDataConfig, fetchEmbedModels, fetchModelConfig, fetchModelProviders, fetchToolSets, getBeBaseUrl, indexData, query, setBeBaseUrl, streamQuery, updateConfig, updateModelConfig };
 

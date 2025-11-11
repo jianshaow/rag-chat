@@ -1,6 +1,8 @@
 """Environments here."""
 
+import json
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -8,6 +10,8 @@ load_dotenv()
 MODEL_PROVIDER = os.getenv("MODEL_PROVIDER", "ollama")
 DATA_BASE_DIR = os.getenv("DATA_BASE_DIR", "data")
 DATA_DIR = os.getenv("DATA_DIR", "en_novel")
+TOOL_SET = json.loads(os.getenv("TOOL_SET", '"retriever"'))
+MCP_URL = os.getenv("MCP_URL", "https://mcp.context7.com/mcp")
 
 UPLOADED_DATA_DIR = os.getenv("UPLOADED_DATA_DIR", "uploaded")
 CHROMA_BASE_DIR = os.getenv("CHROMA_BASE_DIR", "chroma")

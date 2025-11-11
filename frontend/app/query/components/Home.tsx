@@ -1,7 +1,7 @@
 import { SourceNode } from "@llamaindex/chat-ui/widgets";
 import React, { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchConfig, fetchDataConfig, fetchModelConfig, getBeBaseUrl, query, streamQuery } from '../services/backend';
+import { fetchChatConfig, fetchConfig, fetchModelConfig, getBeBaseUrl, query, streamQuery } from '../services/backend';
 import './Common.css';
 import './Home.css';
 
@@ -9,9 +9,11 @@ interface HomeState {
   modelProvider: string;
   embedModel: string;
   chatModel: string;
+  toolSet: string;
   dataDirs: string[];
   dataDir: string;
   dataConfig: any;
+  mcpUrl: string;
   agentic: boolean;
   streaming: boolean;
   request: string;
@@ -26,9 +28,11 @@ class Home extends Component<{}, HomeState> {
       modelProvider: '',
       embedModel: '',
       chatModel: '',
+      toolSet: '',
       dataConfig: {},
       dataDirs: [],
       dataDir: '',
+      mcpUrl: '',
       agentic: true,
       streaming: true,
       request: '',
@@ -48,6 +52,8 @@ class Home extends Component<{}, HomeState> {
       this.setState({
         modelProvider: config.model_provider,
         dataDir: config.data_dir,
+        toolSet: config.tool_set,
+        mcpUrl: config.mcp_url,
       });
       fetchModelConfig(config.model_provider).then(config => {
         this.setState({
@@ -55,13 +61,14 @@ class Home extends Component<{}, HomeState> {
           chatModel: config.chat_model,
         });
       });
-      this.updateData(config.data_dir);
+      this.initChatConfig();
     });
   }
 
-  updateData(dataDir: string) {
-    fetchDataConfig().then(dataConfig => {
-      const starterQuestion = dataConfig[dataDir].starter_question;
+  initChatConfig() {
+    fetchChatConfig().then(chatConfig => {
+      console.log(chatConfig);
+      const starterQuestion = chatConfig.starterQuestions[0];
       this.setState({ request: starterQuestion });
     });
   }
@@ -100,7 +107,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { modelProvider, embedModel, chatModel, dataDir, agentic: agent, streaming, request, text, sources } = this.state;
+    const { modelProvider, embedModel, chatModel, toolSet, dataDir, mcpUrl, agentic: agent, streaming, request, text, sources } = this.state;
     return (
       <div className='main-frame'>
         <div className='header'>
@@ -110,12 +117,18 @@ class Home extends Component<{}, HomeState> {
         <div className='container'>
           <label className='config-lable'>Model Provider:</label>
           <input value={modelProvider} readOnly style={{ maxWidth: '60px' }} />
-          <label className='config-lable'>Data Dir:</label>
-          <input value={dataDir} readOnly style={{ maxWidth: '100px' }} />
           <label className='config-lable'>Embed Model: </label>
           <input value={embedModel} readOnly />
           <label className='config-lable'>Chat Model: </label>
           <input value={chatModel} readOnly />
+        </div>
+        <div className='container'>
+          <label className='config-lable'>Tool Set:</label>
+          <input value={toolSet} readOnly style={{ maxWidth: '100px' }} />
+          <label className='config-lable'>Data Dir:</label>
+          <input value={dataDir} readOnly style={{ maxWidth: '100px' }} />
+          <label className='config-lable'>MCP URL:</label>
+          <input value={mcpUrl} readOnly />
         </div>
         <div className='container-column'>
           <div className='question-block'>

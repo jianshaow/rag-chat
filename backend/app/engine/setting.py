@@ -6,18 +6,27 @@ from app.engine import (
     CHROMA_BASE_DIR,
     DATA_BASE_DIR,
     DATA_DIR,
+    MCP_URL,
     MODEL_PROVIDER,
     STORAGE_BASE_DIR,
+    TOOL_SET,
     UPLOADED_DATA_DIR,
 )
 
 
 class Setting(BaseModel):
-    data_dir: str
     model_provider: str
+    tool_set: str
+    data_dir: str
+    mcp_url: str
 
 
-__setting = Setting(data_dir=DATA_DIR, model_provider=MODEL_PROVIDER)
+__setting = Setting(
+    data_dir=DATA_DIR,
+    model_provider=MODEL_PROVIDER,
+    tool_set=TOOL_SET,
+    mcp_url=MCP_URL,
+)
 
 
 def get_config() -> Setting:
@@ -30,6 +39,14 @@ def update_config(new_setting: Setting):
 
 def get_model_provider():
     return __setting.model_provider
+
+
+def get_tool_set():
+    return __setting.tool_set
+
+
+def get_mcp_url():
+    return __setting.mcp_url
 
 
 def get_data_base_dir():

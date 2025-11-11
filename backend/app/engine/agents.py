@@ -3,12 +3,11 @@ from typing import Tuple, cast
 from llama_index.core.agent.workflow import AgentStream, AgentWorkflow
 from llama_index.core.llms import LLM
 from llama_index.core.settings import Settings
-from llama_index.core.tools import RetrieverTool
 from llama_index.core.vector_stores.types import MetadataFilters
 from llama_index.core.workflow import Context
 from workflows.events import Event
 
-from app.engine import events, indexes, models, utils
+from app.engine import events, indexes, models, tools, utils
 
 FINAL_ANSWER_PREFIX = "Answer: "
 
@@ -79,9 +78,13 @@ def get_agent(
 ) -> Tuple[AgentWorkflow, events.QueueEventCallbackHandler]:
     utils.log_model_info(data_dir)
     chat_model = models.get_chat_model()
-    index, context = indexes.get_index(data_dir)
-    retriever_tool = RetrieverTool.from_defaults(
-        index.as_retriever(filters=filters, verbose=True)
-    )
-    agent = from_tools_or_functions([retriever_tool], chat_model)
-    return agent, context.get()
+    tool_set = tools.get_tool_set()
+    if tool_set:
+        _tools, context = tool_set.get_tools(filters)
+        agent = from_tools_or_functions(_tools, chat_model)
+        return agent, context.get()
+    else:
+        return (
+            from_tools_or_functions(llm=chat_model),
+            indexes.contextvar_event_handler.context.get(),
+        )
