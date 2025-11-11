@@ -1,11 +1,22 @@
+.info-block {
+  display: flex;
+  border-radius: 5px;
+  border: 1px solid #000;
+  margin-bottom: 10px;
+  gap: 5px;
+  padding: 5px;
+}
+
 .answer-block {
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
 }
 
 .question-block {
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
 }
 
 .question-bar {

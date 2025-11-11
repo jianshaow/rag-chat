@@ -114,21 +114,25 @@ class Home extends Component<{}, HomeState> {
           <Link to='/setting'>Setting</Link>
         </div>
         <h1 className='title'>RAG Q&A</h1>
-        <div className='container'>
-          <label className='config-lable'>Model Provider:</label>
-          <input value={modelProvider} readOnly style={{ maxWidth: '60px' }} />
-          <label className='config-lable'>Embed Model: </label>
-          <input value={embedModel} readOnly />
-          <label className='config-lable'>Chat Model: </label>
-          <input value={chatModel} readOnly />
-        </div>
-        <div className='container'>
-          <label className='config-lable'>Tool Set:</label>
-          <input value={toolSet} readOnly style={{ maxWidth: '100px' }} />
-          <label className='config-lable'>Data Dir:</label>
-          <input value={dataDir} readOnly style={{ maxWidth: '100px' }} />
-          <label className='config-lable'>MCP URL:</label>
-          <input value={mcpUrl} readOnly />
+        <div className='container-column'>
+          <label>Model Info</label>
+          <div className='info-block'>
+            <label>Model Provider:</label>
+            <input value={modelProvider} readOnly style={{ maxWidth: '60px' }} />
+            <label>Embed Model:</label>
+            <input value={embedModel} readOnly />
+            <label>Chat Model:</label>
+            <input value={chatModel} readOnly />
+          </div>
+          <label>Tools Info</label>
+          <div className='info-block'>
+            <label>Tool Set:</label>
+            <input value={toolSet} readOnly style={{ maxWidth: '100px' }} />
+            <label>Data Dir:</label>
+            <input value={dataDir} readOnly style={{ maxWidth: '100px' }} />
+            <label className='config-lable'>MCP URL:</label>
+            <input value={mcpUrl} readOnly />
+          </div>
         </div>
         <div className='container-column'>
           <div className='question-block'>
