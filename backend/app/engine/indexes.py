@@ -1,5 +1,5 @@
 from contextvars import ContextVar
-from typing import Any, List, Tuple
+from typing import Any, List
 
 from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.core.callbacks import CallbackManager
