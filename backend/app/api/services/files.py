@@ -35,7 +35,7 @@ def process_file(
     file_data, _ = _preprocess_base64_file(content)
     document_file = save_file(file_data, name)
     documents = _load_file_to_documents(document_file)
-    index, _ = indexes.get_index(UPLOADED_DATA_DIR)
+    index = indexes.get_index(UPLOADED_DATA_DIR)
     _add_documents_to_vector_store_index(documents, index)
     document_file.refs = [doc.doc_id for doc in documents]
     return document_file

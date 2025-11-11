@@ -12,10 +12,10 @@ def get_query_engine(
 ) -> Tuple[BaseQueryEngine, events.QueueEventCallbackHandler]:
     utils.log_model_info(data_dir)
     chat_model = models.get_chat_model()
-    index, context = indexes.get_index(data_dir)
+    index = indexes.get_index(data_dir)
     return (
         index.as_query_engine(llm=chat_model, streaming=streaming, verbose=True),
-        context.get(),
+        indexes.contextvar_event_handler.context.get(),
     )
 
 
@@ -24,8 +24,8 @@ def get_chat_engine(
 ) -> Tuple[BaseChatEngine, events.QueueEventCallbackHandler]:
     utils.log_model_info(data_dir)
     chat_model = models.get_chat_model()
-    index, context = indexes.get_index(data_dir)
+    index = indexes.get_index(data_dir)
     return (
         index.as_chat_engine(llm=chat_model, filters=filters, verbose=True),
-        context.get(),
+        indexes.contextvar_event_handler.context.get(),
     )

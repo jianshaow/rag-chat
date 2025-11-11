@@ -121,19 +121,17 @@ def _load_index(vector_store: ChromaVectorStore) -> VectorStoreIndex:
     return index
 
 
-def get_index(
-    data_dir: str,
-) -> Tuple[VectorStoreIndex, ContextVar[events.QueueEventCallbackHandler]]:
+def get_index(data_dir: str) -> VectorStoreIndex:
     embed_model_name = models.get_embed_model_name()
     index_key = f"{data_dir}@{embed_model_name}"
     vector_store = stores.get_vector_store(data_dir)
     index_builder = lambda: _load_index(vector_store)
-    return caches.get_index(index_builder, index_key), contextvar_event_handler.context
+    return caches.get_index(index_builder, index_key)
 
 
 def __retrieve_data(data_dir: str):
     question = data_store.get_starter_question(data_dir)
-    index, _ = get_index(data_dir)
+    index = get_index(data_dir)
     print("-" * 80)
     print("embed model:", models.get_embed_model_name())
     print("Question: ", question)

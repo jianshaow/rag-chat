@@ -1,4 +1,4 @@
-from typing import Tuple, cast
+from typing import Callable, Coroutine, List, Tuple, Union, cast
 
 from llama_index.core.agent.workflow import AgentStream, AgentWorkflow
 from llama_index.core.llms import LLM
@@ -73,16 +73,18 @@ def from_tools_or_functions(*args, **kwargs) -> AgentWorkflow:
     return agent
 
 
-def get_agent(
+async def get_agent(
     data_dir: str, filters: MetadataFilters
 ) -> Tuple[AgentWorkflow, events.QueueEventCallbackHandler]:
     utils.log_model_info(data_dir)
     chat_model = models.get_chat_model()
     tool_set = tools.get_tool_set()
     if tool_set:
-        _tools, context = tool_set.get_tools(filters)
-        agent = from_tools_or_functions(_tools, chat_model)
-        return agent, context.get()
+        _tools = await tool_set.get_tools(filters)
+        return (
+            from_tools_or_functions(_tools, chat_model),
+            indexes.contextvar_event_handler.context.get(),
+        )
     else:
         return (
             from_tools_or_functions(llm=chat_model),

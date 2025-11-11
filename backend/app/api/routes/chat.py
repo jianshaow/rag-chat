@@ -15,7 +15,10 @@ chat_router = r = APIRouter()
 
 @r.get("/config", tags=["chat"])
 async def chat_config():
-    starter_question = data_store.get_starter_question(setting.get_data_dir())
+    if setting.get_tool_set() == "retriever":
+        starter_question = data_store.get_starter_question(setting.get_data_dir())
+    else:
+        starter_question = "What is the latest version of spring-boot?"
     return {
         "starterQuestions": [
             starter_question,
@@ -31,7 +34,7 @@ async def chat(chat_messages: ChatMessages):
     """
     doc_ids = chat_messages.get_chat_document_ids()
     data, filters = generate_filters(doc_ids)
-    agent, handler = agents.get_agent(data, filters)
+    agent, handler = await agents.get_agent(data, filters)
     response = agent.run(chat_messages.last_content, chat_messages.history)
     return VercelStreamingResponse.from_agent_response(response, handler, chat_messages)
 
