@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import remarkRehype from "remark-rehype";
 import './Markdown.css';
 
 interface MarkdownViewerProps {
@@ -26,7 +27,7 @@ const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, height = 200 }
   return (
     <div ref={markdownRef} className="markdown-frame" style={{ height: height }}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMath]}
+        remarkPlugins={[remarkGfm, remarkMath, remarkRehype]}
         rehypePlugins={[rehypeHighlight]}
       >
         {content}
