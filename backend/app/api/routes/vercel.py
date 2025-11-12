@@ -161,15 +161,21 @@ class VercelStreamingResponse(StreamingResponse):
             if isinstance(event, AgentStream):
                 final_response = event.response
                 yield cls.to_text(event.delta)
-            elif isinstance(event, ToolCall) and event.tool_name == DEFAULT_NAME:
-                yield cls.to_event_data(
-                    f"Retrieving context for query: '{event.tool_kwargs}'"
-                )
-            elif isinstance(event, ToolCallResult) and event.tool_name == DEFAULT_NAME:
-                yield cls.to_sources_data(event.tool_output.raw_output)
-                yield cls.to_event_data(
-                    f"Retrieved {len(event.tool_output.raw_output)} sources to use as context for the query"
-                )
+            elif isinstance(event, ToolCall):
+                if event.tool_name == DEFAULT_NAME:
+                    title = f"Retrieving context for query: '{event.tool_kwargs}'"
+                else:
+                    title = f"Calling tool: '{event.tool_name}' with args: '{event.tool_kwargs}'"
+                yield cls.to_event_data(title)
+            elif isinstance(event, ToolCallResult):
+                if event.tool_name == DEFAULT_NAME:
+                    yield cls.to_sources_data(event.tool_output.raw_output)
+                    title = f"Retrieved {len(event.tool_output.raw_output)} sources to use as context for the query"
+                else:
+                    title = f"Tool '{event.tool_name}' returned"
+                yield cls.to_event_data(title)
+            else:
+                logger.debug("Unhandled event: %s", event.__class__)
         if messages:
             yield await cls.to_suggested_questions_data(messages, final_response)
 
