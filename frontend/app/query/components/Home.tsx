@@ -107,7 +107,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { modelProvider, embedModel, chatModel, toolSet, dataDir, mcpUrl, agentic: agent, streaming, request, text, sources } = this.state;
+    const { modelProvider, embedModel, chatModel, toolSet, dataDir, mcpUrl, agentic, streaming, request, text, sources } = this.state;
     return (
       <div className='main-frame'>
         <div className='header'>
@@ -155,11 +155,11 @@ class Home extends Component<{}, HomeState> {
                 <label className='config-lable'>Agentic: </label>
                 <input type='checkbox' onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   this.setState({ agentic: e.target.checked });
-                }} checked={agent} />
+                }} checked={agentic} />
                 <label className='config-lable'>Streaming: </label>
                 <input type='checkbox' onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   this.setState({ streaming: e.target.checked });
-                }} checked={streaming} disabled={agent} />
+                }} checked={streaming} disabled={agentic} />
               </div>
             </div>
             <div>
