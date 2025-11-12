@@ -244,6 +244,7 @@ class Setting extends Component<{}, SettingState> {
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 this.setState({ mcpUrl: e.target.value });
               }}
+              size={mcpUrl.length}
             />
           </div>
           <div className='setting'>
