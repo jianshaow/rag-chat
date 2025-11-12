@@ -7,6 +7,13 @@
   padding: 5px;
 }
 
+.info-value {
+  background: white;
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 0 5px;
+}
+
 .answer-block {
   display: flex;
   flex-direction: column;

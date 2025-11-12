@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { fetchChatConfig, fetchConfig, fetchModelConfig, getBeBaseUrl, query, streamQuery } from '../services/backend';
 import './Common.css';
 import './Home.css';
+import MarkdownViewer from './Markdown';
 
 interface HomeState {
   modelProvider: string;
@@ -40,8 +41,6 @@ class Home extends Component<{}, HomeState> {
       sources: [],
     };
   }
-
-  textRef = React.createRef<HTMLTextAreaElement>();
 
   componentDidMount() {
     this.initConfig();
@@ -82,9 +81,6 @@ class Home extends Component<{}, HomeState> {
     if (agentic || streaming) {
       streamQuery(request, agentic, (answer: string) => {
         this.setState({ text: answer });
-        if (this.textRef.current) {
-          this.textRef.current.scrollTop = this.textRef.current.scrollHeight;
-        }
       }, (sources: SourceNode[]) => {
         this.setState({ sources: sources });
       });
@@ -92,9 +88,6 @@ class Home extends Component<{}, HomeState> {
       query(request).then(response => {
         console.log(response);
         this.setState({ text: response.answer, sources: response.sources });
-        if (this.textRef.current) {
-          this.textRef.current.scrollTop = this.textRef.current.scrollHeight;
-        }
       });
     }
   }
@@ -115,23 +108,32 @@ class Home extends Component<{}, HomeState> {
         </div>
         <h1 className='title'>RAG Q&A</h1>
         <div className='container-column'>
-          <label>Model Info</label>
+          <label>Current Setting</label>
           <div className='info-block'>
-            <label>Model Provider:</label>
-            <input value={modelProvider} readOnly style={{ maxWidth: '60px' }} />
-            <label>Embed Model:</label>
-            <input value={embedModel} readOnly />
-            <label>Chat Model:</label>
-            <input value={chatModel} readOnly />
-          </div>
-          <label>Tools Info</label>
-          <div className='info-block'>
-            <label>Tool Set:</label>
-            <input value={toolSet} readOnly style={{ maxWidth: '100px' }} />
-            <label>Data Dir:</label>
-            <input value={dataDir} readOnly style={{ maxWidth: '100px' }} />
-            <label className='config-lable'>MCP URL:</label>
-            <input value={mcpUrl} readOnly />
+            <div>
+              <label>Model Provider</label>
+              <div className="info-value">{modelProvider}</div>
+            </div>
+            <div>
+              <label>Embed Model</label>
+              <div className="info-value">{embedModel}</div>
+            </div>
+            <div>
+              <label>Chat Model</label>
+              <div className="info-value">{chatModel}</div>
+            </div>
+            <div>
+              <label>Tool Set</label>
+              <div className="info-value">{toolSet}</div>
+            </div>
+            <div>
+              <label>Data Dir</label>
+              <div className="info-value">{dataDir}</div>
+            </div>
+            <div>
+              <label>MCP URL</label>
+              <div className="info-value">{mcpUrl}</div>
+            </div>
           </div>
         </div>
         <div className='container-column'>
@@ -152,19 +154,17 @@ class Home extends Component<{}, HomeState> {
             <div className='between-container'>
               <label>Answer</label>
               <div className='right-group'>
-                <label className='config-lable'>Agentic: </label>
+                <label>Agentic: </label>
                 <input type='checkbox' onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   this.setState({ agentic: e.target.checked });
                 }} checked={agentic} />
-                <label className='config-lable'>Streaming: </label>
+                <label>Streaming: </label>
                 <input type='checkbox' onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   this.setState({ streaming: e.target.checked });
                 }} checked={streaming} disabled={agentic} />
               </div>
             </div>
-            <div>
-              <textarea ref={this.textRef} value={text} readOnly rows={10} style={{ width: '100%' }} />
-            </div>
+            <MarkdownViewer content={text} />
           </div>
           <div className='reference-block'>
             <label>Reference</label>

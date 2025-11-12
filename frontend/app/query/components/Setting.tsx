@@ -203,103 +203,85 @@ class Setting extends Component<{}, SettingState> {
         <label className='title'>General</label>
         <div className='setting-container'>
           <div className='setting'>
-            <div>
-              <label className='config-lable'>Backend Base URL: </label>
-              <input
-                type='text'
-                value={beBaseUrl}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  this.setState({ beBaseUrl: e.target.value });
-                }}
-              />
-              <button onClick={this.handleSaveBeBaseUrl}>Save</button>
-              <button onClick={this.handleDetectBeBaseUrl}>Detect</button>
-            </div>
+            <label>Backend Base URL: </label>
+            <input
+              type='text'
+              value={beBaseUrl}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                this.setState({ beBaseUrl: e.target.value });
+              }}
+            />
+            <button onClick={this.handleSaveBeBaseUrl}>Save</button>
+            <button onClick={this.handleDetectBeBaseUrl}>Detect</button>
           </div>
         </div>
         <label className='title'>Backend</label>
         <div className='setting-container'>
           <div className='setting'>
-            <div>
-              <label className='config-lable'>Tool Set: </label>
-              <select value={toolSet} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                this.setState({ toolSet: e.target.value })
-              }}>{toolSets.map(toolSet => (
-                <option key={toolSet} value={toolSet}>{toolSet}</option>
-              ))}
-              </select>
-            </div>
+            <label>Tool Set: </label>
+            <select value={toolSet} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              this.setState({ toolSet: e.target.value })
+            }}>{toolSets.map(toolSet => (
+              <option key={toolSet} value={toolSet}>{toolSet}</option>
+            ))}
+            </select>
           </div>
           <div className='setting'>
-            <div>
-              <label className='config-lable'>Data Dir: </label>
-              <select value={dataDir} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                this.setState({ dataDir: e.target.value })
-              }}>{dataDirs.map(dataDir => (
-                <option key={dataDir} value={dataDir}>{dataDir}</option>
-              ))}
-              </select>
-              <button onClick={this.handleIndexData}>Index</button>
-            </div>
+            <label>Data Dir: </label>
+            <select value={dataDir} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              this.setState({ dataDir: e.target.value })
+            }}>{dataDirs.map(dataDir => (
+              <option key={dataDir} value={dataDir}>{dataDir}</option>
+            ))}
+            </select>
+            <button onClick={this.handleIndexData}>Index</button>
           </div>
           <div className='setting'>
-            <div>
-              <label className='config-lable'>MCP URL: </label>
-              <input
-                type='text'
-                value={mcpUrl}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  this.setState({ mcpUrl: e.target.value });
-                }}
-              />
-            </div>
+            <label>MCP URL: </label>
+            <input
+              type='text'
+              value={mcpUrl}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                this.setState({ mcpUrl: e.target.value });
+              }}
+            />
           </div>
           <div className='setting'>
-            <div>
-              <label className='config-lable'>Model Provider: </label>
-              <select value={modelProvider} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                this.setState({ modelProvider: e.target.value })
-              }}>{modelProviders.map(modelProvider => (
-                <option key={modelProvider} value={modelProvider}>{modelProvider}</option>
-              ))}
-              </select>
-            </div>
+            <label>Model Provider: </label>
+            <select value={modelProvider} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              this.setState({ modelProvider: e.target.value })
+            }}>{modelProviders.map(modelProvider => (
+              <option key={modelProvider} value={modelProvider}>{modelProvider}</option>
+            ))}
+            </select>
           </div>
           <div className='setting'>
-            <div>
-              <button onClick={this.handleSaveConfig}>Save</button>
-            </div>
+            <button onClick={this.handleSaveConfig}>Save</button>
           </div>
         </div>
         <label className='title'>Model Config</label>
         <div className='setting-container'>
           <div className='setting'>
-            <div>
-              <label className='config-lable'>Embed Model: </label>
-              <select value={embedModel} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                this.setState({ embedModel: e.target.value })
-              }}>{embedModels.map(model => (
-                <option key={model} value={model}>{model}</option>
-              ))}
-              </select>
-            </div>
+            <label>Embed Model: </label>
+            <select value={embedModel} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              this.setState({ embedModel: e.target.value })
+            }}>{embedModels.map(model => (
+              <option key={model} value={model}>{model}</option>
+            ))}
+            </select>
           </div>
           <div className='setting'>
-            <div>
-              <label className='config-lable'>Chat Model: </label>
-              <select value={chatModel} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                this.setState({ chatModel: e.target.value })
-              }}>{chatModels.map(model => (
-                <option key={model} value={model}>{model}</option>
-              ))}
-              </select>
-            </div>
+            <label>Chat Model: </label>
+            <select value={chatModel} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              this.setState({ chatModel: e.target.value })
+            }}>{chatModels.map(model => (
+              <option key={model} value={model}>{model}</option>
+            ))}
+            </select>
           </div>
           <div className='setting'>
-            <div>
-              <button onClick={this.handleSaveModelConfig}>Save</button>
-              <button onClick={this.handleReloadModels}>Reload Models</button>
-            </div>
+            <button onClick={this.handleSaveModelConfig}>Save</button>
+            <button onClick={this.handleReloadModels}>Reload Models</button>
           </div>
         </div>
       </div>
