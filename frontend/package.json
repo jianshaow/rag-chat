@@ -22,7 +22,6 @@
     "dotenv": "^16.6.1",
     "llamaindex": "^0.11.29",
     "lucide-react": "^0.460.0",
-    "marked": "^14.1.2",
     "next": "^15.5.3",
     "papaparse": "^5.5.3",
     "react": "^18.3.1",
