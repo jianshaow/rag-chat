@@ -1,4 +1,4 @@
-from typing import Tuple, cast
+from typing import cast
 
 from llama_index.core.agent.workflow import AgentStream, AgentWorkflow
 from llama_index.core.llms import LLM
@@ -7,7 +7,7 @@ from llama_index.core.vector_stores.types import MetadataFilters
 from llama_index.core.workflow import Context
 from workflows.events import Event
 
-from app.engine import events, indexes, models, tools, utils
+from app.engine import models, tools, utils
 
 FINAL_ANSWER_PREFIX = "Answer: "
 
@@ -73,20 +73,12 @@ def from_tools_or_functions(*args, **kwargs) -> AgentWorkflow:
     return agent
 
 
-async def get_agent(
-    data_dir: str, filters: MetadataFilters
-) -> Tuple[AgentWorkflow, events.QueueEventCallbackHandler]:
+async def get_agent(data_dir: str, filters: MetadataFilters) -> AgentWorkflow:
     utils.log_model_info(data_dir)
     chat_model = models.get_chat_model()
     tool_set = tools.get_tool_set()
     if tool_set:
         _tools = await tool_set.get_tools(filters)
-        return (
-            from_tools_or_functions(_tools, chat_model),
-            indexes.contextvar_event_handler.context.get(),
-        )
+        return from_tools_or_functions(_tools, chat_model)
     else:
-        return (
-            from_tools_or_functions(llm=chat_model),
-            indexes.contextvar_event_handler.context.get(),
-        )
+        return from_tools_or_functions(llm=chat_model)

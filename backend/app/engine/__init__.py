@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MODEL_PROVIDER = os.getenv("MODEL_PROVIDER", "ollama")
+MODEL_PROVIDER = os.getenv("MODEL_PROVIDER", "openai")
 DATA_BASE_DIR = os.getenv("DATA_BASE_DIR", "data")
 DATA_DIR = os.getenv("DATA_DIR", "en_novel")
 TOOL_SET = os.getenv("TOOL_SET", "retriever")

@@ -34,9 +34,9 @@ async def chat(chat_messages: ChatMessages):
     """
     doc_ids = chat_messages.get_chat_document_ids()
     data, filters = generate_filters(doc_ids)
-    agent, handler = await agents.get_agent(data, filters)
+    agent = await agents.get_agent(data, filters)
     response = agent.run(chat_messages.last_content, chat_messages.history)
-    return VercelStreamingResponse.from_agent_response(response, handler, chat_messages)
+    return VercelStreamingResponse.from_agent_response(response, chat_messages)
 
 
 @r.post("/upload", tags=["chat"])

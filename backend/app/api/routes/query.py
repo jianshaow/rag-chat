@@ -37,6 +37,6 @@ async def agent_stream_query(request: Request):
     raw_request = await request.body()
     query = raw_request.decode("utf-8")
     data = setting.get_data_dir()
-    agent, handler = await agents.get_agent(data, MetadataFilters(filters=[]))
+    agent = await agents.get_agent(data, MetadataFilters(filters=[]))
     response = agent.run(query)
-    return VercelStreamingResponse.from_agent_response(response, handler)
+    return VercelStreamingResponse.from_agent_response(response)
