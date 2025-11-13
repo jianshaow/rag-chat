@@ -6,7 +6,7 @@ from app.api.routes.filters import generate_filters
 from app.api.routes.payload import ChatMessages, FileUploadRequest
 from app.api.routes.vercel import VercelStreamingResponse
 from app.api.services.files import DocumentFile, process_file
-from app.engine import agents, data_store, setting
+from app.engine import agents, data_store, setting, tools
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ async def chat_config():
     if setting.get_tool_set() == "retriever":
         starter_question = data_store.get_starter_question(setting.get_data_dir())
     else:
-        starter_question = "What is the latest version of spring-boot?"
+        starter_question = tools.get_mcp_server().starter_question
     return {
         "starterQuestions": [
             starter_question,

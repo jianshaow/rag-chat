@@ -38,6 +38,11 @@ async function fetchDataConfig() {
     return fetch(url).then(response => response.json());
 }
 
+async function fetchMcpServers() {
+    const url = `${getBeBaseUrl()}/api/tools/mcp_servers`;
+    return fetch(url).then(response => response.json());
+}
+
 async function fetchChatConfig() {
     const url = `${getBeBaseUrl()}/api/chat/config`;
     return fetch(url).then(response => response.json());
@@ -151,5 +156,5 @@ async function fetchChrunk(data: string, id: string) {
     return fetch(url).then(response => response.json());
 }
 
-export { fetchChatConfig, fetchChatModels, fetchChrunk, fetchConfig, fetchData, fetchDataConfig, fetchEmbedModels, fetchModelConfig, fetchModelProviders, fetchToolSets, getBeBaseUrl, indexData, query, setBeBaseUrl, streamQuery, updateConfig, updateModelConfig };
+export { fetchChatConfig, fetchChatModels, fetchChrunk, fetchConfig, fetchData, fetchDataConfig, fetchEmbedModels, fetchMcpServers, fetchModelConfig, fetchModelProviders, fetchToolSets, getBeBaseUrl, indexData, query, setBeBaseUrl, streamQuery, updateConfig, updateModelConfig };
 

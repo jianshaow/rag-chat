@@ -6,6 +6,7 @@ from app.engine import (
     CHROMA_BASE_DIR,
     DATA_BASE_DIR,
     DATA_DIR,
+    MCP_SERVER,
     MCP_URL,
     MODEL_PROVIDER,
     STORAGE_BASE_DIR,
@@ -19,6 +20,7 @@ class Setting(BaseModel):
     tool_set: str
     data_dir: str
     mcp_url: str
+    mcp_server: str
 
 
 __setting = Setting(
@@ -26,6 +28,7 @@ __setting = Setting(
     model_provider=MODEL_PROVIDER,
     tool_set=TOOL_SET,
     mcp_url=MCP_URL,
+    mcp_server=MCP_SERVER,
 )
 
 
@@ -43,6 +46,10 @@ def get_model_provider():
 
 def get_tool_set():
     return __setting.tool_set
+
+
+def get_mcp_server():
+    return __setting.mcp_server
 
 
 def get_mcp_url():

@@ -5,6 +5,7 @@ import {
   fetchConfig,
   fetchDataConfig,
   fetchEmbedModels,
+  fetchMcpServers,
   fetchModelConfig,
   fetchModelProviders,
   fetchToolSets,
@@ -29,7 +30,8 @@ interface SettingState {
   chatModel: string;
   toolSets: string[];
   toolSet: string;
-  mcpUrl: string;
+  mcpServers: string[];
+  mcpServer: string;
 }
 
 class Setting extends Component<{}, SettingState> {
@@ -47,7 +49,8 @@ class Setting extends Component<{}, SettingState> {
       chatModel: '',
       toolSets: [],
       toolSet: '',
-      mcpUrl: '',
+      mcpServers: [],
+      mcpServer: '',
     };
   }
 
@@ -56,12 +59,13 @@ class Setting extends Component<{}, SettingState> {
   }
 
   initSetting() {
-    this.initConfig();
-    this.initDataDir();
-    this.initToolSets();
     this.initModelProviders();
     this.initEmbedModels()
     this.initChatModels();
+    this.initToolSets();
+    this.initDataDirs();
+    this.initMcpServers();
+    this.initConfig();
   }
 
   initModelProviders() {
@@ -90,20 +94,13 @@ class Setting extends Component<{}, SettingState> {
     });
   }
 
-  handleSaveBeBaseUrl = async (e: MouseEvent) => {
-    const { beBaseUrl } = this.state;
-    setBeBaseUrl(beBaseUrl);
-    this.initSetting();
-  };
+  initToolSets() {
+    fetchToolSets().then(toolSets => {
+      this.setState({ toolSets: toolSets });
+    });
+  }
 
-  handleDetectBeBaseUrl = async (e: MouseEvent) => {
-    const protocol = window.location.protocol;
-    const host = window.location.host;
-    const url = `${protocol}//${host}`;
-    this.setState({ beBaseUrl: url })
-  };
-
-  initDataDir() {
+  initDataDirs() {
     fetchDataConfig().then(dataConfig => {
       const dataDirs = Object.keys(dataConfig).map((data) => {
         return data;
@@ -112,10 +109,9 @@ class Setting extends Component<{}, SettingState> {
     });
   }
 
-
-  initToolSets() {
-    fetchToolSets().then(toolSets => {
-      this.setState({ toolSets: toolSets });
+  initMcpServers() {
+    fetchMcpServers().then(mcpServers => {
+      this.setState({ mcpServers: mcpServers });
     });
   }
 
@@ -125,7 +121,7 @@ class Setting extends Component<{}, SettingState> {
         modelProvider: config.model_provider,
         dataDir: config.data_dir,
         toolSet: config.tool_set,
-        mcpUrl: config.mcp_url,
+        mcpServer: config.mcp_server,
       });
       this.reloadApiConfig(config.model_provider);
     });
@@ -139,6 +135,19 @@ class Setting extends Component<{}, SettingState> {
       });
     })
   }
+
+  handleSaveBeBaseUrl = async (e: MouseEvent) => {
+    const { beBaseUrl } = this.state;
+    setBeBaseUrl(beBaseUrl);
+    this.initSetting();
+  };
+
+  handleDetectBeBaseUrl = async (e: MouseEvent) => {
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const url = `${protocol}//${host}`;
+    this.setState({ beBaseUrl: url })
+  };
 
   handleReloadModels = async (e: MouseEvent) => {
     fetchEmbedModels(true).then((models) => {
@@ -158,12 +167,12 @@ class Setting extends Component<{}, SettingState> {
   };
 
   handleSaveConfig = async (e: MouseEvent) => {
-    const { modelProvider, dataDir, toolSet, mcpUrl } = this.state;
+    const { modelProvider, dataDir, toolSet, mcpServer } = this.state;
     const config = {
       'model_provider': modelProvider,
-      'data_dir': dataDir,
       'tool_set': toolSet,
-      'mcp_url': mcpUrl,
+      'data_dir': dataDir,
+      'mcp_server': mcpServer,
     };
     updateConfig(JSON.stringify(config)).then(() => {
       alert('Setting Saved!');
@@ -192,7 +201,7 @@ class Setting extends Component<{}, SettingState> {
   };
 
   render() {
-    const { beBaseUrl, dataDirs, dataDir, modelProviders, modelProvider, embedModel, chatModel, embedModels, chatModels, toolSets, toolSet, mcpUrl } = this.state;
+    const { beBaseUrl, dataDirs, dataDir, mcpServers, mcpServer, modelProviders, modelProvider, embedModel, chatModel, embedModels, chatModels, toolSets, toolSet } = this.state;
 
     return (
       <div className='main-frame'>
@@ -203,7 +212,7 @@ class Setting extends Component<{}, SettingState> {
         <label className='title'>General</label>
         <div className='setting-container'>
           <div className='setting'>
-            <label>Backend Base URL: </label>
+            <label>Backend Base URL:</label>
             <input
               type='text'
               value={beBaseUrl}
@@ -218,7 +227,7 @@ class Setting extends Component<{}, SettingState> {
         <label className='title'>Backend</label>
         <div className='setting-container'>
           <div className='setting'>
-            <label>Tool Set: </label>
+            <label>Tool Set:</label>
             <select value={toolSet} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
               this.setState({ toolSet: e.target.value })
             }}>{toolSets.map(toolSet => (
@@ -227,7 +236,7 @@ class Setting extends Component<{}, SettingState> {
             </select>
           </div>
           <div className='setting'>
-            <label>Data Dir: </label>
+            <label>Data Dir:</label>
             <select value={dataDir} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
               this.setState({ dataDir: e.target.value })
             }}>{dataDirs.map(dataDir => (
@@ -237,18 +246,16 @@ class Setting extends Component<{}, SettingState> {
             <button onClick={this.handleIndexData}>Index</button>
           </div>
           <div className='setting'>
-            <label>MCP URL: </label>
-            <input
-              type='text'
-              value={mcpUrl}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                this.setState({ mcpUrl: e.target.value });
-              }}
-              size={mcpUrl.length}
-            />
+            <label>MCP server:</label>
+            <select value={mcpServer} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              this.setState({ mcpServer: e.target.value })
+            }}>{mcpServers.map(mcpServer => (
+              <option key={mcpServer} value={mcpServer}>{mcpServer}</option>
+            ))}
+            </select>
           </div>
           <div className='setting'>
-            <label>Model Provider: </label>
+            <label>Model Provider:</label>
             <select value={modelProvider} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
               this.setState({ modelProvider: e.target.value })
             }}>{modelProviders.map(modelProvider => (

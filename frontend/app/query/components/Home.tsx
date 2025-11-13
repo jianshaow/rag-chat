@@ -14,7 +14,7 @@ interface HomeState {
   dataDirs: string[];
   dataDir: string;
   dataConfig: any;
-  mcpUrl: string;
+  mcpServer: string;
   agentic: boolean;
   streaming: boolean;
   request: string;
@@ -33,7 +33,7 @@ class Home extends Component<{}, HomeState> {
       dataConfig: {},
       dataDirs: [],
       dataDir: '',
-      mcpUrl: '',
+      mcpServer: '',
       agentic: true,
       streaming: true,
       request: '',
@@ -52,7 +52,7 @@ class Home extends Component<{}, HomeState> {
         modelProvider: config.model_provider,
         dataDir: config.data_dir,
         toolSet: config.tool_set,
-        mcpUrl: config.mcp_url,
+        mcpServer: config.mcp_server,
       });
       fetchModelConfig(config.model_provider).then(config => {
         this.setState({
@@ -100,7 +100,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { modelProvider, embedModel, chatModel, toolSet, dataDir, mcpUrl, agentic, streaming, request, text, sources } = this.state;
+    const { modelProvider, embedModel, chatModel, toolSet, dataDir, mcpServer, agentic, streaming, request, text, sources } = this.state;
     return (
       <div className='main-frame'>
         <div className='header'>
@@ -131,8 +131,8 @@ class Home extends Component<{}, HomeState> {
               <div className="info-value">{dataDir}</div>
             </div>
             <div>
-              <label>MCP URL</label>
-              <div className="info-value">{mcpUrl}</div>
+              <label>MCP Server</label>
+              <div className="info-value">{mcpServer}</div>
             </div>
           </div>
         </div>
@@ -164,7 +164,7 @@ class Home extends Component<{}, HomeState> {
                 }} checked={streaming} disabled={agentic} />
               </div>
             </div>
-            <MarkdownViewer content={text} height={300}/>
+            <MarkdownViewer content={text} height={300} />
           </div>
           <div className='reference-block'>
             <label>Reference</label>

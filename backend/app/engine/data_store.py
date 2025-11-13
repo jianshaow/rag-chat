@@ -41,7 +41,7 @@ __builtin_data_config = DataConfigs.model_validate(
 
 __data_configs: DataConfigs = __builtin_data_config
 
-data_config_file = os.environ.get(
+data_config_file = os.getenv(
     "DATA_CONFIG", os.path.join(setting.get_data_base_dir(), "data_config.yaml")
 )
 
