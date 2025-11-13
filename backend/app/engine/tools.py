@@ -1,5 +1,5 @@
 import os
-from typing import Any, Callable, Coroutine, Dict, List, Literal, Union
+from typing import Any, Callable, Coroutine, Dict, List, Union
 
 import yaml
 from llama_index.core.tools import BaseTool, RetrieverTool
