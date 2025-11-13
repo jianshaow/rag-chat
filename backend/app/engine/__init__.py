@@ -11,7 +11,6 @@ MODEL_PROVIDER = os.getenv("MODEL_PROVIDER", "openai")
 DATA_BASE_DIR = os.getenv("DATA_BASE_DIR", "data")
 DATA_DIR = os.getenv("DATA_DIR", "en_novel")
 TOOL_SET = os.getenv("TOOL_SET", "retriever")
-MCP_URL = os.getenv("MCP_URL", "https://mcp.context7.com/mcp")
 MCP_SERVER = os.getenv("MCP_SERVER", "calc_tools")
 
 UPLOADED_DATA_DIR = os.getenv("UPLOADED_DATA_DIR", "uploaded")

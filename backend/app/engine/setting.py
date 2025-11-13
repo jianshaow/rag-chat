@@ -7,7 +7,6 @@ from app.engine import (
     DATA_BASE_DIR,
     DATA_DIR,
     MCP_SERVER,
-    MCP_URL,
     MODEL_PROVIDER,
     STORAGE_BASE_DIR,
     TOOL_SET,
@@ -19,7 +18,6 @@ class Setting(BaseModel):
     model_provider: str
     tool_set: str
     data_dir: str
-    mcp_url: str
     mcp_server: str
 
 
@@ -27,7 +25,6 @@ __setting = Setting(
     data_dir=DATA_DIR,
     model_provider=MODEL_PROVIDER,
     tool_set=TOOL_SET,
-    mcp_url=MCP_URL,
     mcp_server=MCP_SERVER,
 )
 
@@ -50,10 +47,6 @@ def get_tool_set():
 
 def get_mcp_server():
     return __setting.mcp_server
-
-
-def get_mcp_url():
-    return __setting.mcp_url
 
 
 def get_data_base_dir():
