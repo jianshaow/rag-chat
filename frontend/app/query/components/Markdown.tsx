@@ -1,3 +1,4 @@
+import 'github-markdown-css/github-markdown-light.css';
 import "highlight.js/styles/github.css";
 import React, { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
@@ -25,7 +26,7 @@ const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, height = 200 }
   }, [content]);
 
   return (
-    <div ref={markdownRef} className="markdown-frame" style={{ height: height }}>
+    <div ref={markdownRef} className="markdown-frame markdown-body" style={{ height: height }}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath, remarkRehype]}
         rehypePlugins={[rehypeHighlight]}

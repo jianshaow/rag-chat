@@ -44,13 +44,14 @@
 h1 {
   font-size: 2em;
   font-weight: bold;
+  margin: 0.2em 0;
   line-height: 1.2;
 }
 
 input,
 textarea,
 select {
-  border: 1px solid black;
+  border: 1px solid #d0d7de;
   border-radius: 5px;
   padding: 0 5px;
 }

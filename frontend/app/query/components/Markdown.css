@@ -1,7 +1,8 @@
 .markdown-frame {
-  border: 1px solid #000;
+  border: 1px solid #d0d7de;
   background: white;
-  padding: 1rem;
-  border-radius: 8px;
+  padding: 16px;
+  border-radius: 6px;
   overflow: auto;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }

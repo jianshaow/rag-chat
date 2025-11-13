@@ -164,7 +164,7 @@ class Home extends Component<{}, HomeState> {
                 }} checked={streaming} disabled={agentic} />
               </div>
             </div>
-            <MarkdownViewer content={text} />
+            <MarkdownViewer content={text} height={300}/>
           </div>
           <div className='reference-block'>
             <label>Reference</label>
