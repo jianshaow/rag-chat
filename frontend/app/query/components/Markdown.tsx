@@ -9,10 +9,10 @@ import './Markdown.css';
 
 interface MarkdownViewerProps {
   content: string;
-  height?: number;
+  height?: number | string;
 }
 
-const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, height = 200 }) => {
+const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, height = "200px" }) => {
   const markdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
