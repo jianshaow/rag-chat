@@ -227,6 +227,15 @@ class Setting extends Component<{}, SettingState> {
         <label className='title'>Backend</label>
         <div className='setting-container'>
           <div className='setting'>
+            <label>Model Provider:</label>
+            <select value={modelProvider} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              this.setState({ modelProvider: e.target.value })
+            }}>{modelProviders.map(modelProvider => (
+              <option key={modelProvider} value={modelProvider}>{modelProvider}</option>
+            ))}
+            </select>
+          </div>
+          <div className='setting'>
             <label>Tool Set:</label>
             <select value={toolSet} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
               this.setState({ toolSet: e.target.value })
@@ -251,15 +260,6 @@ class Setting extends Component<{}, SettingState> {
               this.setState({ mcpServer: e.target.value })
             }}>{mcpServers.map(mcpServer => (
               <option key={mcpServer} value={mcpServer}>{mcpServer}</option>
-            ))}
-            </select>
-          </div>
-          <div className='setting'>
-            <label>Model Provider:</label>
-            <select value={modelProvider} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-              this.setState({ modelProvider: e.target.value })
-            }}>{modelProviders.map(modelProvider => (
-              <option key={modelProvider} value={modelProvider}>{modelProvider}</option>
             ))}
             </select>
           </div>
