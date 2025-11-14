@@ -5,7 +5,6 @@ import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
-import remarkRehype from "remark-rehype";
 import './Markdown.css';
 
 interface MarkdownViewerProps {
@@ -17,10 +16,10 @@ const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, height = 200 }
   const markdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = markdownRef.current;
-    if (el) {
+    const elemnet = markdownRef.current;
+    if (elemnet) {
       requestAnimationFrame(() => {
-        el.scrollTop = el.scrollHeight;
+        elemnet.scrollTop = elemnet.scrollHeight;
       });
     }
   }, [content]);
@@ -28,7 +27,7 @@ const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, height = 200 }
   return (
     <div ref={markdownRef} className="markdown-frame markdown-body" style={{ height: height }}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMath, remarkRehype]}
+        remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeHighlight]}
       >
         {content}
