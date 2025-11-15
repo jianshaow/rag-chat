@@ -5,7 +5,6 @@ import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from starlette.responses import FileResponse
 
 from app.api import files_url_prefix
 from app.api.routes import api_router
@@ -35,26 +34,12 @@ async def add_handler_context(request, call_next):
 
 
 app.include_router(api_router, prefix="/api")
-
-
 app.mount(
     files_url_prefix,
     StaticFiles(directory=setting.get_data_base_dir(), check_dir=False),
     name="data_base_dir",
 )
-
-
-class FrontendStaticFiles(StaticFiles):
-    async def get_response(self, path: str, scope):
-        if path == "setting":
-            file_path = os.path.join(frontend, "query", "index.html")
-            return FileResponse(file_path)
-
-        return await super().get_response(path, scope)
-
-
-app.mount("/", FrontendStaticFiles(directory=frontend, html=True), name="frontend")
-
+app.mount("/", StaticFiles(directory=frontend, html=True), name="frontend")
 
 if __name__ == "__main__":
     app_host = os.getenv("APP_HOST", "0.0.0.0")

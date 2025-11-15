@@ -40,7 +40,7 @@ class Setting extends Component<{}, SettingState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      beBaseUrl: getBeBaseUrl(),
+      beBaseUrl: '',
       dataDirs: [],
       dataDir: '',
       modelProviders: [],
@@ -57,6 +57,7 @@ class Setting extends Component<{}, SettingState> {
   }
 
   componentDidMount() {
+    this.setState({ beBaseUrl: getBeBaseUrl() });
     this.initSetting();
   }
 
