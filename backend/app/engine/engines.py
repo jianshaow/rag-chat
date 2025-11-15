@@ -10,7 +10,8 @@ from app.engine import events, indexes, models, utils
 def get_query_engine(
     data_dir: str, streaming=True
 ) -> Tuple[BaseQueryEngine, events.QueueEventCallbackHandler]:
-    utils.log_model_info(data_dir)
+    utils.log_model_info()
+    utils.log_tool_info(data_dir)
     chat_model = models.get_chat_model()
     index = indexes.get_index(data_dir)
     return (
@@ -22,7 +23,8 @@ def get_query_engine(
 def get_chat_engine(
     data_dir: str, filters: MetadataFilters
 ) -> Tuple[BaseChatEngine, events.QueueEventCallbackHandler]:
-    utils.log_model_info(data_dir)
+    utils.log_model_info()
+    utils.log_tool_info(data_dir)
     chat_model = models.get_chat_model()
     index = indexes.get_index(data_dir)
     return (

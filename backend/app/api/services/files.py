@@ -114,7 +114,8 @@ def _load_file_to_documents(file: DocumentFile) -> List[Document]:
 def _add_documents_to_vector_store_index(
     documents: List[Document], index: VectorStoreIndex
 ) -> None:
-    utils.log_model_info(UPLOADED_DATA_DIR)
+    utils.log_model_info()
+    utils.log_tool_info(UPLOADED_DATA_DIR)
 
     nodes = indexes.ingest(documents, UPLOADED_DATA_DIR)
 
