@@ -30,7 +30,7 @@ class DocumentFile(BaseModel):
 
 
 def process_file(
-    name: str, content: str, params: Optional[dict] = None
+    name: str, content: str, _params: Optional[dict] = None
 ) -> DocumentFile:
     file_data, _ = _preprocess_base64_file(content)
     document_file = save_file(file_data, name)
