@@ -12,7 +12,7 @@ import {
   query,
   streamQuery
 } from '../lib/backend';
-import '../styles/Common.css';
+import '../styles/common.css';
 import './Home.css';
 
 interface HomeState {

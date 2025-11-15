@@ -17,7 +17,7 @@ import {
   updateConfig,
   updateModelConfig
 } from '../lib/backend';
-import '../styles/Common.css';
+import '../styles/common.css';
 import './Setting.css';
 
 interface SettingState {
