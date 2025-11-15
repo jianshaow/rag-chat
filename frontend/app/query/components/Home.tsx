@@ -106,7 +106,7 @@ class Home extends Component<{}, HomeState> {
         <div className='header'>
           <Link to='/setting'>Setting</Link>
         </div>
-        <h1 className='title'>RAG Q&A</h1>
+        <h1 className='title'>RAG Q&A Demo</h1>
         <div className='container-column'>
           <label>Current Setting</label>
           <div className='info-block'>
