@@ -1,5 +1,5 @@
-import { Index } from './client'
+import Home from "./Home";
 
 export default function Page() {
-    return <Index />
+    return <Home />;
 }

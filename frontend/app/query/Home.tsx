@@ -1,10 +1,19 @@
+"use client";
+
 import { SourceNode } from "@llamaindex/chat-ui/widgets";
-import React, { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
-import { Link } from 'react-router-dom';
-import { fetchChatConfig, fetchConfig, fetchModelConfig, getBeBaseUrl, query, streamQuery } from '../services/backend';
-import './Common.css';
+import { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
+import Link from 'next/link';
+import MarkdownViewer from '../components/Markdown';
+import {
+  fetchChatConfig,
+  fetchConfig,
+  fetchModelConfig,
+  getBeBaseUrl,
+  query,
+  streamQuery
+} from '../lib/backend';
+import '../styles/Common.css';
 import './Home.css';
-import MarkdownViewer from './Markdown';
 
 interface HomeState {
   modelProvider: string;
@@ -104,7 +113,7 @@ class Home extends Component<{}, HomeState> {
     return (
       <div className='main-frame'>
         <div className='header'>
-          <Link to='/setting'>Setting</Link>
+          <Link href='/setting'>Setting</Link>
         </div>
         <h1 className='title'>RAG Q&A Demo</h1>
         <div className='container-column'>

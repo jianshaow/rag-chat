@@ -1,5 +1,7 @@
+"use client";
+
+import Link from 'next/link';
 import { ChangeEvent, Component, MouseEvent } from 'react';
-import { Link } from 'react-router-dom';
 import {
   fetchChatModels,
   fetchConfig,
@@ -14,8 +16,8 @@ import {
   setBeBaseUrl,
   updateConfig,
   updateModelConfig
-} from '../services/backend';
-import './Common.css';
+} from '../lib/backend';
+import '../styles/Common.css';
 import './Setting.css';
 
 interface SettingState {
@@ -206,7 +208,7 @@ class Setting extends Component<{}, SettingState> {
     return (
       <div className='main-frame'>
         <div className='header'>
-          <Link to='/query'>Return Home</Link>
+          <Link href='/query'>Return Home</Link>
         </div>
         <h1 className='title'>Settings</h1>
         <label className='title'>General</label>

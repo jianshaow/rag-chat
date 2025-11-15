@@ -1,3 +1,5 @@
+"use client";
+
 import { MessageAnnotation, MessageAnnotationType } from "@llamaindex/chat-ui";
 import { SourceData, SourceNode } from "@llamaindex/chat-ui/widgets";
 
