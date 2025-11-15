@@ -64,7 +64,7 @@ def __show_collection(collection: Collection, top_k: int = 2):
     documents = result["documents"] if result["documents"] else []
     print("top", len(metadatas), "results")
     for i, metadatas in enumerate(metadatas):
-        print("-" * 80)
+        print("=" * 80)
         print("id:", ids[i])
         __show_metadata(metadatas)
         __show_embeddings(embeddings[i])  # type: ignore
@@ -77,15 +77,19 @@ def __show_metadata(metadata: Metadata):
 
     node_content_json = metadata["_node_content"]
     node_content = json.loads(str(node_content_json) if node_content_json else "")
-    node_metadata = node_content["metadata"]
-    print("file name:", node_metadata["file_name"])
-    print("data dir:", node_metadata["data_dir"])
+    node_metadata: dict = node_content["metadata"]
+    print("-" * 30, "metadata", "-" * 30)
+    print("file_name:", node_metadata.get("file_name"))
+    print("page_label:", node_metadata.get("page_label"))
+    print("data_dir:", node_metadata.get("data_dir"))
+    print("private:", node_metadata.get("private"))
     print(
-        "char index:",
-        node_content["start_char_idx"],
+        "char_index:",
+        node_content.get("start_char_idx"),
         "->",
-        node_content["end_char_idx"],
+        node_content.get("end_char_idx"),
     )
+    print("-" * 70)
 
 
 def __show_document(document: Document, unwrap=False):
