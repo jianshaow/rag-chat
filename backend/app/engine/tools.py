@@ -67,8 +67,7 @@ if mcp_servers_config_file and os.path.isfile(mcp_servers_config_file):
         __mcp_servers.update(mcp_servers_from_file["mcp_servers"])
 
 
-async def get_retriever_tools(filters: MetadataFilters):
-    data_dir = setting.get_data_dir()
+async def get_retriever_tools(data_dir: str, filters: MetadataFilters):
     index = indexes.get_index(data_dir)
     retriever_tool = RetrieverTool.from_defaults(
         index.as_retriever(filters=filters, verbose=True)
