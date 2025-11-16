@@ -77,23 +77,37 @@ class VercelStreamingResponse(StreamingResponse):
         response: WorkflowHandler,
         messages: ChatMessages | None = None,
     ):
-        response_generator = cls.workflow_event_gen(response, messages)
+        response_generator = cls.workflow_event_generator(response, messages)
         return cls(response_generator)
 
     @classmethod
-    def to_text(cls, token: str):
-        token = json.dumps(token)
-        return f"{cls.TEXT_PREFIX}{token}\n"
+    async def response_generator(
+        cls,
+        await_response: Callable[
+            [], Awaitable[Tuple[List[NodeWithScore], AsyncGenerator]]
+        ],
+        event_handler: QueueEventCallbackHandler,
+        messages: ChatMessages | None = None,
+    ):
+        source_nodes, response_gen = await await_response()
+        yield cls.to_sources_data(source_nodes)
+
+        final_response = ""
+        async for chunk in response_gen:
+            final_response += chunk
+            yield cls.to_text(chunk)
+
+        if messages:
+            yield await cls.to_suggested_questions_data(messages, final_response)
+
+        event_handler.is_done = True
 
     @classmethod
-    def to_data(cls, data: dict):
-        data_str = json.dumps(data)
-        return f"{cls.DATA_PREFIX}[{data_str}]\n"
-
-    @classmethod
-    def to_error(cls, error: str):
-        error_str = json.dumps(error)
-        return f"{cls.ERROR_PREFIX}{error_str}\n"
+    async def event_generator(cls, event_callback_handler: QueueEventCallbackHandler):
+        async for event in event_callback_handler.async_event_gen():
+            event_response = event.to_response()
+            if event_response:
+                yield cls.to_data(event_response)
 
     @classmethod
     async def merge_generator(
@@ -121,39 +135,7 @@ class VercelStreamingResponse(StreamingResponse):
             event_handler.is_done = True
 
     @classmethod
-    async def stream_generator(
-        cls,
-        response_generator: AsyncGenerator[str, None],
-        event_generator: AsyncGenerator[str, None],
-        event_handler: QueueEventCallbackHandler,
-    ):
-        event_handler.is_done = False
-        combine = stream.merge(response_generator, event_generator)
-        is_stream_started = False
-        try:
-            async with combine.stream() as streamer:
-                async for output in streamer:
-                    if not is_stream_started:
-                        is_stream_started = True
-                        yield cls.to_text("")
-                    yield output
-        except Exception as e:  # pylint: disable=broad-except
-            logger.error(e, exc_info=True)
-            yield cls.to_error(
-                "An unexpected error occurred while processing your request, preventing the creation of a final answer. Please try again."
-            )
-        finally:
-            event_handler.is_done = True
-
-    @classmethod
-    async def event_generator(cls, event_callback_handler: QueueEventCallbackHandler):
-        async for event in event_callback_handler.async_event_gen():
-            event_response = event.to_response()
-            if event_response:
-                yield cls.to_data(event_response)
-
-    @classmethod
-    async def workflow_event_gen(
+    async def workflow_event_generator(
         cls, response: WorkflowHandler, messages: ChatMessages | None
     ):
         final_response = ""
@@ -185,28 +167,6 @@ class VercelStreamingResponse(StreamingResponse):
         return cls.to_data(event_data)
 
     @classmethod
-    async def response_generator(
-        cls,
-        await_response: Callable[
-            [], Awaitable[Tuple[List[NodeWithScore], AsyncGenerator]]
-        ],
-        event_handler: QueueEventCallbackHandler,
-        messages: ChatMessages | None = None,
-    ):
-        source_nodes, response_gen = await await_response()
-        yield cls.to_sources_data(source_nodes)
-
-        final_response = ""
-        async for chunk in response_gen:
-            final_response += chunk
-            yield cls.to_text(chunk)
-
-        if messages:
-            yield await cls.to_suggested_questions_data(messages, final_response)
-
-        event_handler.is_done = True
-
-    @classmethod
     def to_sources_data(cls, source_nodes: List[NodeWithScore]):
         sources_data = {
             "type": "sources",
@@ -227,3 +187,18 @@ class VercelStreamingResponse(StreamingResponse):
                 "data": await suggest_next_questions(messages.chat_messages, response),
             }
         )
+
+    @classmethod
+    def to_text(cls, token: str):
+        token = json.dumps(token)
+        return f"{cls.TEXT_PREFIX}{token}\n"
+
+    @classmethod
+    def to_data(cls, data: dict):
+        data_str = json.dumps(data)
+        return f"{cls.DATA_PREFIX}[{data_str}]\n"
+
+    @classmethod
+    def to_error(cls, error: str):
+        error_str = json.dumps(error)
+        return f"{cls.ERROR_PREFIX}{error_str}\n"
