@@ -75,7 +75,7 @@ async def get_retriever_tools(data_dir: str, filters: MetadataFilters):
     return [retriever_tool]
 
 
-async def get_mcp_tools(*args, **kwargs):
+async def get_mcp_tools(*_args, **_kwargs):
     mcp_server = get_mcp_server()
 
     if isinstance(mcp_server, LocalMCPServer):
