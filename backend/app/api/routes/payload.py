@@ -194,14 +194,14 @@ class SourceNodes(BaseModel):
         return [cls.from_source_node(node) for node in source_nodes]
 
     @classmethod
-    def from_call_tool_result(cls, result: CallToolResult):
+    def from_call_tool_result(cls, result: CallToolResult, tool_name: str):
         return [
             cls(
                 text=content.text,
                 id="",
-                metadata=content.meta or {},
+                metadata={"tool_name": tool_name, "file_name": f"{tool_name}.mcp"},
                 score=0,
-                url="/",
+                url=f"tools/{tool_name}.mcp",
             )
             for content in result.content
             if isinstance(content, TextContent)

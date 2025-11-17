@@ -157,7 +157,7 @@ class VercelStreamingResponse(StreamingResponse):
                     title = f"Retrieved {len(raw_output)} sources to use as context for the query"
                 elif isinstance(raw_output, CallToolResult):
                     yield cls.to_sources_data(
-                        SourceNodes.from_call_tool_result(raw_output)
+                        SourceNodes.from_call_tool_result(raw_output, event.tool_name)
                     )
                     title = f"Tool '{event.tool_name}' returned: {len(raw_output.content)} sources"
                 else:
