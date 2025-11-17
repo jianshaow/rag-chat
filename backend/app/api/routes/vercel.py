@@ -9,6 +9,7 @@ from llama_index.core.base.response.schema import AsyncStreamingResponse
 from llama_index.core.chat_engine.types import StreamingAgentChatResponse
 from llama_index.core.schema import NodeWithScore
 from llama_index.core.tools.retriever_tool import DEFAULT_NAME
+from mcp.types import CallToolResult
 from workflows.handler import WorkflowHandler
 
 from app.api.routes.payload import ChatMessages, SourceNodes
@@ -90,7 +91,7 @@ class VercelStreamingResponse(StreamingResponse):
         messages: ChatMessages | None = None,
     ):
         source_nodes, response_gen = await await_response()
-        yield cls.to_sources_data(source_nodes)
+        yield cls.to_sources_data(SourceNodes.from_source_nodes(source_nodes))
 
         final_response = ""
         async for chunk in response_gen:
@@ -150,9 +151,15 @@ class VercelStreamingResponse(StreamingResponse):
                     title = f"Calling tool: '{event.tool_name}' with args: '{event.tool_kwargs}'"
                 yield cls.to_event_data(title)
             elif isinstance(event, ToolCallResult):
-                if event.tool_name == DEFAULT_NAME:
-                    yield cls.to_sources_data(event.tool_output.raw_output)
-                    title = f"Retrieved {len(event.tool_output.raw_output)} sources to use as context for the query"
+                raw_output = event.tool_output.raw_output
+                if isinstance(raw_output, List):
+                    yield cls.to_sources_data(SourceNodes.from_source_nodes(raw_output))
+                    title = f"Retrieved {len(raw_output)} sources to use as context for the query"
+                elif isinstance(raw_output, CallToolResult):
+                    yield cls.to_sources_data(
+                        SourceNodes.from_call_tool_result(raw_output)
+                    )
+                    title = f"Tool '{event.tool_name}' returned: {len(raw_output.content)} sources"
                 else:
                     title = f"Tool '{event.tool_name}' returned"
                 yield cls.to_event_data(title)
@@ -167,14 +174,11 @@ class VercelStreamingResponse(StreamingResponse):
         return cls.to_data(event_data)
 
     @classmethod
-    def to_sources_data(cls, source_nodes: List[NodeWithScore]):
+    def to_sources_data(cls, source_nodes: List[SourceNodes]):
         sources_data = {
             "type": "sources",
             "data": {
-                "nodes": [
-                    SourceNodes.from_source_node(source_node).model_dump()
-                    for source_node in source_nodes
-                ]
+                "nodes": [source_node.model_dump() for source_node in source_nodes]
             },
         }
         return cls.to_data(sources_data)

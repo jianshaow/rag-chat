@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional
 
 from llama_index.core.llms import ChatMessage, MessageRole
 from llama_index.core.schema import NodeWithScore
+from mcp.types import CallToolResult, TextContent
 from pydantic import BaseModel, Field
 from pydantic.alias_generators import to_camel
 
@@ -170,6 +171,12 @@ class SourceNodes(BaseModel):
     url: Optional[str]
 
     @classmethod
+    def get_url_from_metadata(cls, metadata: Dict[str, Any]) -> Optional[str]:
+        data_dir = metadata.get("data_dir")
+        file_name = metadata.get("file_name")
+        return f"{files_base_url}/{data_dir}/{file_name}"
+
+    @classmethod
     def from_source_node(cls, source_node: NodeWithScore):
         metadata = source_node.node.metadata
         url = cls.get_url_from_metadata(metadata)
@@ -183,14 +190,22 @@ class SourceNodes(BaseModel):
         )
 
     @classmethod
-    def get_url_from_metadata(cls, metadata: Dict[str, Any]) -> Optional[str]:
-        data_dir = metadata.get("data_dir")
-        file_name = metadata.get("file_name")
-        return f"{files_base_url}/{data_dir}/{file_name}"
-
-    @classmethod
     def from_source_nodes(cls, source_nodes: List[NodeWithScore]):
         return [cls.from_source_node(node) for node in source_nodes]
+
+    @classmethod
+    def from_call_tool_result(cls, result: CallToolResult):
+        return [
+            cls(
+                text=content.text,
+                id="",
+                metadata=content.meta or {},
+                score=0,
+                url="/",
+            )
+            for content in result.content
+            if isinstance(content, TextContent)
+        ]
 
 
 class QueryResult(BaseModel):
