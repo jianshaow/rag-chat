@@ -78,7 +78,7 @@ class VercelStreamingResponse(StreamingResponse):
         response: WorkflowHandler,
         messages: ChatMessages | None = None,
     ):
-        response_generator = cls.workflow_event_generator(response, messages)
+        response_generator = cls.agent_event_generator(response, messages)
         return cls(response_generator)
 
     @classmethod
@@ -136,7 +136,7 @@ class VercelStreamingResponse(StreamingResponse):
             event_handler.is_done = True
 
     @classmethod
-    async def workflow_event_generator(
+    async def agent_event_generator(
         cls, response: WorkflowHandler, messages: ChatMessages | None
     ):
         final_response = ""
