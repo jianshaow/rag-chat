@@ -13,8 +13,8 @@ chat_model: %s
 
 TOOL_INFO_LOG_TEMPLATE = """
 %s
-tool_name: %s
-tool_config: %s
+tool_set_name: %s
+tool_set_config: %s
 %s
 """
 
