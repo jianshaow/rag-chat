@@ -1,8 +1,8 @@
 "use client";
 
 import { SourceNode } from "@llamaindex/chat-ui/widgets";
-import { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
 import Link from 'next/link';
+import { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
 import MarkdownViewer from '../components/Markdown';
 import {
   fetchChatConfig,
@@ -13,6 +13,7 @@ import {
   streamQuery
 } from '../lib/backend';
 import '../styles/common.css';
+import EventViewer from "./components/Events";
 import './Home.css';
 
 interface HomeState {
@@ -28,6 +29,7 @@ interface HomeState {
   streaming: boolean;
   request: string;
   text: string;
+  events: string[];
   sources: SourceNode[];
 }
 
@@ -47,6 +49,7 @@ class Home extends Component<{}, HomeState> {
       streaming: true,
       request: '',
       text: '',
+      events: [],
       sources: [],
     };
   }
@@ -90,6 +93,9 @@ class Home extends Component<{}, HomeState> {
     if (agentic || streaming) {
       streamQuery(request, agentic, (answer: string) => {
         this.setState({ text: answer });
+      }, (title: string) => {
+        const { events } = this.state;
+        this.setState({ events: [...events, title] });
       }, (sources: SourceNode[]) => {
         this.setState({ sources: sources });
       });
@@ -109,7 +115,7 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { modelProvider, embedModel, chatModel, toolSet, dataDir, mcpServer, agentic, streaming, request, text, sources } = this.state;
+    const { modelProvider, embedModel, chatModel, toolSet, dataDir, mcpServer, agentic, streaming, request, text, events, sources } = this.state;
     return (
       <div className='main-frame'>
         <div className='header'>
@@ -159,6 +165,7 @@ class Home extends Component<{}, HomeState> {
               </div>
             </form>
           </div>
+          <EventViewer events={events} height={'50px'} />
           <div className='answer-block'>
             <div className='between-container'>
               <label>Answer</label>
