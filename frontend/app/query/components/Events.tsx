@@ -6,7 +6,7 @@ interface EventViewerProps {
   height?: number | string;
 }
 
-const EventViewer: React.FC<EventViewerProps> = ({ events, height = "100px" }) => {
+const EventViewer: React.FC<EventViewerProps> = ({ events, height = "3em" }) => {
   const eventsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

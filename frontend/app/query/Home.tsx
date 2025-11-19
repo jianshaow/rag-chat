@@ -114,7 +114,7 @@ class Home extends Component<{}, HomeState> {
               </div>
             </form>
           </div>
-          <EventViewer events={events} height={'50px'} />
+          <EventViewer events={events} height={'4em'} />
           <div className='answer-block'>
             <div className='between-container'>
               <label>Answer</label>
