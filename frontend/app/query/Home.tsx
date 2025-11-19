@@ -6,7 +6,6 @@ import { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
 import {
   fetchChatConfig,
   fetchConfig,
-  fetchModelConfig,
   getBeBaseUrl,
   query,
   streamQuery
@@ -14,17 +13,11 @@ import {
 import '../styles/common.css';
 import EventViewer from "./components/Events";
 import MarkdownViewer from './components/Markdown';
+import SettingInfo from './components/SettingInfo';
 import './Home.css';
 
 interface HomeState {
-  modelProvider: string;
-  embedModel: string;
-  chatModel: string;
-  toolSet: string;
-  dataDirs: string[];
   dataDir: string;
-  dataConfig: any;
-  mcpServer: string;
   agentic: boolean;
   streaming: boolean;
   request: string;
@@ -37,14 +30,7 @@ class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      modelProvider: '',
-      embedModel: '',
-      chatModel: '',
-      toolSet: '',
-      dataConfig: {},
-      dataDirs: [],
       dataDir: '',
-      mcpServer: '',
       agentic: true,
       streaming: true,
       request: '',
@@ -56,23 +42,14 @@ class Home extends Component<{}, HomeState> {
 
   componentDidMount() {
     this.initConfig();
+    this.initChatConfig();
   }
 
   initConfig() {
     fetchConfig().then(config => {
       this.setState({
-        modelProvider: config.model_provider,
         dataDir: config.data_dir,
-        toolSet: config.tool_set,
-        mcpServer: config.mcp_server,
-      });
-      fetchModelConfig(config.model_provider).then(config => {
-        this.setState({
-          embedModel: config.embed_model,
-          chatModel: config.chat_model,
-        });
-      });
-      this.initChatConfig();
+      })
     });
   }
 
@@ -115,42 +92,14 @@ class Home extends Component<{}, HomeState> {
   }
 
   render() {
-    const { modelProvider, embedModel, chatModel, toolSet, dataDir, mcpServer, agentic, streaming, request, text, events, sources } = this.state;
+    const { agentic, streaming, request, text, events, sources } = this.state;
     return (
       <div className='main-frame'>
         <div className='header'>
           <Link href='/setting'>Setting</Link>
         </div>
         <h1 className='title'>RAG Q&A Demo</h1>
-        <div className='container-column'>
-          <label>Current Setting</label>
-          <div className='info-block'>
-            <div>
-              <label>Model Provider</label>
-              <div className="info-value">{modelProvider}</div>
-            </div>
-            <div>
-              <label>Embed Model</label>
-              <div className="info-value">{embedModel}</div>
-            </div>
-            <div>
-              <label>Chat Model</label>
-              <div className="info-value">{chatModel}</div>
-            </div>
-            <div>
-              <label>Tool Set</label>
-              <div className="info-value">{toolSet}</div>
-            </div>
-            <div>
-              <label>Data Dir</label>
-              <div className="info-value">{dataDir}</div>
-            </div>
-            <div>
-              <label>MCP Server</label>
-              <div className="info-value">{mcpServer}</div>
-            </div>
-          </div>
-        </div>
+        <SettingInfo />
         <div className='container-column'>
           <div className='question-block'>
             <label>Question</label>
