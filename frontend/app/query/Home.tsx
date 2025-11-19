@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
 import {
   fetchChatConfig,
-  fetchConfig,
   getBeBaseUrl,
   query,
   streamQuery
@@ -15,9 +14,9 @@ import EventViewer from "./components/Events";
 import MarkdownViewer from './components/Markdown';
 import SettingInfo from './components/SettingInfo';
 import './Home.css';
+import { configContext } from "../context/ConfigContext";
 
 interface HomeState {
-  dataDir: string;
   agentic: boolean;
   streaming: boolean;
   request: string;
@@ -27,10 +26,12 @@ interface HomeState {
 }
 
 class Home extends Component<{}, HomeState> {
+  static contextType = configContext;
+  declare context: React.ContextType<typeof configContext>;
+
   constructor(props: {}) {
     super(props);
     this.state = {
-      dataDir: '',
       agentic: true,
       streaming: true,
       request: '',
@@ -41,21 +42,11 @@ class Home extends Component<{}, HomeState> {
   }
 
   componentDidMount() {
-    this.initConfig();
     this.initChatConfig();
-  }
-
-  initConfig() {
-    fetchConfig().then(config => {
-      this.setState({
-        dataDir: config.data_dir,
-      })
-    });
   }
 
   initChatConfig() {
     fetchChatConfig().then(chatConfig => {
-      console.log(chatConfig);
       const starterQuestion = chatConfig.starterQuestions[0];
       this.setState({ request: starterQuestion });
     });
@@ -79,16 +70,15 @@ class Home extends Component<{}, HomeState> {
       });
     } else {
       query(request).then(response => {
-        console.log(response);
         this.setState({ text: response.answer, sources: response.sources });
       });
     }
   }
 
   viewFull = (e: MouseEvent<HTMLButtonElement>) => {
-    const { dataDir } = this.state;
+    const { settingInfo } = this.context;
     const file_name = (e.target as HTMLButtonElement).id
-    const url = `${getBeBaseUrl()}/api/files/${dataDir}/${file_name}`;
+    const url = `${getBeBaseUrl()}/api/files/${settingInfo?.dataDir}/${file_name}`;
     window.open(url)
   }
 

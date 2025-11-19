@@ -1,45 +1,11 @@
-import {
-  fetchConfig,
-  fetchModelConfig
-} from '@/lib/backend';
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useConfig } from "@/context/ConfigContext";
 
 import '../Home.css';
 import './SettingInfo.css';
 
-interface SettingInfo {
-  modelProvider: string;
-  toolSet: string;
-  dataDir: string;
-  mcpServer: string;
-}
-
-interface ModelConfig {
-  embedModel: string;
-  chatModel: string;
-}
-
 const SettingInfo: React.FC = () => {
-
-  const [settingInfo, setSettingInfo] = useState<SettingInfo>();
-  const [modelConfig, setModelConfig] = useState<ModelConfig>();
-
-  useEffect(() => {
-    fetchConfig().then(config => {
-      setSettingInfo({
-        modelProvider: config.model_provider,
-        dataDir: config.data_dir,
-        toolSet: config.tool_set,
-        mcpServer: config.mcp_server,
-      });
-      fetchModelConfig(config.model_provider).then(config => {
-        setModelConfig({
-          embedModel: config.embed_model,
-          chatModel: config.chat_model,
-        });
-      });
-    });
-  }, []);
+  const { settingInfo, modelConfig } = useConfig();
 
   return (
     <div className='container-column'>
