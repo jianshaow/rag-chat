@@ -3,7 +3,6 @@
 import { SourceNode } from "@llamaindex/chat-ui/widgets";
 import Link from 'next/link';
 import { ChangeEvent, Component, FormEvent, MouseEvent } from 'react';
-import MarkdownViewer from '../components/Markdown';
 import {
   fetchChatConfig,
   fetchConfig,
@@ -14,6 +13,7 @@ import {
 } from '../lib/backend';
 import '../styles/common.css';
 import EventViewer from "./components/Events";
+import MarkdownViewer from './components/Markdown';
 import './Home.css';
 
 interface HomeState {
