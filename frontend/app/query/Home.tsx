@@ -73,8 +73,9 @@ class Home extends Component<{}, HomeState> {
       }, (title: string) => {
         const { events } = this.state;
         this.setState({ events: [...events, title] });
-      }, (sources: SourceNode[]) => {
-        this.setState({ sources: sources });
+      }, (newSources: SourceNode[]) => {
+        const { sources } = this.state;
+        this.setState({ sources: [...sources, ...newSources] });
       });
     } else {
       query(request).then(response => {
