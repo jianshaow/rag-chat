@@ -1,0 +1,9 @@
+.question-block {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.question-bar {
+  display: flex;
+}
