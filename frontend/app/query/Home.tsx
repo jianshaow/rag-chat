@@ -54,7 +54,7 @@ class Home extends Component<{}, HomeState> {
 
   handleQuestion = async (e: FormEvent) => {
     e.preventDefault();
-    this.setState({ text: '', sources: [] })
+    this.setState({ text: '', sources: [], events: [] });
 
     const { request, agentic, streaming } = this.state;
 
