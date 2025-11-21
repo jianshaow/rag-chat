@@ -1,19 +1,20 @@
 import 'github-markdown-css/github-markdown-light.css';
 import "highlight.js/styles/github.css";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import { useQuery } from '../context/query-context';
 import './Markdown.css';
 
 interface MarkdownViewerProps {
-  content: string;
   height?: number | string;
 }
 
-const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, height = "200px" }) => {
+export default function MarkdownViewer({ height = "200px" }: MarkdownViewerProps) {
   const markdownRef = useRef<HTMLDivElement>(null);
+  const { answer } = useQuery();
 
   useEffect(() => {
     const elemnet = markdownRef.current;
@@ -22,7 +23,7 @@ const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, height = "200p
         elemnet.scrollTop = elemnet.scrollHeight;
       });
     }
-  }, [content]);
+  }, [answer]);
 
   return (
     <div ref={markdownRef} className="markdown-frame markdown-body" style={{ height: height }}>
@@ -30,10 +31,8 @@ const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, height = "200p
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeHighlight]}
       >
-        {content}
+        {answer || ''}
       </ReactMarkdown>
     </div>
   );
 };
-
-export default MarkdownViewer;

@@ -1,10 +1,9 @@
-import React from "react";
-import { useConfig } from "@/context/ConfigContext";
+import { useConfig } from "@/context/config-context";
 
 import '../Home.css';
 import './SettingInfo.css';
 
-const SettingInfo: React.FC = () => {
+export default function SettingInfo() {
   const { settingInfo, modelConfig } = useConfig();
 
   return (
@@ -39,5 +38,3 @@ const SettingInfo: React.FC = () => {
     </div>
   );
 }
-
-export default SettingInfo

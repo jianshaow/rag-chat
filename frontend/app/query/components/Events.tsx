@@ -1,13 +1,15 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useQuery } from "../context/query-context";
 import './Events.css';
 
 interface EventViewerProps {
-  events: string[];
   height?: number | string;
 }
 
-const EventViewer: React.FC<EventViewerProps> = ({ events, height = "3em" }) => {
+export default function EventViewer({ height = "3em" }: EventViewerProps) {
   const eventsRef = useRef<HTMLDivElement>(null);
+
+  const { events } = useQuery();
 
   useEffect(() => {
     const elemnet = eventsRef.current;
@@ -29,5 +31,3 @@ const EventViewer: React.FC<EventViewerProps> = ({ events, height = "3em" }) => 
     </div>
   );
 }
-
-export default EventViewer

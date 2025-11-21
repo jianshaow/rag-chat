@@ -1,8 +1,9 @@
 "use client";
 
 import {
+  fetchChatConfig,
   fetchConfig,
-  fetchModelConfig
+  fetchModelConfig,
 } from '@/lib/backend';
 
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -19,9 +20,14 @@ interface ModelConfig {
   chatModel: string;
 }
 
+interface ChatConfig {
+  starterQuestions: string[];
+}
+
 interface ConfigContextType {
   settingInfo?: SettingInfo;
   modelConfig?: ModelConfig;
+  chatConfig?: ChatConfig;
   loading: boolean;
   error?: string;
   refresh: () => Promise<void>;
@@ -32,9 +38,10 @@ export const configContext = createContext<ConfigContextType>({
   refresh: async () => { },
 });
 
-export function ConfigProvider({ children }: { children: React.ReactNode }) {
+export function ConfigProvider({ children }: React.PropsWithChildren) {
   const [settingInfo, setSettingInfo] = useState<SettingInfo>();
   const [modelConfig, setModelConfig] = useState<ModelConfig>();
+  const [chatConfig, setChatConfig] = useState<ChatConfig>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
 
@@ -52,6 +59,10 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
         embedModel: modelConfig.embed_model,
         chatModel: modelConfig.chat_model,
       });
+      const chatConfig = await fetchChatConfig();
+      setChatConfig({
+        starterQuestions: chatConfig.starterQuestions,
+      });
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -67,9 +78,13 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     loadConfig();
   }, []);
 
+  if (!chatConfig) {
+    return null;
+  }
+
   return (
     <configContext.Provider
-      value={{ settingInfo, modelConfig, loading, error, refresh: loadConfig }}
+      value={{ settingInfo, modelConfig, chatConfig, loading, error, refresh: loadConfig }}
     >
       {children}
     </configContext.Provider>
@@ -77,5 +92,9 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useConfig() {
-  return useContext(configContext);
+  const context = useContext(configContext);
+  if (!context) {
+    throw new Error("useConfig must be used within a ConfigProvider");
+  }
+  return context
 }
