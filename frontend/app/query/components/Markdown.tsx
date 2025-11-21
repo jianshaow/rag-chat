@@ -8,11 +8,11 @@ import remarkMath from "remark-math";
 import { useQuery } from '../context/query-context';
 import './Markdown.css';
 
-interface MarkdownViewerProps {
+interface MarkdownProps {
   height?: number | string;
 }
 
-export default function MarkdownViewer({ height = "200px" }: MarkdownViewerProps) {
+export default function Markdown({ height = "200px" }: MarkdownProps) {
   const markdownRef = useRef<HTMLDivElement>(null);
   const { answer } = useQuery();
 

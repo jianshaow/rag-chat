@@ -2,11 +2,11 @@ import { useEffect, useRef } from "react";
 import { useQuery } from "../context/query-context";
 import './Events.css';
 
-interface EventViewerProps {
+interface EventsProps {
   height?: number | string;
 }
 
-export default function EventViewer({ height = "3em" }: EventViewerProps) {
+export default function Events({ height = "3em" }: EventsProps) {
   const eventsRef = useRef<HTMLDivElement>(null);
 
   const { events } = useQuery();

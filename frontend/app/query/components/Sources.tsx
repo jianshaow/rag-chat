@@ -6,7 +6,7 @@ import { MouseEvent } from 'react';
 import { useQuery } from "../context/query-context";
 import './Question.css';
 
-export default function QueryForm() {
+export default function Sources() {
   const { sources } = useQuery();
   const { settingInfo } = useConfig();
 

@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { ConfigProvider } from "../context/config-context";
 import '../styles/common.css';
 import Answer from "./components/Answer";
-import EventViewer from "./components/Events";
-import MarkdownViewer from "./components/Markdown";
+import Events from "./components/Events";
+import Markdown from "./components/Markdown";
 import QueryForm from "./components/QueryForm";
 import QuerySection from "./components/QuerySection";
 import Question from "./components/Question";
@@ -26,9 +26,9 @@ export default function Page() {
           <Question>
             <QueryForm />
           </Question>
-          <EventViewer height={'4em'} />
+          <Events height={'4em'} />
           <Answer>
-            <MarkdownViewer height={300} />
+            <Markdown height={300} />
           </Answer>
           <Sources />
         </QuerySection>
