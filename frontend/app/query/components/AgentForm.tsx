@@ -1,5 +1,5 @@
 import { useChatContext } from "@/context/chat-context";
-import { useConfig } from "@/context/setting-context";
+import { useSetting } from "@/context/setting-context";
 import { useEffect } from "react";
 import './Question.css';
 
@@ -12,7 +12,7 @@ export default function AgentForm() {
   } = useChatContext();
 
   useEffect(() => {
-    const { chatConfig } = useConfig();
+    const { chatConfig } = useSetting();
     if (chatConfig && chatConfig.starterQuestions && chatConfig.starterQuestions.length > 0) {
       setInput(chatConfig.starterQuestions[0]);
     }
