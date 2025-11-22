@@ -1,10 +1,10 @@
 import './Question.css';
 
-export default function Question(props: React.PropsWithChildren) {
+export default function Question({ children }: React.PropsWithChildren) {
   return (
     <div className='question-block'>
       <label>Question</label>
-      {props.children}
+      {children}
     </div>
   );
 }

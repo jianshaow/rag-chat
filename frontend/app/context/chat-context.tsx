@@ -5,11 +5,11 @@ import { createContext, useContext } from "react";
 
 const chatContext = createContext<UseChatHelpers | null>(null);
 
-interface ChatProviderProps extends React.PropsWithChildren {
+interface ChatProviderProps {
   chat: UseChatHelpers;
 }
 
-export function ChatProvider({ chat, children }: ChatProviderProps) {
+export function ChatProvider({ chat, children }: React.PropsWithChildren<ChatProviderProps>) {
   return (
     <chatContext.Provider value={chat}>
       {children}

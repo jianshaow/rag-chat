@@ -1,6 +1,6 @@
 "use client";
 
-import { useConfig } from '@/context/config-context';
+import { useSetting } from '@/context/setting-context';
 import { getBeBaseUrl } from '@/lib/backend';
 import { MouseEvent } from 'react';
 import { useQuery } from "../context/query-context";
@@ -8,7 +8,7 @@ import './Question.css';
 
 export default function Sources() {
   const { sources } = useQuery();
-  const { settingInfo } = useConfig();
+  const { appConfig: settingInfo } = useSetting();
 
   const viewFull = (e: MouseEvent<HTMLButtonElement>) => {
     const file_name = (e.target as HTMLButtonElement).id

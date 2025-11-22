@@ -1,5 +1,5 @@
 import { useChatContext } from "@/context/chat-context";
-import { useConfig } from "@/context/config-context";
+import { useConfig } from "@/context/setting-context";
 import { useEffect } from "react";
 import './Question.css';
 

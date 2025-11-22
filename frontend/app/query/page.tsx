@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { ConfigProvider } from "../context/config-context";
+import { SettingProvider } from "../context/setting-context";
 import '../styles/common.css';
 import Answer from "./components/Answer";
 import Events from "./components/Events";
@@ -15,7 +15,7 @@ import './Home.css';
 
 export default function Page() {
   return (
-    <ConfigProvider>
+    <SettingProvider>
       <div className='main-frame'>
         <div className='header'>
           <Link href='/setting'>Setting</Link>
@@ -33,6 +33,6 @@ export default function Page() {
           <Sources />
         </QuerySection>
       </div>
-    </ConfigProvider>
+    </SettingProvider>
   );
 }

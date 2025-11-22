@@ -1,7 +1,6 @@
 "use client";
 
 import { SourceNode } from "@llamaindex/chat-ui/widgets";
-
 import React, { createContext, useContext, useState } from "react";
 
 interface QueryContextType {
@@ -13,7 +12,7 @@ interface QueryContextType {
   setEvents: React.Dispatch<React.SetStateAction<string[]>>;
   sources: SourceNode[];
   setSources: React.Dispatch<React.SetStateAction<SourceNode[]>>;
-  answer?: string;
+  answer: string;
   setAnswer: React.Dispatch<React.SetStateAction<string>>;
 }
 

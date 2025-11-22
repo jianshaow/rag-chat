@@ -1,10 +1,10 @@
-import { useConfig } from "@/context/config-context";
+import { useSetting } from "@/context/setting-context";
 
 import '../Home.css';
 import './SettingInfo.css';
 
 export default function SettingInfo() {
-  const { settingInfo, modelConfig } = useConfig();
+  const { appConfig: settingInfo, modelConfig } = useSetting();
 
   return (
     <div className='container-column'>

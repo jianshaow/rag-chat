@@ -1,25 +1,25 @@
 import { MessageAnnotation, MessageAnnotationType } from "@llamaindex/chat-ui";
 import { EventData, SourceData, SourceNode } from "@llamaindex/chat-ui/widgets";
 
-function setBeBaseUrl(beBaseUrl: string) {
+export function storeBeBaseUrl(beBaseUrl: string) {
     localStorage.setItem('beBaseUrl', beBaseUrl);
 }
 
-function getBeBaseUrl() {
+export function getBeBaseUrl() {
     var beBaseUrl = localStorage.getItem('beBaseUrl');
     if (beBaseUrl === null) {
         beBaseUrl = "http://localhost:8000";
-        setBeBaseUrl(beBaseUrl);
+        storeBeBaseUrl(beBaseUrl);
     }
     return beBaseUrl;
 }
 
-async function fetchConfig() {
+export async function fetchConfig() {
     const url = `${getBeBaseUrl()}/api/setting`;
     return fetch(url).then(response => response.json());
 }
 
-async function updateConfig(config: string) {
+export async function updateConfig(config: string) {
     const url = `${getBeBaseUrl()}/api/setting`;
     fetch(url, {
         method: 'PUT',
@@ -28,27 +28,27 @@ async function updateConfig(config: string) {
     })
 }
 
-async function fetchData() {
+export async function fetchData() {
     const url = `${getBeBaseUrl()}/api/data`;
     return fetch(url).then(response => response.json());
 }
 
-async function fetchDataConfig() {
+export async function fetchDataConfig() {
     const url = `${getBeBaseUrl()}/api/data/config`;
     return fetch(url).then(response => response.json());
 }
 
-async function fetchMcpServers() {
+export async function fetchMcpServers() {
     const url = `${getBeBaseUrl()}/api/tools/mcp_servers`;
     return fetch(url).then(response => response.json());
 }
 
-async function fetchChatConfig() {
+export async function fetchChatConfig() {
     const url = `${getBeBaseUrl()}/api/chat/config`;
     return fetch(url).then(response => response.json());
 }
 
-async function indexData(data: string) {
+export async function indexData(data: string) {
     const url = `${getBeBaseUrl()}/api/data/${data}`;
     return fetch(url, {
         method: 'POST',
@@ -57,23 +57,22 @@ async function indexData(data: string) {
     }).then(response => { return });
 }
 
-async function fetchModelProviders() {
+export async function fetchModelProviders() {
     const url = `${getBeBaseUrl()}/api/model/provider`
     return fetch(url).then(response => response.json());
 }
 
-async function fetchToolSets() {
+export async function fetchToolSets() {
     const url = `${getBeBaseUrl()}/api/tools`
     return fetch(url).then(response => response.json());
 }
 
-
-async function fetchModelConfig(model_provider: string) {
+export async function fetchModelConfig(model_provider: string) {
     const url = `${getBeBaseUrl()}/api/model/provider/${model_provider}`;
     return fetch(url).then(response => response.json());
 }
 
-async function updateModelConfig(model_provider: string, config: string) {
+export async function updateModelConfig(model_provider: string, config: string) {
     const url = `${getBeBaseUrl()}/api/model/provider/${model_provider}`;
     fetch(url, {
         method: 'PUT',
@@ -82,17 +81,17 @@ async function updateModelConfig(model_provider: string, config: string) {
     })
 }
 
-async function fetchEmbedModels(reload: boolean) {
+export async function fetchEmbedModels(reload: boolean) {
     const url = `${getBeBaseUrl()}/api/model/embed?reload=${reload}`
     return fetch(url).then(response => response.json());
 }
 
-async function fetchChatModels(reload: boolean) {
+export async function fetchChatModels(reload: boolean) {
     const url = `${getBeBaseUrl()}/api/model/chat?reload=${reload}`
     return fetch(url).then(response => response.json());
 }
 
-async function query(query: string) {
+export async function query(query: string) {
     const url = `${getBeBaseUrl()}/api/query`;
     return fetch(url, {
         method: 'POST',
@@ -101,7 +100,7 @@ async function query(query: string) {
     }).then(response => response.json());
 }
 
-async function streamQuery(query: string, agentic: boolean, onTextProcess: (answer: string) => void, onEventsProcess: (title: string) => void, onSoucesProcess: (sources: SourceNode[]) => void,) {
+export async function streamQuery(query: string, agentic: boolean, onTextProcess: (answer: string) => void, onEventsProcess: (title: string) => void, onSoucesProcess: (sources: SourceNode[]) => void,) {
     var path = '/api/query/stream';
     if (agentic) {
         path = '/api/query/agent_stream';
@@ -155,10 +154,7 @@ async function streamQuery(query: string, agentic: boolean, onTextProcess: (answ
     }
 }
 
-async function fetchChrunk(data: string, id: string) {
+export async function fetchChrunk(data: string, id: string) {
     const url = `${getBeBaseUrl()}/api/data/${data}/node/${id}`;
     return fetch(url).then(response => response.json());
 }
-
-export { fetchChatConfig, fetchChatModels, fetchChrunk, fetchConfig, fetchData, fetchDataConfig, fetchEmbedModels, fetchMcpServers, fetchModelConfig, fetchModelProviders, fetchToolSets, getBeBaseUrl, indexData, query, setBeBaseUrl, streamQuery, updateConfig, updateModelConfig };
-

@@ -1,6 +1,6 @@
 "use client";
 
-import { useConfig } from "@/context/config-context";
+import { useSetting } from "@/context/setting-context";
 import { query, streamQuery } from "@/lib/backend";
 import { SourceNode } from "@llamaindex/chat-ui/widgets";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { useQuery } from "../context/query-context";
 import './Question.css';
 
 export default function QueryForm() {
-  const { chatConfig } = useConfig();
+  const { chatConfig } = useSetting();
   const { agentic, streaming, setEvents, setSources, setAnswer } = useQuery();
   const [input, setInput] = useState('');
 
@@ -39,7 +39,7 @@ export default function QueryForm() {
     if (chatConfig && chatConfig.starterQuestions && chatConfig.starterQuestions.length > 0) {
       setInput(chatConfig.starterQuestions[0]);
     }
-  }, []);
+  }, [chatConfig]);
 
   return (
     <form onSubmit={handleSubmit}>
