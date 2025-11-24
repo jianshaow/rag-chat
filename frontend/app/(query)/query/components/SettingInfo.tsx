@@ -2,7 +2,7 @@
 
 import { useSetting } from "@/(query)/context/setting-context";
 
-import '../Home.css';
+import '../page.module.css';
 import './SettingInfo.css';
 
 export default function SettingInfo() {

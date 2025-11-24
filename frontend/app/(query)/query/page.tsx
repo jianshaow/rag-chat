@@ -8,7 +8,7 @@ import QuerySection from "./components/QuerySection";
 import Question from "./components/Question";
 import SettingInfo from './components/SettingInfo';
 import Sources from "./components/Sources";
-import './Home.css';
+import './page.module.css';
 
 export default function Page() {
   return (
