@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { SettingProvider } from "../context/setting-context";
+import { SettingProvider } from "../../context/setting-context";
 import '../styles/common.css';
 import Answer from "./components/Answer";
 import Events from "./components/Events";
