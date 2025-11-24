@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetting } from "@/context/setting-context";
+import { useSetting } from "@/(query)/context/setting-context";
 import { query, streamQuery } from "@/lib/backend";
 import { SourceNode } from "@llamaindex/chat-ui/widgets";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";

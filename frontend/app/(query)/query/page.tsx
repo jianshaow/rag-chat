@@ -1,6 +1,5 @@
-import Link from 'next/link';
-import { SettingProvider } from "../../context/setting-context";
 import '@/styles/common.css';
+import Link from 'next/link';
 import Answer from "./components/Answer";
 import Events from "./components/Events";
 import Markdown from "./components/Markdown";
@@ -13,24 +12,22 @@ import './Home.css';
 
 export default function Page() {
   return (
-    <SettingProvider>
-      <div className='main-frame'>
-        <div className='header'>
-          <Link href='/setting'>Setting</Link>
-        </div>
-        <h1 className='title'>RAG Q&A Demo</h1>
-        <SettingInfo />
-        <QuerySection>
-          <Question>
-            <QueryForm />
-          </Question>
-          <Events height={'4em'} />
-          <Answer>
-            <Markdown height={300} />
-          </Answer>
-          <Sources />
-        </QuerySection>
+    <div className='main-frame'>
+      <div className='header'>
+        <Link href='/setting'>Setting</Link>
       </div>
-    </SettingProvider>
+      <h1 className='title'>RAG Q&A Demo</h1>
+      <SettingInfo />
+      <QuerySection>
+        <Question>
+          <QueryForm />
+        </Question>
+        <Events height={'4em'} />
+        <Answer>
+          <Markdown height={300} />
+        </Answer>
+        <Sources />
+      </QuerySection>
+    </div>
   );
 }

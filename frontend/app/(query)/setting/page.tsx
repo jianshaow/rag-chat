@@ -1,6 +1,5 @@
-import { SettingProvider } from '@/context/setting-context';
-import Link from 'next/link';
 import '@/styles/common.css';
+import Link from 'next/link';
 import AppConfigSetting from './components/AppConfig';
 import GeneralConfigSetting from './components/GeneralConfig';
 import ModelConfigSetting from './components/ModelConfig';
@@ -13,11 +12,9 @@ export default function Page() {
         <Link href='/query'>Return Home</Link>
       </div>
       <h1 className='title'>Settings</h1>
-      <SettingProvider>
-        <GeneralConfigSetting />
-        <AppConfigSetting />
-        <ModelConfigSetting />
-      </SettingProvider>
+      <GeneralConfigSetting />
+      <AppConfigSetting />
+      <ModelConfigSetting />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetting } from '@/context/setting-context';
+import { useSetting } from '@/(query)/context/setting-context';
 import { getBeBaseUrl } from '@/lib/backend';
 import { MouseEvent } from 'react';
 import { useQuery } from "../context/query-context";

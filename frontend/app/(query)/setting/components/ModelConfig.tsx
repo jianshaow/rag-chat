@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetting } from '@/context/setting-context';
+import { useSetting } from '@/(query)/context/setting-context';
 import {
   fetchChatModels,
   fetchEmbedModels,
