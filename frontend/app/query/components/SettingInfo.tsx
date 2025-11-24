@@ -1,3 +1,5 @@
+"use client";
+
 import { useSetting } from "@/context/setting-context";
 
 import '../Home.css';

@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import { useQuery } from "../context/query-context";
 import './Events.css';

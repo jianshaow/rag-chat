@@ -1,3 +1,5 @@
+"use client";
+
 import 'github-markdown-css/github-markdown-light.css';
 import "highlight.js/styles/github.css";
 import { useEffect, useRef } from "react";

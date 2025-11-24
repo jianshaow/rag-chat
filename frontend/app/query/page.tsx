@@ -1,5 +1,3 @@
-"use client";
-
 import Link from 'next/link';
 import { SettingProvider } from "../context/setting-context";
 import '../styles/common.css';

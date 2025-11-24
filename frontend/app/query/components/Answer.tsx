@@ -1,3 +1,5 @@
+"use client";
+
 import { ChangeEvent } from "react";
 import { useQuery } from "../context/query-context";
 import './Question.css';
