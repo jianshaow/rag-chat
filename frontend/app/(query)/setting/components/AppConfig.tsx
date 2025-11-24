@@ -11,7 +11,7 @@ import {
 } from '@/lib/backend';
 import { AppConfig } from '@/types/config';
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
-import '../../query.css';
+import '../../common.css';
 import '../setting.css';
 
 export default function AppConfigSetting() {

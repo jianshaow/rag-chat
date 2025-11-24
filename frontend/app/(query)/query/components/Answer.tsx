@@ -2,7 +2,7 @@
 
 import { ChangeEvent } from "react";
 import { useQuery } from "../context/query-context";
-import './Question.css';
+import '../query.css';
 
 export default function Answer({ children }: React.PropsWithChildren) {
   const { agentic, setAgentic, streaming, setStreaming } = useQuery();

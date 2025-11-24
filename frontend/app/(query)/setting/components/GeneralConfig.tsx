@@ -3,7 +3,7 @@
 import { useSetting } from '@/(query)/context/setting-context';
 import { storeBeBaseUrl } from '@/lib/backend';
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
-import '../../query.css';
+import '../../common.css';
 import '../setting.css';
 
 export default function GeneralConfigSetting() {

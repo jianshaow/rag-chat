@@ -5,7 +5,7 @@ import { query, streamQuery } from "@/lib/backend";
 import { SourceNode } from "@llamaindex/chat-ui/widgets";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useQuery } from "../context/query-context";
-import './Question.css';
+import '../query.css';
 
 export default function QueryForm() {
   const { chatConfig } = useSetting();

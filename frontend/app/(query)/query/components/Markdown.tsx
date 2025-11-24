@@ -8,7 +8,6 @@ import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import { useQuery } from '../context/query-context';
-import './Markdown.css';
 
 interface MarkdownProps {
   height?: number | string;

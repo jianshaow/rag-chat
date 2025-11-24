@@ -3,7 +3,7 @@
 import { useChatContext } from "@/(query)/context/chat-context";
 import { useSetting } from "@/(query)/context/setting-context";
 import { useEffect } from "react";
-import './Question.css';
+import '../query.css';
 
 export default function AgentForm() {
   const {
