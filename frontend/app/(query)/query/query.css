@@ -16,7 +16,8 @@
 }
 
 .question-block,
-.answer-block {
+.answer-block,
+.reference-block {
   @apply flex flex-col mb-2;
 }
 
@@ -26,8 +27,4 @@
 
 .markdown-frame {
   @apply bg-white border border-gray-300 p-4 rounded-md overflow-auto shadow-sm;
-}
-
-.reference-block {
-  @apply flex flex-col;
 }

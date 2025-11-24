@@ -1,7 +1,0 @@
-.setting-container {
-  @apply flex flex-col border border-black rounded-md mb-2 p-2;
-}
-
-.setting {
-  @apply flex gap-2 mb-1;
-}

@@ -1,0 +1,11 @@
+.setting-container {
+  @apply flex flex-col border border-black rounded-md mb-2 p-2 space-y-1;
+}
+
+.setting {
+  @apply flex items-center gap-2;
+}
+
+.setting label {
+  @apply w-48;
+}
