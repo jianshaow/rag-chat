@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import '../common.css';
+import '../query.module.css';
 import Answer from "./components/Answer";
 import Events from "./components/Events";
 import Markdown from "./components/Markdown";

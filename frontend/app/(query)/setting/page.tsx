@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import '../common.css';
+import '../query.module.css';
 import AppConfigSetting from './components/AppConfig';
 import GeneralConfigSetting from './components/GeneralConfig';
 import ModelConfigSetting from './components/ModelConfig';

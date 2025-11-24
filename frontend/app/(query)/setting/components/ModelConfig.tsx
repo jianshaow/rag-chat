@@ -8,7 +8,7 @@ import {
 } from '@/lib/backend';
 import { ModelConfig } from '@/types/config';
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
-import '../../common.css';
+import '../../cquery.module.css';
 import '../Setting.css';
 
 export default function ModelConfigSetting() {
