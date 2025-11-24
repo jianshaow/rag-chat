@@ -1,53 +1,30 @@
 .main-frame {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  @apply flex flex-col justify-center w-full max-w-[1200px] mx-auto;
 }
 
 .between-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+  @apply flex justify-between items-center w-full;
+}
+
+body {
+  @apply m-5 min-h-screen bg-gray-100;
 }
 
 h1 {
-  font-size: 2em;
-  font-weight: bold;
-  margin: 0.2em 0;
-  line-height: 1.2;
+  @apply text-2xl font-bold my-1 leading-tight;
 }
 
 input,
 textarea,
 select {
-  border: 1px solid #d0d7de;
-  border-radius: 5px;
-  padding: 0 5px;
+  @apply border border-gray-300 rounded-md px-2 py-1;
 }
 
 li {
-  list-style-position: inside;
+  @apply list-inside;
 }
 
 button {
-  background-color: lightgray;
-  border: 1px solid gray;
-  color: black;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  padding: 0 5px;
-}
-
-body {
-  margin: 20px 20px;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  background-color: #f0f0f0;
+  @apply bg-gray-300 border border-gray-500 text-black rounded-md cursor-pointer
+         transition-colors duration-300 px-3 py-1 hover:bg-gray-400;
 }

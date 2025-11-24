@@ -1,61 +1,33 @@
+
 .info-block {
-  display: flex;
-  flex-wrap: wrap;
-  border-radius: 5px;
-  border: 1px solid #d0d7de;
-  margin-bottom: 10px;
-  gap: 10px;
-  padding: 10px;
+  @apply flex flex-wrap border border-gray-300 rounded-md mb-2 gap-2 p-2;
 }
 
 .info-value {
-  background: white;
-  border: 1px solid #d0d7de;
-  border-radius: 5px;
-  padding: 0 5px;
+  @apply bg-white border border-gray-300 rounded-md px-2 py-1;
 }
 
 .events-block {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
+  @apply flex flex-col mb-2;
 }
 
 .events-view {
-  border: 1px solid #d0d7de;
-  background: white;
-  flex-direction: column;
-  border-radius: 5px;
-  overflow: auto;
-  padding: 0 5px;
+  @apply flex flex-col bg-white border border-gray-300 rounded-md overflow-auto px-2 py-1;
 }
 
-.question-block {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
+.question-block,
+.answer-block {
+  @apply flex flex-col mb-2;
 }
 
 .question-bar {
-  display: flex;
-}
-
-.answer-block {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
+  @apply flex;
 }
 
 .markdown-frame {
-  border: 1px solid #d0d7de;
-  background: white;
-  padding: 16px;
-  border-radius: 6px;
-  overflow: auto;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  @apply bg-white border border-gray-300 p-4 rounded-md overflow-auto shadow-sm;
 }
 
 .reference-block {
-  display: flex;
-  flex-direction: column;
+  @apply flex flex-col;
 }
