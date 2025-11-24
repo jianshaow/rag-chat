@@ -6,9 +6,9 @@ import {
   fetchEmbedModels,
   updateModelConfig
 } from '@/lib/backend';
-import '@/styles/common.css';
 import { ModelConfig } from '@/types/config';
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import '../../common.css';
 import '../Setting.css';
 
 export default function ModelConfigSetting() {
