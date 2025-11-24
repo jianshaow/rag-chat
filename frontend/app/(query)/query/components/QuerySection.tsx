@@ -4,7 +4,7 @@ import './Question.css';
 export default function QuerySection(props: React.PropsWithChildren) {
   return (
     <QueryProvider>
-      <div className='container-column'>
+      <div>
         {props.children}
       </div>
     </QueryProvider>

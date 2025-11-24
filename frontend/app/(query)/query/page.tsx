@@ -13,10 +13,10 @@ import './page.css';
 export default function Page() {
   return (
     <div className='main-frame'>
-      <div className='header'>
+      <div className='text-right'>
         <Link href='/setting'>Setting</Link>
       </div>
-      <h1 className='title'>RAG Q&A Demo</h1>
+      <h1>RAG Q&A Demo</h1>
       <SettingInfo />
       <QuerySection>
         <Question>

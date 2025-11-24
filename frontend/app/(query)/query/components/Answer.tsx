@@ -11,7 +11,7 @@ export default function Answer({ children }: React.PropsWithChildren) {
     <div className='answer-block'>
       <div className='between-container'>
         <label>Answer</label>
-        <div className='right-group'>
+        <div>
           <label>Agentic: </label>
           <input type='checkbox' onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setAgentic(e.target.checked);

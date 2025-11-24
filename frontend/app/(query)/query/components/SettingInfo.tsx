@@ -7,7 +7,7 @@ export default function SettingInfo() {
   const { appConfig: settingInfo, modelConfig } = useSetting();
 
   return (
-    <div className='container-column'>
+    <div>
       <label>Current Setting</label>
       <div className='info-block'>
         <div>

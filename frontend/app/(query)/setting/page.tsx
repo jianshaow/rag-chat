@@ -8,10 +8,10 @@ import './page.css';
 export default function Page() {
   return (
     <div className='main-frame'>
-      <div className='header'>
+      <div className='text-right'>
         <Link href='/query'>Return Home</Link>
       </div>
-      <h1 className='title'>Settings</h1>
+      <h1>Settings</h1>
       <GeneralConfigSetting />
       <AppConfigSetting />
       <ModelConfigSetting />
