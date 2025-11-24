@@ -17,10 +17,10 @@ li {
 input,
 textarea,
 select {
-  @apply border-border rounded-md px-2 py-1 h-8 text-base;
+  @apply border-border rounded-md px-2 py-1 text-base;
 }
 
 button {
   @apply bg-gray-100 border-border rounded-md cursor-pointer
-         transition-colors duration-300 px-2 py-1 h-8 text-base hover:bg-gray-300;
+         transition-colors duration-300 px-2 py-1 text-base hover:bg-gray-300;
 }
