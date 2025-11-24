@@ -9,7 +9,7 @@ import {
 import { ModelConfig } from '@/types/config';
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import '../../cquery.module.css';
-import '../Setting.css';
+import '../page.module.css';
 
 export default function ModelConfigSetting() {
   const settingContext = useSetting();

@@ -3,7 +3,7 @@ import '../query.module.css';
 import AppConfigSetting from './components/AppConfig';
 import GeneralConfigSetting from './components/GeneralConfig';
 import ModelConfigSetting from './components/ModelConfig';
-import './Setting.css';
+import './page.module.css';
 
 export default function Page() {
   return (

@@ -12,7 +12,7 @@ import {
 import { AppConfig } from '@/types/config';
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import '../../query.module.css';
-import '../Setting.css';
+import '../page.module.css';
 
 export default function AppConfigSetting() {
   const settingContext = useSetting();

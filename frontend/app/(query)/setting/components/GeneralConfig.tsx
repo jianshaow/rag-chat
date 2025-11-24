@@ -4,7 +4,7 @@ import { useSetting } from '@/(query)/context/setting-context';
 import { storeBeBaseUrl } from '@/lib/backend';
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import '../../cquery.module.css';
-import '../Setting.css';
+import '../page.module.css';
 
 export default function GeneralConfigSetting() {
   const settingContext = useSetting();
