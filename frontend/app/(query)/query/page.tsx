@@ -13,7 +13,7 @@ import './query.css';
 export default function Page() {
   return (
     <div className='main-frame'>
-      <div className='text-right'>
+      <div className='text-right my-2'>
         <Link href='/setting'>Setting</Link>
       </div>
       <h1>RAG Q&A Demo</h1>

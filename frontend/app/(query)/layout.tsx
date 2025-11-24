@@ -4,5 +4,9 @@ import React from "react";
 import { SettingProvider } from "./context/setting-context";
 
 export default function SharedLayout({ children }: React.PropsWithChildren) {
-    return <SettingProvider>{children}</SettingProvider>;
+  return (
+    <div className='background-gradient'>
+      <SettingProvider>{children}</SettingProvider>
+    </div>
+  );
 }

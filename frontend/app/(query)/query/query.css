@@ -1,10 +1,9 @@
-
 .info-block {
-  @apply flex flex-wrap border border-gray-300 rounded-md mb-2 gap-2 p-2;
+  @apply flex flex-wrap border-border rounded-md mb-2 gap-2 p-2 text-base;
 }
 
 .info-value {
-  @apply bg-white border border-gray-300 rounded-md px-2 py-1;
+  @apply bg-white border-border rounded-md px-2 py-1 text-base;
 }
 
 .events-block {
@@ -12,19 +11,19 @@
 }
 
 .events-view {
-  @apply flex flex-col bg-white border border-gray-300 rounded-md overflow-auto px-2 py-1;
+  @apply flex flex-col bg-white border-border rounded-md overflow-auto px-2 py-1 text-base;
 }
 
 .question-block,
 .answer-block,
 .reference-block {
-  @apply flex flex-col mb-2;
+  @apply flex flex-col mb-2 text-base;
 }
 
 .question-bar {
-  @apply flex;
+  @apply flex items-center gap-2;
 }
 
 .markdown-frame {
-  @apply bg-white border border-gray-300 p-4 rounded-md overflow-auto shadow-sm;
+  @apply bg-white border-border p-4 rounded-md overflow-auto shadow-sm text-base;
 }

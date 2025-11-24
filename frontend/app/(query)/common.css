@@ -6,25 +6,21 @@
   @apply flex justify-between items-center w-full;
 }
 
-body {
-  @apply m-5 min-h-screen bg-gray-100;
+h1 {
+  @apply text-2xl font-bold leading-tight my-4;
 }
 
-h1 {
-  @apply text-2xl font-bold my-1 leading-tight;
+li {
+  @apply list-inside;
 }
 
 input,
 textarea,
 select {
-  @apply border border-gray-300 rounded-md px-2 py-1;
+  @apply border-border rounded-md px-2 py-1 h-8 text-base;
 }
 
 button {
-  @apply bg-gray-300 border border-gray-500 text-black rounded-md cursor-pointer
-         transition-colors duration-300 px-3 py-1 hover:bg-gray-400;
-}
-
-li {
-  @apply list-inside;
+  @apply bg-gray-100 border-border rounded-md cursor-pointer
+         transition-colors duration-300 px-2 py-1 h-8 text-base hover:bg-gray-300;
 }
