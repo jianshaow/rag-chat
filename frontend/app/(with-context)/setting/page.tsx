@@ -1,6 +1,6 @@
 import { SettingProvider } from '@/context/setting-context';
 import Link from 'next/link';
-import '../styles/common.css';
+import '@/styles/common.css';
 import AppConfigSetting from './components/AppConfig';
 import GeneralConfigSetting from './components/GeneralConfig';
 import ModelConfigSetting from './components/ModelConfig';
