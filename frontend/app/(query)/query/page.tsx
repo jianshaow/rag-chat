@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import '../query.module.css';
+import '../query.css';
 import Answer from "./components/Answer";
 import Events from "./components/Events";
 import Markdown from "./components/Markdown";
@@ -8,7 +8,7 @@ import QuerySection from "./components/QuerySection";
 import Question from "./components/Question";
 import SettingInfo from './components/SettingInfo';
 import Sources from "./components/Sources";
-import './page.module.css';
+import './page.css';
 
 export default function Page() {
   return (

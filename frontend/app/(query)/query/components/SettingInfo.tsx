@@ -1,9 +1,7 @@
 "use client";
 
 import { useSetting } from "@/(query)/context/setting-context";
-
-import '../page.module.css';
-import './SettingInfo.css';
+import '../page.css';
 
 export default function SettingInfo() {
   const { appConfig: settingInfo, modelConfig } = useSetting();

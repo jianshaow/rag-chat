@@ -11,8 +11,8 @@ import {
 } from '@/lib/backend';
 import { AppConfig } from '@/types/config';
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
-import '../../query.module.css';
-import '../page.module.css';
+import '../../query.css';
+import '../page.css';
 
 export default function AppConfigSetting() {
   const settingContext = useSetting();

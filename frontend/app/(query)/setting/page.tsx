@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import '../query.module.css';
+import '../query.css';
 import AppConfigSetting from './components/AppConfig';
 import GeneralConfigSetting from './components/GeneralConfig';
 import ModelConfigSetting from './components/ModelConfig';
-import './page.module.css';
+import './page.css';
 
 export default function Page() {
   return (

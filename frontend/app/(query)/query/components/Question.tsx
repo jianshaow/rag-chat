@@ -1,4 +1,4 @@
-import './Question.css';
+import '../page.css';
 
 export default function Question({ children }: React.PropsWithChildren) {
   return (
