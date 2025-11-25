@@ -1,5 +1,5 @@
 .info-block {
-  @apply flex flex-wrap border rounded-md mb-2 gap-2 p-2 text-base;
+  @apply flex flex-wrap bg-gray-100 border rounded-md mb-2 gap-2 p-2 text-base;
 }
 
 .info-value {

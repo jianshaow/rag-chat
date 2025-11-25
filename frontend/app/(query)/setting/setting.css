@@ -1,5 +1,5 @@
 .setting-container {
-  @apply flex flex-col border rounded-md mb-2 p-2 space-y-2 text-base;
+  @apply flex flex-col bg-gray-100 border rounded-md mb-2 p-2 space-y-2 text-base;
 }
 
 .setting {
