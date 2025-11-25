@@ -17,19 +17,21 @@ export default function Sources() {
   }
 
   return (
-    <div className='reference-block'>
-      <label>Reference</label>
-      <div>
+    <div className='sources-block'>
+      <label>Sources</label>
+      <ul>
         {sources.map(source => (
-          <li key={source.id}>
-            <label style={{ marginRight: '10px' }}>{source.metadata["file_name"] as string}</label>
-            <button id={source.id} onClick={(e: MouseEvent<HTMLButtonElement>) => {
-              alert(source.text);
-            }}>chunk</button>
-            <button id={source.metadata["file_name"] as string} onClick={viewFull}>full</button>
+          <li key={source.id} className='gap-2'>
+            <div className='source-item'>
+              <label>{source.metadata["file_name"] as string}</label>
+              <button id={source.id} onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                alert(source.text);
+              }}>chunk</button>
+              <button id={source.metadata["file_name"] as string} onClick={viewFull}>full</button>
+            </div>
           </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

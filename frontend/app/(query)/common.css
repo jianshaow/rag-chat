@@ -10,10 +10,6 @@ h1 {
   @apply text-2xl font-bold leading-tight my-4;
 }
 
-li {
-  @apply list-inside;
-}
-
 input,
 textarea,
 select {

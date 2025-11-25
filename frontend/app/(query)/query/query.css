@@ -16,7 +16,7 @@
 
 .question-block,
 .answer-block,
-.reference-block {
+.sources-block {
   @apply flex flex-col mb-2 text-base;
 }
 
@@ -46,4 +46,16 @@
 
 .markdown-frame {
   @apply bg-white border p-4 rounded-md overflow-auto shadow-sm text-base;
+}
+
+.sources-block ul {
+  @apply list-disc list-inside
+}
+
+.source-item {
+  @apply inline-flex items-center gap-2;
+}
+
+.source-item label {
+  @apply w-48 text-base;
 }
