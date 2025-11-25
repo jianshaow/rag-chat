@@ -11,36 +11,19 @@ export default function SettingInfo() {
   const [open, setOpen] = useState(false);
 
   return (
-    <Collapsible.Root
-      open={open}
-      onOpenChange={setOpen}
-      className="setting-info"
-    >
+    <Collapsible.Root open={open} onOpenChange={setOpen}>
       <Collapsible.Trigger asChild>
-        <div
-          style={{
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            fontSize: "16px",
-            fontWeight: "normal",
-          }}
-        >
+        <div className="flex items-center gap-1.5 cursor-pointer text-base font-normal">
           <span>{open ? "Hide Setting" : "Show Setting"}</span>
-
           <ChevronDown
             size={18}
-            style={{
-              transition: "transform 0.2s ease",
-              transform: open ? "rotate(180deg)" : "rotate(0deg)",
-            }}
+            className={`transition-transform duration-200 ${open ? "rotate-180" : "rotate-0"}`}
           />
         </div>
       </Collapsible.Trigger>
 
       <Collapsible.Content>
-        <div className="info-block" style={{ marginTop: "12px" }}>
+        <div className="info-block mt-2">
           <div>
             <label>Model Provider</label>
             <div className="info-value">{settingInfo?.modelProvider}</div>
@@ -73,7 +56,7 @@ export default function SettingInfo() {
         </div>
       </Collapsible.Content>
 
-      {!open && <div style={{ marginBottom: "12px" }} />}
+      {!open && <div className="mb-2" />}
     </Collapsible.Root>
   );
 }
