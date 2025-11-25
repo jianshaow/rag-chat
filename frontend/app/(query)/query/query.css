@@ -1,9 +1,9 @@
 .info-block {
-  @apply flex flex-wrap border-border rounded-md mb-2 gap-2 p-2 text-base;
+  @apply flex flex-wrap border rounded-md mb-2 gap-2 p-2 text-base;
 }
 
 .info-value {
-  @apply bg-white border-border rounded-md px-2 py-1 text-base;
+  @apply bg-white border rounded-md px-2 py-1 text-base;
 }
 
 .events-block {
@@ -25,5 +25,5 @@
 }
 
 .markdown-frame {
-  @apply bg-white border-border p-4 rounded-md overflow-auto shadow-sm text-base;
+  @apply bg-white border p-4 rounded-md overflow-auto shadow-sm text-base;
 }
