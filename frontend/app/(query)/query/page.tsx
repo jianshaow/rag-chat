@@ -24,7 +24,7 @@ export default function Page() {
         </Question>
         <Events height={'4em'} />
         <Answer>
-          <Markdown height={300} />
+          <Markdown height={200} />
         </Answer>
         <Sources />
       </QuerySection>
