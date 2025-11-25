@@ -16,7 +16,7 @@ export default function Page() {
       <div className='text-right my-2'>
         <Link href='/setting'>Setting</Link>
       </div>
-      <h1>RAG Q&A Demo</h1>
+      <h1>RAG / Agent Q&A Demo</h1>
       <SettingInfo />
       <QuerySection>
         <Question>
