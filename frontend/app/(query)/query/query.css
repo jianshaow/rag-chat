@@ -24,6 +24,19 @@
   @apply flex items-center gap-2;
 }
 
+.question-bar button[type="submit"] {
+  background-color: #888888;
+  transition: all 0.2s ease;
+}
+
+.question-bar button[type="submit"]:hover {
+  background-color: #555555;
+}
+
+.question-bar button[type="submit"]:active {
+  transform: scale(0.9);
+}
+
 .markdown-frame {
   @apply bg-white border p-4 rounded-md overflow-auto shadow-sm text-base;
 }
