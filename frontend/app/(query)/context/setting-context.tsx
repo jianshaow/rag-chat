@@ -45,6 +45,13 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
     });
   }
 
+  async function loadChatConfig() {
+    const chatConfig = await fetchChatConfig();
+    setChatConfig({
+      starterQuestions: chatConfig.starterQuestions,
+    });
+  }
+
   async function loadConfig() {
     try {
       setLoading(true);
@@ -56,10 +63,7 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
         mcpServer: appConfig.mcp_server,
       });
       await loadModelConfig(appConfig.model_provider);
-      const chatConfig = await fetchChatConfig();
-      setChatConfig({
-        starterQuestions: chatConfig.starterQuestions,
-      });
+      await loadChatConfig()
     } finally {
       setLoading(false);
     }
@@ -77,6 +81,7 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
     if (appConfig.modelProvider) {
       loadModelConfig(appConfig.modelProvider);
     }
+    loadChatConfig();
   }, [appConfig]);
 
   return (

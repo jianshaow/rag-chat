@@ -41,7 +41,7 @@ export default function Sources() {
                   sideOffset={8}
                   className="source-popover"
                 >
-                  {truncateText(source.text, 200)}
+                  {truncateText(source.text, 400)}
                   <Popover.Arrow className="source-popover-arrow" />
                 </Popover.Content>
               </Popover.Root>
