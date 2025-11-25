@@ -3,7 +3,7 @@
 }
 
 .info-value {
-  @apply bg-white border rounded-md px-2 py-1 text-base;
+  @apply bg-white border rounded-md px-2 py-1 text-sm;
 }
 
 .events-block {
@@ -11,7 +11,7 @@
 }
 
 .events-view {
-  @apply flex flex-col bg-white border-border rounded-md overflow-auto px-2 py-1 text-base;
+  @apply flex flex-col bg-white border-border rounded-md overflow-auto px-2 py-1 text-sm;
 }
 
 .question-block,
@@ -21,20 +21,27 @@
 }
 
 .question-bar {
-  @apply flex items-center gap-2;
+  @apply relative flex items-end gap-2;
+}
+
+.question-bar textarea {
+  @apply w-full min-h-[40px] resize-none overflow-hidden leading-6 px-2.5 pr-12 py-1.5 rounded-md border border-gray-300 text-sm;
 }
 
 .question-bar button[type="submit"] {
-  background-color: #888888;
-  transition: all 0.2s ease;
+  @apply absolute right-2 bottom-2 w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center border-none cursor-pointer transition-all duration-200;
 }
 
 .question-bar button[type="submit"]:hover {
-  background-color: #555555;
+  @apply bg-gray-600;
 }
 
 .question-bar button[type="submit"]:active {
-  transform: scale(0.9);
+  @apply scale-90;
+}
+
+.question-bar button[type="submit"] > svg {
+  @apply pointer-events-none transition-transform duration-100;
 }
 
 .markdown-frame {

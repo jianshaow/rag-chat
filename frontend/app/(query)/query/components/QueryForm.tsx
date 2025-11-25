@@ -25,7 +25,6 @@ export default function QueryForm() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    // setInput("");
     autoResize();
 
     if (agentic || streaming) {
@@ -52,7 +51,9 @@ export default function QueryForm() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      textareaRef.current?.form?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+      textareaRef.current?.form?.dispatchEvent(
+        new Event("submit", { cancelable: true, bubbles: true })
+      );
     }
   };
 
@@ -68,59 +69,16 @@ export default function QueryForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div
-        className="question-bar"
-        style={{
-          position: "relative",
-          display: "flex",
-          alignItems: "flex-end",
-        }}
-      >
+      <div className="question-bar">
         <textarea
           ref={textareaRef}
           value={input}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="Type your question..."
-          style={{
-            width: "100%",
-            resize: "none",
-            overflow: "hidden",
-            minHeight: "40px",
-            lineHeight: "1.5em",
-            padding: "6px 48px 6px 10px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-            fontSize: "14px",
-          }}
         />
-
-        <button
-          type="submit"
-          style={{
-            position: "absolute",
-            right: "8px",
-            bottom: "8px",
-            width: "32px",
-            height: "32px",
-            borderRadius: "50%",
-            backgroundColor: "#888888",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "none",
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-          }}
-        >
-          <Send
-            size={16}
-            color="#ffffff"
-            style={{
-              pointerEvents: "none",
-              transition: "transform 0.1s ease",
-            }}
-          />
+        <button type="submit">
+          <Send size={16} color="#ffffff" />
         </button>
       </div>
     </form>
