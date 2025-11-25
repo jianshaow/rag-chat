@@ -6,17 +6,15 @@
   @apply flex justify-between items-center w-full;
 }
 
-h1 {
+.main-frame h1 {
   @apply text-2xl font-bold leading-tight my-4;
 }
 
-input,
-textarea,
-select {
+.main-frame input, textarea, select {
   @apply border rounded-md px-2 py-1 text-base;
 }
 
-button {
+.main-frame button {
   @apply bg-gray-200 border rounded-md cursor-pointer
          transition-colors duration-300 px-2 py-1 text-base hover:bg-gray-300;
 }
