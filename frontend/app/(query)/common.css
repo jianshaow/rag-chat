@@ -1,5 +1,5 @@
 .main-frame {
-  @apply flex flex-col justify-center w-full max-w-[1000px] mx-auto;
+  @apply flex flex-col justify-center w-full max-w-[1000px] mx-auto px-4;
 }
 
 .between-container {
