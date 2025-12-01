@@ -158,7 +158,10 @@ class VercelStreamingResponse(StreamingResponse):
                 elif isinstance(raw_output, CallToolResult):
                     yield cls.to_sources_data(
                         SourceNodes.from_call_tool_result(
-                            raw_output, event.tool_id, event.tool_name
+                            raw_output,
+                            event.tool_id,
+                            event.tool_name,
+                            event.tool_kwargs,
                         )
                     )
                     title = f"Tool '{event.tool_name}' returned: {len(raw_output.content)} sources"

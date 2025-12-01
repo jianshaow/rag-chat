@@ -8,7 +8,7 @@ from mcp.types import CallToolResult, TextContent
 from pydantic import BaseModel, Field
 from pydantic.alias_generators import to_camel
 
-from app.api import files_base_url
+from app.api import files_base_url, tool_call_base_url
 from app.api.services.files import DocumentFile
 
 logger = logging.getLogger(__name__)
@@ -195,15 +195,20 @@ class SourceNodes(BaseModel):
 
     @classmethod
     def from_call_tool_result(
-        cls, result: CallToolResult, tool_id: str, tool_name: str
+        cls, result: CallToolResult, tool_id: str, tool_name: str, tool_kwargs: Dict[str, Any]
     ):
         return [
             cls(
                 text=content.text,
                 id=tool_id,
-                metadata={"tool_name": tool_name, "file_name": f"{tool_name}.mcp"},
+                metadata={
+                    "source_type": "mcp",
+                    "tool_name": tool_name,
+                    "tool_kwargs": tool_kwargs,
+                    "file_name": f"{tool_name}/mcp",
+                },
                 score=0,
-                url=f"tools/{tool_name}.mcp",
+                url=f"{tool_call_base_url}/{tool_name}",
             )
             for content in result.content
             if isinstance(content, TextContent)

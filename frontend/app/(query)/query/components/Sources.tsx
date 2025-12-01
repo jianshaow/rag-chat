@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetting } from "@/(query)/context/setting-context";
-import { getBeBaseUrl } from "@/lib/backend";
+import { SourceNode } from "@llamaindex/chat-ui/widgets";
 import * as Popover from "@radix-ui/react-popover";
 import { ExternalLink, Eye } from "lucide-react";
 import { useQuery } from "../context/query-context";
@@ -9,13 +9,36 @@ import "../query.css";
 
 export default function Sources() {
   const { sources } = useQuery();
-  const { appConfig: settingInfo } = useSetting();
 
   const truncateText = (text: string, maxLength: number) =>
     text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 
-  const viewFull = (fileName: string) => {
-    const url = `${getBeBaseUrl()}/api/files/${settingInfo?.dataDir}/${fileName}`;
+  const viewFull = async (source: SourceNode) => {
+    const metadata = source.metadata;
+    const sourceType = metadata["source_type"] as string;
+    const fileName = metadata["file_name"] as string;
+    const url = source.url || "";
+    if ("mcp" === sourceType) {
+      const args = metadata["tool_kwargs"];
+      const newWindow = window.open("", "_blank");
+      if (!newWindow) {
+        alert("Popup blocked! Please allow popups for this site.");
+        return;
+      }
+      newWindow.document.body.innerText = "Loading...";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(args),
+      });
+      const text = await res.text();
+      const blob = new Blob([text], { type: "text/plain" });
+      const blobUrl = URL.createObjectURL(blob);
+      newWindow.location.href = blobUrl;
+      return
+    }
     window.open(url);
   };
 
@@ -27,7 +50,6 @@ export default function Sources() {
           <li key={source.id} className="gap-2">
             <div className="source-item">
               <label>{source.metadata["file_name"] as string}</label>
-
               <Popover.Root>
                 <Popover.Trigger asChild>
                   <button title="Show chunk">
@@ -45,10 +67,9 @@ export default function Sources() {
                   <Popover.Arrow className="source-popover-arrow" />
                 </Popover.Content>
               </Popover.Root>
-
               <button
-                id={source.metadata["file_name"] as string}
-                onClick={() => viewFull(source.metadata["file_name"] as string)}
+                id={source.id}
+                onClick={() => viewFull(source)}
                 title="View full file"
               >
                 <ExternalLink size={16} color="#0070f3" />
