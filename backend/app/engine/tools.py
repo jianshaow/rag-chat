@@ -3,6 +3,7 @@ from typing import Any, Callable, Coroutine, Dict, List, Union
 
 import yaml
 from llama_index.core.tools import BaseTool, RetrieverTool
+from llama_index.core.tools.retriever_tool import DEFAULT_NAME
 from llama_index.core.vector_stores.types import MetadataFilters
 from llama_index.tools.mcp import BasicMCPClient, McpToolSpec
 from pydantic import BaseModel, RootModel, TypeAdapter
@@ -67,15 +68,17 @@ if mcp_servers_config_file and os.path.isfile(mcp_servers_config_file):
         __mcp_servers.update(mcp_servers_from_file["mcp_servers"])
 
 
-async def get_retriever_tools(data_dir: str, filters: MetadataFilters):
+async def get_retriever_tools(
+    data_dir: str, filters: MetadataFilters
+) -> Dict[str, BaseTool]:
     index = indexes.get_index(data_dir)
     retriever_tool = RetrieverTool.from_defaults(
         index.as_retriever(filters=filters, verbose=True)
     )
-    return [retriever_tool]
+    return {DEFAULT_NAME: retriever_tool}
 
 
-async def get_mcp_tools(*_args, **_kwargs):
+async def get_mcp_tools(*_args, **_kwargs) -> Dict[str, BaseTool]:
     mcp_server = get_mcp_server()
 
     if isinstance(mcp_server, LocalMCPServer):
@@ -86,12 +89,13 @@ async def get_mcp_tools(*_args, **_kwargs):
         raise ValueError("No mcp server is set!")
 
     mcp_tool_spec = McpToolSpec(client=mcp_client)
-    return await mcp_tool_spec.to_tool_list_async()
+    tools = await mcp_tool_spec.to_tool_list_async()
+    return {tool.metadata.name: tool for tool in tools if tool.metadata.name}
 
 
 class ToolSetSpec(BaseModel):
     name: str
-    get_tools: Callable[..., Coroutine[Any, Any, List[Union[BaseTool, Callable]]]]
+    get_tools: Callable[..., Coroutine[Any, Any, Dict[str, BaseTool]]]
 
 
 __tool_sets = {
@@ -108,6 +112,16 @@ def get_tool_set():
     return __tool_sets.get(setting.get_tool_set())
 
 
+async def call_tool(tool_name: str, *args, **kwargs):
+    tool_set = get_tool_set()
+    if tool_set:
+        tools = await tool_set.get_tools()
+        _tool = tools.get(tool_name)
+        if _tool:
+            result = _tool(*args, **kwargs)
+            return result.content
+
+
 def get_mcp_servers():
     return list(__mcp_servers.keys())
 
@@ -120,5 +134,8 @@ if __name__ == "__main__":
     import asyncio
 
     mcp_tools = asyncio.run(get_mcp_tools())
-    for tool in mcp_tools:
+    for tool in mcp_tools.values():
+        print("tool name:", tool.metadata.name)
+        print("-" * 80)
         print(tool.metadata.name, ":", tool.metadata.description)
+        print("=" * 80)

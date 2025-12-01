@@ -80,6 +80,6 @@ async def get_agent(data_dir: str, filters: MetadataFilters) -> AgentWorkflow:
     tool_set = tools.get_tool_set()
     if tool_set:
         _tools = await tool_set.get_tools(data_dir, filters)
-        return from_tools_or_functions(_tools, chat_model)
+        return from_tools_or_functions(_tools.values(), chat_model)
     else:
         return from_tools_or_functions(llm=chat_model)
