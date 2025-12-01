@@ -4,8 +4,10 @@ from typing import Any, Callable, Coroutine, Dict, List, Union
 import yaml
 from llama_index.core.tools import BaseTool, RetrieverTool
 from llama_index.core.tools.retriever_tool import DEFAULT_NAME
+from llama_index.core.tools.types import ToolOutput
 from llama_index.core.vector_stores.types import MetadataFilters
 from llama_index.tools.mcp import BasicMCPClient, McpToolSpec
+from mcp.types import CallToolResult, TextContent
 from pydantic import BaseModel, RootModel, TypeAdapter
 
 from app.engine import indexes, setting
@@ -118,8 +120,16 @@ async def call_tool(tool_name: str, *args, **kwargs):
         tools = await tool_set.get_tools()
         _tool = tools.get(tool_name)
         if _tool:
-            result = _tool(*args, **kwargs)
-            return result.content
+            output: ToolOutput = _tool(*args, **kwargs)
+            result: CallToolResult = output.raw_output
+            text = "\n".join(
+                [
+                    block.text
+                    for block in result.content
+                    if isinstance(block, TextContent)
+                ]
+            )
+            return text
 
 
 def get_mcp_servers():

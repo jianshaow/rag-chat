@@ -1,7 +1,6 @@
 import logging
-from typing import Any, Dict
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 
 from app.engine.tools import call_tool, get_mcp_servers, get_tool_sets
 
@@ -21,5 +20,6 @@ def mcp_servers():
 
 
 @r.post("/{tool_name}", tags=["tools"])
-async def run_tool(kwargs: Dict[str, Any]):
-    return await call_tool(**kwargs)
+async def run_tool(tool_name: str, request: Request):
+    args: dict = await request.json()
+    return await call_tool(tool_name, **args)
