@@ -57,7 +57,7 @@
 }
 
 .source-item label {
-  @apply w-48 text-base;
+  @apply w-56 text-base;
 }
 
 .source-item button {
