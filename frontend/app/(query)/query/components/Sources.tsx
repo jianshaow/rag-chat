@@ -1,6 +1,5 @@
 "use client";
 
-import { useSetting } from "@/(query)/context/setting-context";
 import { SourceNode } from "@llamaindex/chat-ui/widgets";
 import * as Popover from "@radix-ui/react-popover";
 import { ExternalLink, Eye } from "lucide-react";
