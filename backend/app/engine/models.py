@@ -74,7 +74,7 @@ def ollama_embed_models() -> list[str]:
     response = client.list()
     return [
         model.model
-        for model in response.models
+        for model in response["models"]
         if (model.details and model.details.family and "bert" in model.details.family)
     ]  # type: ignore
 
@@ -84,7 +84,7 @@ def ollama_chat_models() -> list[str]:
     response = client.list()
     return [
         model.model
-        for model in response.models
+        for model in response["models"]
         if (
             model.details is None
             or model.details.family is None
@@ -115,12 +115,12 @@ __model_configs: Dict[str, Dict[str, ModelSpec]] = {
     "google": {
         "embed": ModelSpec(
             model_class=GoogleGenAIEmbedding,
-            model_args={"model": GOOGLE_EMBED_MODEL, "transport": "rest"},
+            model_args={"model": GOOGLE_EMBED_MODEL},
             models_func=google_embed_models,
         ),
         "chat": ModelSpec(
             model_class=GoogleGenAI,
-            model_args={"model": GOOGLE_CHAT_MODEL, "transport": "rest"},
+            model_args={"model": GOOGLE_CHAT_MODEL},
             models_func=google_chat_models,
         ),
     },
