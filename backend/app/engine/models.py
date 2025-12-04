@@ -10,6 +10,7 @@ from llama_index.llms.google_genai import GoogleGenAI
 from llama_index.llms.ollama import Ollama
 from llama_index.llms.openai import OpenAI
 from ollama import Client as OllamaClient
+from ollama import ListResponse
 from openai import OpenAI as OpenAIClient
 from pydantic import BaseModel
 
@@ -72,25 +73,27 @@ def google_chat_models() -> list[str]:
 def ollama_embed_models() -> list[str]:
     client = OllamaClient(OLLAMA_HOST)
     response = client.list()
+    models: list[ListResponse.Model] = response["models"]
     return [
-        model.model
-        for model in response["models"]
+        model.model or ""
+        for model in models
         if (model.details and model.details.family and "bert" in model.details.family)
-    ]  # type: ignore
+    ]
 
 
 def ollama_chat_models() -> list[str]:
     client = OllamaClient(OLLAMA_HOST)
     response = client.list()
+    models: list[ListResponse.Model] = response["models"]
     return [
-        model.model
-        for model in response["models"]
+        model.model or ""
+        for model in models
         if (
             model.details is None
             or model.details.family is None
             or "bert" not in model.details.family
         )
-    ]  # type: ignore
+    ]
 
 
 class ModelSpec(BaseModel, Generic[T]):
