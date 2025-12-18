@@ -18,7 +18,7 @@ interface SettingContextType {
   reload: () => Promise<void>;
 }
 
-export const settingContext = createContext<SettingContextType | null>(null);
+export const SettingContext = createContext<SettingContextType | null>(null);
 
 export function SettingProvider({ children }: React.PropsWithChildren) {
   const [beBaseUrl, setBeBaseUrl] = useState<string>('');
@@ -85,7 +85,7 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
   }, [appConfig]);
 
   return (
-    <settingContext.Provider
+    <SettingContext.Provider
       value={{
         beBaseUrl, setBeBaseUrl,
         appConfig, setAppConfig,
@@ -96,12 +96,12 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
       }}
     >
       {children}
-    </settingContext.Provider>
+    </SettingContext.Provider>
   );
 }
 
 export function useSetting() {
-  const context = useContext(settingContext);
+  const context = useContext(SettingContext);
   if (!context) {
     throw new Error("useSetting must be used within a SettingProvider");
   }
