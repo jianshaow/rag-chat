@@ -140,7 +140,7 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
   }, [beBaseUrl]);
 
   useEffect(() => {
-    if (appConfig.modelProvider) {
+    if (appConfig.modelProvider != '') {
       initEmbedModels();
       initChatModels();
       loadModelConfig(appConfig.modelProvider);
@@ -148,7 +148,9 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
   }, [appConfig.modelProvider]);
 
   useEffect(() => {
-    loadChatConfig();
+    if (appConfig.dataDir != '' && appConfig.toolSet != '' && appConfig.mcpServer != '') {
+      loadChatConfig();
+    }
   }, [appConfig.dataDir, appConfig.toolSet, appConfig.mcpServer]);
 
   return (
