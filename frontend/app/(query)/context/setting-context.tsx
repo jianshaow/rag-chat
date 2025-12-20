@@ -1,27 +1,42 @@
 "use client";
 
-import { fetchChatConfig, fetchConfig, fetchModelConfig, getBeBaseUrl, } from '@/lib/backend';
+import { fetchAppConfig, fetchChatConfig, fetchChatModels, fetchDataConfig, fetchEmbedModels, fetchMcpServers, fetchModelConfig, fetchModelProviders, fetchToolSets, getBeBaseUrl, } from '@/lib/backend';
 import { AppConfig, ChatConfig, ModelConfig } from '@/types/config';
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface SettingContextType {
   beBaseUrl: string;
   setBeBaseUrl: React.Dispatch<React.SetStateAction<string>>;
+  modelProviders: string[];
+  setModelProviders: React.Dispatch<React.SetStateAction<string[]>>;
+  toolSets: string[];
+  setToolSets: React.Dispatch<React.SetStateAction<string[]>>;
+  dataDirs: string[];
+  setDataDirs: React.Dispatch<React.SetStateAction<string[]>>;
+  mcpServers: string[];
+  setMcpServers: React.Dispatch<React.SetStateAction<string[]>>;
+  embedModels: string[];
+  setEmbedModels: React.Dispatch<React.SetStateAction<string[]>>;
+  chatModels: string[];
+  setChatModels: React.Dispatch<React.SetStateAction<string[]>>;
   appConfig: AppConfig;
   setAppConfig: React.Dispatch<React.SetStateAction<AppConfig>>;
   modelConfig: ModelConfig;
   setModelConfig: React.Dispatch<React.SetStateAction<ModelConfig>>;
   chatConfig: ChatConfig;
   setChatConfig: React.Dispatch<React.SetStateAction<ChatConfig>>;
-  loading: boolean;
-  reloadModelConfig: (modelProvider: string) => Promise<void>;
-  reload: () => Promise<void>;
 }
 
 export const SettingContext = createContext<SettingContextType | null>(null);
 
 export function SettingProvider({ children }: React.PropsWithChildren) {
   const [beBaseUrl, setBeBaseUrl] = useState<string>('');
+  const [modelProviders, setModelProviders] = useState<string[]>([]);
+  const [toolSets, setToolSets] = useState<string[]>([]);
+  const [dataDirs, setDataDirs] = useState<string[]>([]);
+  const [mcpServers, setMcpServers] = useState<string[]>([]);
+  const [embedModels, setEmbedModels] = useState<string[]>([]);
+  const [chatModels, setChatModels] = useState<string[]>([]);
   const [appConfig, setAppConfig] = useState<AppConfig>({
     modelProvider: '',
     dataDir: '',
@@ -35,7 +50,62 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
   const [chatConfig, setChatConfig] = useState<ChatConfig>({
     starterQuestions: [],
   });
-  const [loading, setLoading] = useState(true);
+
+  function initModelProviders() {
+    fetchModelProviders().then((modelProviders) => {
+      setModelProviders(modelProviders);
+    });
+  }
+
+  function initToolSets() {
+    fetchToolSets().then(toolSets => {
+      setToolSets(toolSets);
+    });
+  }
+
+  function initDataDirs() {
+    fetchDataConfig().then(dataConfig => {
+      const dataDirs = Object.keys(dataConfig).map((data) => {
+        return data;
+      });
+      setDataDirs(dataDirs);
+    });
+  }
+
+  function initMcpServers() {
+    fetchMcpServers().then(mcpServers => {
+      setMcpServers(mcpServers);
+    });
+  }
+
+  function initEmbedModels() {
+    fetchEmbedModels(false).then((models) => {
+      if (!models.includes(modelConfig.embedModel)) {
+        models.push(modelConfig.embedModel);
+      }
+      setEmbedModels(models);
+    });
+  }
+
+  function initChatModels() {
+    fetchChatModels(false).then((models) => {
+      if (!models.includes(modelConfig.chatModel)) {
+        models.push(modelConfig.chatModel);
+      }
+      setChatModels(models);
+    });
+  }
+
+  async function loadAppConfig() {
+    const appConfig = await fetchAppConfig();
+    setAppConfig({
+      modelProvider: appConfig.model_provider,
+      dataDir: appConfig.data_dir,
+      toolSet: appConfig.tool_set,
+      mcpServer: appConfig.mcp_server,
+    });
+    return appConfig;
+  }
 
   async function loadModelConfig(modelProvider: string) {
     const modelConfig = await fetchModelConfig(modelProvider);
@@ -43,6 +113,7 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
       embedModel: modelConfig.embed_model,
       chatModel: modelConfig.chat_model,
     });
+    return modelConfig;
   }
 
   async function loadChatConfig() {
@@ -50,49 +121,49 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
     setChatConfig({
       starterQuestions: chatConfig.starterQuestions,
     });
-  }
-
-  async function loadConfig() {
-    try {
-      setLoading(true);
-      const appConfig = await fetchConfig();
-      setAppConfig({
-        modelProvider: appConfig.model_provider,
-        dataDir: appConfig.data_dir,
-        toolSet: appConfig.tool_set,
-        mcpServer: appConfig.mcp_server,
-      });
-      await loadModelConfig(appConfig.model_provider);
-      await loadChatConfig()
-    } finally {
-      setLoading(false);
-    }
+    return chatConfig;
   }
 
   useEffect(() => {
-    setBeBaseUrl(getBeBaseUrl());
+    const baseUrl = getBeBaseUrl();
+    setBeBaseUrl(baseUrl);
   }, []);
 
   useEffect(() => {
-    loadConfig();
+    if (beBaseUrl != '') {
+      initModelProviders();
+      initToolSets();
+      initDataDirs();
+      initMcpServers();
+      loadAppConfig();
+    }
   }, [beBaseUrl]);
 
   useEffect(() => {
     if (appConfig.modelProvider) {
+      initEmbedModels();
+      initChatModels();
       loadModelConfig(appConfig.modelProvider);
     }
+  }, [appConfig.modelProvider]);
+
+  useEffect(() => {
     loadChatConfig();
-  }, [appConfig]);
+  }, [appConfig.dataDir, appConfig.toolSet, appConfig.mcpServer]);
 
   return (
     <SettingContext.Provider
       value={{
         beBaseUrl, setBeBaseUrl,
+        modelProviders, setModelProviders,
+        toolSets, setToolSets,
+        dataDirs, setDataDirs,
+        mcpServers, setMcpServers,
+        embedModels, setEmbedModels,
+        chatModels, setChatModels,
         appConfig, setAppConfig,
         modelConfig, setModelConfig,
         chatConfig, setChatConfig,
-        loading, reload: loadConfig,
-        reloadModelConfig: loadModelConfig,
       }}
     >
       {children}

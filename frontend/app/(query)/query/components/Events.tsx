@@ -5,10 +5,10 @@ import { useQuery } from "../context/query-context";
 import '../query.css';
 
 interface EventsProps {
-  height?: number | string;
+  style?: React.CSSProperties;
 }
 
-export default function Events({ height = "3em" }: EventsProps) {
+export default function Events({ style = { height: "3em" } }: EventsProps) {
   const eventsRef = useRef<HTMLDivElement>(null);
 
   const { events } = useQuery();
@@ -25,7 +25,7 @@ export default function Events({ height = "3em" }: EventsProps) {
   return (
     <div className='events-block'>
       <label>Events</label>
-      <div ref={eventsRef} className='events-view' style={{ height: height }}>
+      <div ref={eventsRef} className='events-view' style={style}>
         {events.map((event, index) => (
           <div key={index}>{event}</div>
         ))}

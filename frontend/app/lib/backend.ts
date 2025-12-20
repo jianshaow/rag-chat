@@ -14,12 +14,12 @@ export function getBeBaseUrl() {
     return beBaseUrl;
 }
 
-export async function fetchConfig() {
+export async function fetchAppConfig() {
     const url = `${getBeBaseUrl()}/api/setting`;
     return fetch(url).then(response => response.json());
 }
 
-export async function updateConfig(config: string) {
+export async function updateAppConfig(config: string) {
     const url = `${getBeBaseUrl()}/api/setting`;
     fetch(url, {
         method: 'PUT',

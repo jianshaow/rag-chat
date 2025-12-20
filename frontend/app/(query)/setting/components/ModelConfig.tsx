@@ -8,46 +8,25 @@ import {
 } from '@/lib/backend';
 import { ModelConfig } from '@/types/config';
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
-import '../../common.css';  
+import '../../common.css';
 import '../setting.css';
 
 export default function ModelConfigSetting() {
   const settingContext = useSetting();
-
-  const [embedModels, setEmbedModels] = useState<string[]>([]);
-  const [chatModels, setChatModels] = useState<string[]>([]);
   const [modelConfig, setModelConfig] = useState<ModelConfig>(settingContext.modelConfig);
-
-  function initEmbedModels() {
-    fetchEmbedModels(false).then((models) => {
-      if (!models.includes(modelConfig.embedModel)) {
-        models.push(modelConfig.embedModel);
-      }
-      setEmbedModels(models);
-    });
-  }
-
-  function initChatModels() {
-    fetchChatModels(false).then((models) => {
-      if (!models.includes(modelConfig.chatModel)) {
-        models.push(modelConfig.chatModel);
-      }
-      setChatModels(models);
-    });
-  }
 
   const handleReloadModels = async (e: MouseEvent) => {
     fetchEmbedModels(true).then((models) => {
       if (!models.includes(modelConfig.embedModel)) {
         models.push(modelConfig.embedModel);
       }
-      setEmbedModels(models);
+      settingContext.setEmbedModels(models);
     });
     fetchChatModels(true).then((models) => {
       if (!models.includes(modelConfig.chatModel)) {
         models.push(modelConfig.chatModel);
       }
-      setChatModels(models);
+      settingContext.setChatModels(models);
     });
   };
 
@@ -62,8 +41,6 @@ export default function ModelConfigSetting() {
   };
 
   useEffect(() => {
-    initEmbedModels();
-    initChatModels();
     setModelConfig(settingContext.modelConfig);
   }, [settingContext.modelConfig]);
 
@@ -75,7 +52,7 @@ export default function ModelConfigSetting() {
           <label>Embed Model: </label>
           <select value={modelConfig.embedModel} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
             setModelConfig(prev => ({ ...prev, embedModel: e.target.value }));
-          }}>{embedModels.map(model => (
+          }}>{settingContext.embedModels.map(model => (
             <option key={model} value={model}>{model}</option>
           ))}
           </select>
@@ -84,7 +61,7 @@ export default function ModelConfigSetting() {
           <label>Chat Model: </label>
           <select value={modelConfig.chatModel} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
             setModelConfig(prev => ({ ...prev, chatModel: e.target.value }));
-          }}>{chatModels.map(model => (
+          }}>{settingContext.chatModels.map(model => (
             <option key={model} value={model}>{model}</option>
           ))}
           </select>

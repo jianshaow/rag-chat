@@ -10,10 +10,10 @@ import remarkMath from "remark-math";
 import { useQuery } from '../context/query-context';
 
 interface MarkdownProps {
-  height?: number | string;
+  style?: React.CSSProperties;
 }
 
-export default function Markdown({ height = "200px" }: MarkdownProps) {
+export default function Markdown({ style = { height: "200px" } }: MarkdownProps) {
   const markdownRef = useRef<HTMLDivElement>(null);
   const { answer } = useQuery();
 
@@ -27,7 +27,7 @@ export default function Markdown({ height = "200px" }: MarkdownProps) {
   }, [answer]);
 
   return (
-    <div ref={markdownRef} className="markdown-frame markdown-body" style={{ height: height }}>
+    <div ref={markdownRef} className="markdown-frame markdown-body" style={style}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeHighlight]}

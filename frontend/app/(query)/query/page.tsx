@@ -22,9 +22,9 @@ export default function Page() {
         <Question>
           <QueryForm />
         </Question>
-        <Events height={'4em'} />
+        <Events style={{ height: '4em' }} />
         <Answer>
-          <Markdown height={200} />
+          <Markdown style={{ height: 200 }} />
         </Answer>
         <Sources />
       </QuerySection>

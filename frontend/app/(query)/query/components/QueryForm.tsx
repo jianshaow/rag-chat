@@ -61,7 +61,7 @@ export default function QueryForm() {
     if (chatConfig?.starterQuestions?.length) {
       setInput(chatConfig.starterQuestions[0]);
     }
-  }, [chatConfig]);
+  }, [chatConfig.starterQuestions]);
 
   useEffect(() => {
     autoResize();
