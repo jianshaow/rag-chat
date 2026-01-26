@@ -25,8 +25,10 @@ export default function CustomChatInput() {
 
     try {
       await uploadFile(file, requestData);
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message);
+      }
     }
   };
 

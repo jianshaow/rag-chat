@@ -97,36 +97,39 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
   }
 
   async function loadAppConfig() {
-    const appConfig = await fetchAppConfig();
-    setAppConfig({
-      modelProvider: appConfig.model_provider,
-      dataDir: appConfig.data_dir,
-      toolSet: appConfig.tool_set,
-      mcpServer: appConfig.mcp_server,
+    fetchAppConfig().then((appConfig) => {
+      setAppConfig({
+        modelProvider: appConfig.model_provider,
+        dataDir: appConfig.data_dir,
+        toolSet: appConfig.tool_set,
+        mcpServer: appConfig.mcp_server,
+      });
     });
-    return appConfig;
   }
 
   async function loadModelConfig(modelProvider: string) {
-    const modelConfig = await fetchModelConfig(modelProvider);
-    setModelConfig({
-      embedModel: modelConfig.embed_model,
-      chatModel: modelConfig.chat_model,
+    fetchModelConfig(modelProvider).then((modelConfig) => {
+      setModelConfig({
+        embedModel: modelConfig.embed_model,
+        chatModel: modelConfig.chat_model,
+      });
     });
-    return modelConfig;
   }
 
   async function loadChatConfig() {
-    const chatConfig = await fetchChatConfig();
-    setChatConfig({
-      starterQuestions: chatConfig.starterQuestions,
+    fetchChatConfig().then((chatConfig) => {
+      setChatConfig({
+        starterQuestions: chatConfig.starterQuestions,
+      });
     });
-    return chatConfig;
   }
 
   useEffect(() => {
-    const baseUrl = getBeBaseUrl();
-    setBeBaseUrl(baseUrl);
+    async function fetchBaseUrl() {
+      const baseUrl = getBeBaseUrl();
+      setBeBaseUrl(baseUrl);
+    }
+    fetchBaseUrl();
   }, []);
 
   useEffect(() => {
@@ -145,6 +148,7 @@ export function SettingProvider({ children }: React.PropsWithChildren) {
       initChatModels();
       loadModelConfig(appConfig.modelProvider);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appConfig.modelProvider]);
 
   useEffect(() => {

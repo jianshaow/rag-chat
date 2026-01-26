@@ -58,8 +58,12 @@ export default function QueryForm() {
   };
 
   useEffect(() => {
-    if (chatConfig?.starterQuestions?.length) {
+    async function reload() {
       setInput(chatConfig.starterQuestions[0]);
+    }
+
+    if (chatConfig?.starterQuestions?.length) {
+      reload();
     }
   }, [chatConfig.starterQuestions]);
 

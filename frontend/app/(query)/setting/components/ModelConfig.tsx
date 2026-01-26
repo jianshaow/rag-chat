@@ -7,7 +7,7 @@ import {
   updateModelConfig
 } from '@/lib/backend';
 import { ModelConfig } from '@/types/config';
-import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import '../../common.css';
 import '../setting.css';
 
@@ -15,7 +15,7 @@ export default function ModelConfigSetting() {
   const settingContext = useSetting();
   const [modelConfig, setModelConfig] = useState<ModelConfig>(settingContext.modelConfig);
 
-  const handleReloadModels = async (e: MouseEvent) => {
+  const handleReloadModels = async () => {
     fetchEmbedModels(true).then((models) => {
       if (!models.includes(modelConfig.embedModel)) {
         models.push(modelConfig.embedModel);
@@ -30,7 +30,7 @@ export default function ModelConfigSetting() {
     });
   };
 
-  const handleSaveModelConfig = async (e: MouseEvent) => {
+  const handleSaveModelConfig = async () => {
     const config = {
       'embed_model': modelConfig.embedModel,
       'chat_model': modelConfig.chatModel,
@@ -38,10 +38,14 @@ export default function ModelConfigSetting() {
     updateModelConfig(settingContext.appConfig.modelProvider, JSON.stringify(config)).then(() => {
       alert('Model Config Saved!')
     })
+    settingContext.setModelConfig(modelConfig);
   };
 
   useEffect(() => {
-    setModelConfig(settingContext.modelConfig);
+    async function reload() {
+      setModelConfig(settingContext.modelConfig);
+    }
+    reload();
   }, [settingContext.modelConfig]);
 
   return (

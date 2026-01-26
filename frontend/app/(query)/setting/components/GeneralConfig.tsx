@@ -2,7 +2,7 @@
 
 import { useSetting } from '@/(query)/context/setting-context';
 import { storeBeBaseUrl } from '@/lib/backend';
-import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import '../../common.css';
 import '../setting.css';
 
@@ -10,13 +10,13 @@ export default function GeneralConfigSetting() {
   const settingContext = useSetting();
   const [beBaseUrl, setBeBaseUrl] = useState<string>(settingContext.beBaseUrl);
 
-  const handleSaveBeBaseUrl = async (e: MouseEvent) => {
+  const handleSaveBeBaseUrl = async () => {
     storeBeBaseUrl(beBaseUrl);
     alert('Backend Base URL Saved!');
     settingContext.setBeBaseUrl(beBaseUrl);
   };
 
-  const handleDetectBeBaseUrl = async (e: MouseEvent) => {
+  const handleDetectBeBaseUrl = async () => {
     const protocol = window.location.protocol;
     const host = window.location.host;
     const url = `${protocol}//${host}`;
@@ -24,7 +24,10 @@ export default function GeneralConfigSetting() {
   };
 
   useEffect(() => {
-    setBeBaseUrl(settingContext.beBaseUrl);
+    async function reload() {
+      setBeBaseUrl(settingContext.beBaseUrl);
+    }
+    reload();
   }, [settingContext.beBaseUrl]);
 
   return (

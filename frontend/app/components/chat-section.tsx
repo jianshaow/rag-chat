@@ -17,6 +17,7 @@ export default function CustomChatSection() {
       let errorMessage: string;
       try {
         errorMessage = JSON.parse(error.message).detail;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         errorMessage = error.message;
       }

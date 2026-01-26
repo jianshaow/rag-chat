@@ -15,7 +15,7 @@ export default function Sources() {
   const viewFull = async (source: SourceNode) => {
     const metadata = source.metadata;
     const sourceType = metadata["source_type"] as string;
-    const fileName = metadata["file_name"] as string;
+    // const fileName = metadata["file_name"] as string;
     const url = source.url || "";
     if ("mcp" === sourceType) {
       const args = metadata["tool_kwargs"];

@@ -3,7 +3,7 @@
 import { useSetting } from '@/(query)/context/setting-context';
 import { indexData, updateAppConfig } from '@/lib/backend';
 import { AppConfig } from '@/types/config';
-import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import '../../common.css';
 import '../setting.css';
 
@@ -11,13 +11,13 @@ export default function AppConfigSetting() {
   const settingContext = useSetting();
   const [appConfig, setAppConfig] = useState<AppConfig>(settingContext.appConfig);
 
-  const handleIndexData = async (e: MouseEvent) => {
+  const handleIndexData = async () => {
     indexData(appConfig.dataDir).then(() => {
       alert('Data Indexed!')
     });
   }
 
-  const handleSaveConfig = async (e: MouseEvent) => {
+  const handleSaveConfig = async () => {
     const config = {
       'model_provider': appConfig.modelProvider,
       'tool_set': appConfig.toolSet,
@@ -31,7 +31,10 @@ export default function AppConfigSetting() {
   };
 
   useEffect(() => {
-    setAppConfig(settingContext.appConfig);
+    async function reload() {
+      setAppConfig(settingContext.appConfig);
+    }
+    reload();
   }, [settingContext.appConfig]);
 
   return (
