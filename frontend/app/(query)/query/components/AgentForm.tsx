@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import '../query.css';
 
 export default function AgentForm() {
+  const { chatConfig } = useSetting();
   const {
     input,
     setInput,
@@ -14,7 +15,6 @@ export default function AgentForm() {
   } = useChatContext();
 
   useEffect(() => {
-    const { chatConfig } = useSetting();
     if (chatConfig && chatConfig.starterQuestions && chatConfig.starterQuestions.length > 0) {
       setInput(chatConfig.starterQuestions[0]);
     }
