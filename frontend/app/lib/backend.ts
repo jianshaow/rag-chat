@@ -6,7 +6,7 @@ export function storeBeBaseUrl(beBaseUrl: string) {
 }
 
 export function getBeBaseUrl() {
-    var beBaseUrl = localStorage.getItem('beBaseUrl');
+    let beBaseUrl = localStorage.getItem('beBaseUrl');
     if (beBaseUrl === null) {
         beBaseUrl = "http://localhost:8000";
         storeBeBaseUrl(beBaseUrl);
@@ -101,7 +101,7 @@ export async function query(query: string) {
 }
 
 export async function streamQuery(query: string, agentic: boolean, onTextProcess: (answer: string) => void, onEventsProcess: (title: string) => void, onSoucesProcess: (sources: SourceNode[]) => void,) {
-    var path = '/api/query/stream';
+    let path = '/api/query/stream';
     if (agentic) {
         path = '/api/query/agent_stream';
     }
