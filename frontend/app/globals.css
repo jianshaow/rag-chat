@@ -56,8 +56,15 @@
 @utility container {
   width: 100%;
   margin-inline: auto;
-  padding-inline: 2rem;
-  max-width: 100%;
+  padding-inline: 1rem;
+
+  @variant sm {
+    padding-inline: 1.5rem;
+  }
+
+  @variant lg {
+    padding-inline: 2rem;
+  }
 
   @variant 2xl {
     max-width: 1400px;
@@ -130,11 +137,9 @@
 
     --radius: 0.5rem;
   }
-}
 
-@layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   html {
@@ -157,7 +162,7 @@
       radial-gradient(at 8% 40%, rgba(251, 218, 239, 0.46) 0, transparent 50%);
   }
 
-  @keyframes fadeIn {
+  @keyframes fade-in {
     0% {
       opacity: 0;
     }
@@ -166,12 +171,12 @@
     }
   }
 
-  .fadein-agent {
-    animation-name: fadeIn;
+  .animate-fade-in {
+    animation-name: fade-in;
     animation-duration: 1.5s;
   }
 
-  @keyframes slideIn {
+  @keyframes slide-in {
     from {
       transform: translateX(10%);
       opacity: 0;
@@ -182,7 +187,7 @@
     }
   }
 
-  .animate-slideIn {
-    animation: slideIn 0.5s ease-out;
+  .animate-slide-in {
+    animation: slide-in 0.5s ease-out;
   }
 }
