@@ -1,23 +1,25 @@
+@reference "../../globals.css";
+
 .info-block {
-  @apply flex flex-wrap bg-gray-100 border rounded-md mb-2 gap-2 p-2 text-base;
+  @apply mb-2 flex flex-wrap gap-2 rounded-md border bg-gray-100 p-2 text-base;
 }
 
 .info-value {
-  @apply bg-white border rounded-md px-2 py-1 text-sm;
+  @apply rounded-md border bg-white px-2 py-1 text-sm;
 }
 
 .events-block {
-  @apply flex flex-col mb-2;
+  @apply mb-2 flex flex-col;
 }
 
 .events-view {
-  @apply flex flex-col bg-white border-border rounded-md overflow-auto px-2 py-1 text-sm;
+  @apply border-border flex flex-col overflow-auto rounded-md bg-white px-2 py-1 text-sm;
 }
 
 .question-block,
 .answer-block,
 .sources-block {
-  @apply flex flex-col mb-2 text-base;
+  @apply mb-2 flex flex-col text-base;
 }
 
 .question-bar {
@@ -25,11 +27,11 @@
 }
 
 .question-bar textarea {
-  @apply w-full min-h-[40px] resize-none overflow-hidden leading-6 px-2.5 pr-12 py-1.5 rounded-md border border-gray-300 text-sm;
+  @apply min-h-[40px] w-full resize-none overflow-hidden rounded-md border border-gray-300 px-2.5 py-1.5 pr-12 text-sm leading-6;
 }
 
 .question-bar button[type="submit"] {
-  @apply absolute right-2 bottom-2 w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center border-none cursor-pointer transition-all duration-200;
+  @apply absolute bottom-2 right-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-none bg-gray-500 transition-all duration-200;
 }
 
 .question-bar button[type="submit"]:hover {
@@ -45,11 +47,11 @@
 }
 
 .markdown-frame {
-  @apply bg-white border p-4 rounded-md overflow-auto shadow-sm text-base;
+  @apply shadow-xs overflow-auto rounded-md border bg-white p-4 text-base;
 }
 
 .sources-block ul {
-  @apply list-disc list-inside
+  @apply list-inside list-disc;
 }
 
 .source-item {
@@ -61,11 +63,11 @@
 }
 
 .source-item button {
-  @apply bg-transparent border-none cursor-pointer p-1;
+  @apply cursor-pointer border-none bg-transparent p-1;
 }
 
 .source-popover {
-  @apply max-w-xs max-h-52 overflow-y-auto p-2 bg-gray-50 border border-gray-300 rounded-md shadow-md whitespace-pre-wrap text-sm;
+  @apply max-h-52 max-w-xs overflow-y-auto whitespace-pre-wrap rounded-md border border-gray-300 bg-gray-50 p-2 text-sm shadow-md;
 }
 
 .source-popover[data-side="top"] > [data-radix-popper-arrow] {

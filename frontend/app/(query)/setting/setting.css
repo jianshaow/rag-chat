@@ -1,5 +1,7 @@
+@reference "../../globals.css";
+
 .setting-container {
-  @apply flex flex-col bg-gray-100 border rounded-md mb-2 p-2 space-y-2 text-base;
+  @apply mb-2 flex flex-col space-y-2 rounded-md border bg-gray-100 p-2 text-base;
 }
 
 .setting {

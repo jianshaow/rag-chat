@@ -1,20 +1,23 @@
+@reference "../globals.css";
+
 .main-frame {
-  @apply flex flex-col justify-center w-full max-w-[1000px] mx-auto px-4;
+  @apply mx-auto flex w-full max-w-[1000px] flex-col justify-center px-4;
 }
 
 .between-container {
-  @apply flex justify-between items-center w-full;
+  @apply flex w-full items-center justify-between;
 }
 
 .main-frame h1 {
-  @apply text-2xl font-bold leading-tight my-4;
+  @apply my-4 text-2xl font-bold leading-tight;
 }
 
-.main-frame input, textarea, select {
-  @apply border rounded-md px-2 py-1 text-base;
+.main-frame input,
+textarea,
+select {
+  @apply rounded-md border px-2 py-1 text-base;
 }
 
 .main-frame button {
-  @apply bg-gray-200 border rounded-md cursor-pointer
-         transition-colors duration-300 px-2 py-1 text-base hover:bg-gray-300;
+  @apply cursor-pointer rounded-md border bg-gray-200 px-2 py-1 text-base transition-colors duration-300 hover:bg-gray-300;
 }
