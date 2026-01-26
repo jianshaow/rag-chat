@@ -1,6 +1,7 @@
 {
   "name": "rag-chat",
   "version": "0.2.0",
+  "packageManager": "pnpm@10.15.1",
   "scripts": {
     "format": "prettier --ignore-unknown --cache --check .",
     "format:write": "prettier --ignore-unknown --write .",
@@ -11,22 +12,22 @@
   },
   "dependencies": {
     "@ai-sdk/react": "^1.2.12",
-    "@llamaindex/chat-ui": "^0.5.17",
+    "@llamaindex/chat-ui": "^0.6.1",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-popover": "^1.1.15",
     "ai": "^4.3.19",
     "github-markdown-css": "^5.8.1",
-    "next": "^16.0.3",
+    "next": "^16.1.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rehype-highlight": "^5.0.2",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
-    "@types/node": "^22.19.1",
-    "@types/react": "^18.3.26",
-    "@types/react-dom": "^18.3.7",
     "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^22.19.1",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
     "baseline-browser-mapping": "^2.8.32",
     "cross-env": "^7.0.3",
     "eslint": "^9.36.0",
