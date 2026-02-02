@@ -32,13 +32,13 @@ export default function CustomChatInput() {
     }
   };
 
-  const annotations = getAttachments();
+  const attachments = getAttachments();
 
   return (
     <ChatInput
       className="shadow-xl rounded-xl"
       resetUploadedFiles={reset}
-      attachments={annotations}
+      attachments={attachments}
     >
       <div>
         {image?.url && (
