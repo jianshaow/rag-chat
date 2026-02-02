@@ -25,11 +25,8 @@ class VercelStreamingResponse(StreamingResponse):
     DATA_PREFIX = "8:"
     ERROR_PREFIX = "3:"
 
-    def __init__(
-        self,
-        stream_generator: AsyncGenerator[str, None],
-    ):
-        super().__init__(stream_generator)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_chat_response(
@@ -77,9 +74,10 @@ class VercelStreamingResponse(StreamingResponse):
         cls,
         response: WorkflowHandler,
         messages: ChatMessages | None = None,
+        **kwargs,
     ):
         response_generator = cls.agent_event_generator(response, messages)
-        return cls(response_generator)
+        return cls(response_generator, **kwargs)
 
     @classmethod
     async def response_generator(
