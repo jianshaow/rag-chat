@@ -54,7 +54,7 @@ export async function indexData(data: string) {
         method: 'POST',
         headers: { 'Content-Type': 'plain/text' },
         body: data,
-    }).then(response => { return });
+    });
 }
 
 export async function fetchModelProviders() {
@@ -133,20 +133,18 @@ export async function streamQuery(query: string, agentic: boolean, onTextProcess
                 const streamTypePart = line.substring(0, index);
                 const streamContextPart = line.substring(index + 1);
                 const streamContext = JSON.parse(streamContextPart);
-                console.log('streamTypePart:', streamTypePart);
-                console.log('streamContext:', streamContext);
                 if (streamTypePart === '0') {
                     accumulatedText += streamContext;
                     onTextProcess(accumulatedText)
                 } else if (streamTypePart === '8') {
-                    const annotations: DataPart[] = streamContext as DataPart[]
-                    annotations.forEach(annotation => {
-                        if (annotation.type === EventPartType) {
-                            const eventData = annotation.data as ChatEvent;
+                    const dataParts: DataPart[] = streamContext as DataPart[]
+                    dataParts.forEach(dataPart => {
+                        if (dataPart.type === EventPartType) {
+                            const eventData = dataPart.data as ChatEvent;
                             onEventsProcess(eventData.title)
                         }
-                        if (annotation.type === SourcesPartType) {
-                            const sourceData = annotation.data as SourceData;
+                        if (dataPart.type === SourcesPartType) {
+                            const sourceData = dataPart.data as SourceData;
                             onSoucesProcess(sourceData.nodes)
                         }
                     });
