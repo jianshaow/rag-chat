@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request
 from llama_index.core.base.response.schema import Response
 from llama_index.core.vector_stores.types import MetadataFilters
 
-from app.api.routes.payload import QueryResult, SourceNodes
+from app.api.routes.payload import QueryResult, SourceNode
 from app.api.routes.vercel import VercelStreamingResponse
 from app.engine import agents, engines, setting
 
@@ -18,7 +18,7 @@ async def query_index(request: Request) -> QueryResult:
     response: Response = query_engine.query(query)  # type: ignore
     return QueryResult(
         answer=str(response),
-        sources=SourceNodes.from_source_nodes(response.source_nodes),
+        sources=SourceNode.from_source_nodes(response.source_nodes),
     )
 
 

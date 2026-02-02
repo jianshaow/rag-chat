@@ -12,7 +12,7 @@ from llama_index.core.tools.retriever_tool import DEFAULT_NAME
 from mcp.types import CallToolResult
 from workflows.handler import WorkflowHandler
 
-from app.api.routes.payload import ChatMessages, SourceNodes
+from app.api.routes.payload import ChatMessages, SourceNode
 from app.api.services.suggestion import suggest_next_questions
 from app.engine.events import QueueEventCallbackHandler
 
@@ -91,7 +91,7 @@ class VercelStreamingResponse(StreamingResponse):
         messages: ChatMessages | None = None,
     ):
         source_nodes, response_gen = await await_response()
-        yield cls.to_sources_data(SourceNodes.from_source_nodes(source_nodes))
+        yield cls.to_sources_data(SourceNode.from_source_nodes(source_nodes))
 
         final_response = ""
         async for chunk in response_gen:
@@ -153,11 +153,11 @@ class VercelStreamingResponse(StreamingResponse):
             elif isinstance(event, ToolCallResult):
                 raw_output = event.tool_output.raw_output
                 if isinstance(raw_output, List):
-                    yield cls.to_sources_data(SourceNodes.from_source_nodes(raw_output))
+                    yield cls.to_sources_data(SourceNode.from_source_nodes(raw_output))
                     title = f"Retrieved {len(raw_output)} sources to use as context for the query"
                 elif isinstance(raw_output, CallToolResult):
                     yield cls.to_sources_data(
-                        SourceNodes.from_call_tool_result(
+                        SourceNode.from_call_tool_result(
                             raw_output,
                             event.tool_id,
                             event.tool_name,
@@ -175,13 +175,13 @@ class VercelStreamingResponse(StreamingResponse):
 
     @classmethod
     def to_event_data(cls, title: str):
-        event_data = {"type": "events", "data": {"title": title}}
+        event_data = {"type": "data-event", "data": {"title": title}}
         return cls.to_data(event_data)
 
     @classmethod
-    def to_sources_data(cls, source_nodes: List[SourceNodes]):
+    def to_sources_data(cls, source_nodes: List[SourceNode]):
         sources_data = {
-            "type": "sources",
+            "type": "data-sources",
             "data": {
                 "nodes": [source_node.model_dump() for source_node in source_nodes]
             },
@@ -192,7 +192,7 @@ class VercelStreamingResponse(StreamingResponse):
     async def to_suggested_questions_data(cls, messages: ChatMessages, response: str):
         return cls.to_data(
             {
-                "type": "suggested_questions",
+                "type": "data-suggested_questions",
                 "data": await suggest_next_questions(messages.chat_messages, response),
             }
         )

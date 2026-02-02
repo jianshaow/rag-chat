@@ -1,5 +1,5 @@
-import { MessageAnnotation, MessageAnnotationType } from "@llamaindex/chat-ui";
-import { EventData, SourceData, SourceNode } from "@llamaindex/chat-ui/widgets";
+import { DataPart, EventPartType, SourcesPartType } from "@llamaindex/chat-ui";
+import { ChatEvent, SourceData, SourceNode } from "@llamaindex/chat-ui/widgets";
 
 export function storeBeBaseUrl(beBaseUrl: string) {
     localStorage.setItem('beBaseUrl', beBaseUrl);
@@ -133,17 +133,19 @@ export async function streamQuery(query: string, agentic: boolean, onTextProcess
                 const streamTypePart = line.substring(0, index);
                 const streamContextPart = line.substring(index + 1);
                 const streamContext = JSON.parse(streamContextPart);
+                console.log('streamTypePart:', streamTypePart);
+                console.log('streamContext:', streamContext);
                 if (streamTypePart === '0') {
                     accumulatedText += streamContext;
                     onTextProcess(accumulatedText)
                 } else if (streamTypePart === '8') {
-                    const annotations: MessageAnnotation[] = streamContext as MessageAnnotation[]
+                    const annotations: DataPart[] = streamContext as DataPart[]
                     annotations.forEach(annotation => {
-                        if (annotation.type === MessageAnnotationType.EVENTS) {
-                            const eventData = annotation.data as EventData;
+                        if (annotation.type === EventPartType) {
+                            const eventData = annotation.data as ChatEvent;
                             onEventsProcess(eventData.title)
                         }
-                        if (annotation.type === MessageAnnotationType.SOURCES) {
+                        if (annotation.type === SourcesPartType) {
                             const sourceData = annotation.data as SourceData;
                             onSoucesProcess(sourceData.nodes)
                         }

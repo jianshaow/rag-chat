@@ -8,17 +8,17 @@ export default function CustomChatInput() {
   const { requestData, isLoading, input } = useChatUI();
   const { backend } = useClientConfig();
   const {
-    imageUrl,
-    setImageUrl,
+    image,
+    setImage,
     uploadFile,
     files,
     removeDoc,
     reset,
-    getAnnotations,
+    getAttachments,
   } = useFile({ uploadAPI: `${backend}/api/chat/upload` });
 
   const handleUploadFile = async (file: File) => {
-    if (imageUrl) {
+    if (image?.url) {
       alert("You can only upload one image at a time.");
       return;
     }
@@ -32,17 +32,17 @@ export default function CustomChatInput() {
     }
   };
 
-  const annotations = getAnnotations();
+  const annotations = getAttachments();
 
   return (
     <ChatInput
       className="shadow-xl rounded-xl"
       resetUploadedFiles={reset}
-      annotations={annotations}
+      attachments={annotations}
     >
       <div>
-        {imageUrl && (
-          <ImagePreview url={imageUrl} onRemove={() => setImageUrl(null)} />
+        {image?.url && (
+          <ImagePreview url={image.url} onRemove={() => setImage(null)} />
         )}
         {files.length > 0 && (
           <div className="flex gap-4 w-full overflow-auto py-2">
@@ -62,7 +62,7 @@ export default function CustomChatInput() {
         <ChatInput.Upload onUpload={handleUploadFile} />
         <ChatInput.Submit
           disabled={
-            isLoading || (!input.trim() && files.length === 0 && !imageUrl)
+            isLoading || (!input.trim() && files.length === 0 && !image?.url)
           }
         />
       </ChatInput.Form>

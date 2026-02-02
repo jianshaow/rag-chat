@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useClientConfig } from "./hooks/use-config";
 
 export function ChatStarter() {
-  const { append } = useChatUI();
+  const { sendMessage } = useChatUI();
   const { backend } = useClientConfig();
   const [starterQuestions, setStarterQuestions] = useState<string[]>();
 
@@ -22,5 +22,5 @@ export function ChatStarter() {
   }, [starterQuestions, backend]);
 
   if (!starterQuestions?.length) return null;
-  return <StarterQuestions append={append} questions={starterQuestions} />;
+  return <StarterQuestions sendMessage={sendMessage} questions={starterQuestions} />;
 }

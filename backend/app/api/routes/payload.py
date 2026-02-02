@@ -85,6 +85,7 @@ class ArtifactAnnotation(BaseModel):
 
 
 class Annotation(BaseModel):
+    id: str | None = None
     type: str
     data: AnnotationFileData | List[str] | AgentAnnotation | ArtifactAnnotation
 
@@ -100,13 +101,115 @@ class Annotation(BaseModel):
         return None
 
 
+class TextPart(BaseModel):
+    type: str = "text"
+    text: str
+
+
+class DataPart(BaseModel):
+    id: str | None = None
+    type: str
+
+
+class FileData(BaseModel):
+    filename: str
+    media_type: str
+    url: str
+
+
+class FilePart(DataPart):
+    type: str = "data-file"
+    data: FileData
+
+
+class SourceNode(BaseModel):
+    id: str
+    metadata: Dict[str, Any]
+    score: Optional[float]
+    text: str
+    url: Optional[str]
+
+    @classmethod
+    def get_url_from_metadata(cls, metadata: Dict[str, Any]) -> Optional[str]:
+        data_dir = metadata.get("data_dir")
+        file_name = metadata.get("file_name")
+        return f"{files_base_url}/{data_dir}/{file_name}"
+
+    @classmethod
+    def from_source_node(cls, source_node: NodeWithScore):
+        metadata = source_node.node.metadata
+        url = cls.get_url_from_metadata(metadata)
+
+        return cls(
+            id=source_node.node.node_id,
+            metadata=metadata,
+            score=source_node.score,
+            text=source_node.node.text,  # type: ignore
+            url=url,
+        )
+
+    @classmethod
+    def from_source_nodes(cls, source_nodes: List[NodeWithScore]):
+        return [cls.from_source_node(node) for node in source_nodes]
+
+    @classmethod
+    def from_call_tool_result(
+        cls,
+        result: CallToolResult,
+        tool_id: str,
+        tool_name: str,
+        tool_kwargs: Dict[str, Any],
+    ):
+        return [
+            cls(
+                text=content.text,
+                id=tool_id,
+                metadata={
+                    "source_type": "mcp",
+                    "tool_name": tool_name,
+                    "tool_kwargs": tool_kwargs,
+                    "file_name": f"{tool_name}/mcp",
+                },
+                score=0,
+                url=f"{tool_call_base_url}/{tool_name}",
+            )
+            for content in result.content
+            if isinstance(content, TextContent)
+        ]
+
+
+class SourceData(BaseModel):
+    nodes: List[SourceNode]
+
+
+class SourcesPart(BaseModel):
+    type: str = "data-sources"
+    data: SourceData
+
+
+type MessagePart = TextPart | DataPart | SourcesPart
+
+
 class Message(BaseModel):
+    id: str
     role: MessageRole
-    content: str
-    annotations: List[Annotation] | None = None
+    parts: List[MessagePart] = []
+
+    @property
+    def content(self) -> str:
+        if self.parts is None:
+            return ""
+        content_parts = []
+        for part in self.parts:
+            if isinstance(part, TextPart):
+                content_parts.append(part.text)
+                continue
+        return "\n".join(content_parts)
 
 
 class ChatMessages(BaseModel):
+    id: str
+    trigger: str | None = None
     messages: List[Message]
 
     @property
@@ -143,12 +246,10 @@ class ChatMessages(BaseModel):
     def get_document_files(self) -> List[DocumentFile]:
         uploaded_files = []
         for message in self.messages:
-            if message.role == MessageRole.USER and message.annotations is not None:
-                for annotation in message.annotations:
-                    if annotation.type == "document_file" and isinstance(
-                        annotation.data, AnnotationFileData
-                    ):
-                        uploaded_files.extend(annotation.data.files)
+            if message.role == MessageRole.USER and message.parts is not None:
+                for part in message.parts:
+                    if part.type == "data-file":
+                        uploaded_files.extend(part)
         return uploaded_files
 
     def __str__(self) -> str:
@@ -163,61 +264,9 @@ class ChatMessages(BaseModel):
         return str(self.messages)
 
 
-class SourceNodes(BaseModel):
-    id: str
-    metadata: Dict[str, Any]
-    score: Optional[float]
-    text: str
-    url: Optional[str]
-
-    @classmethod
-    def get_url_from_metadata(cls, metadata: Dict[str, Any]) -> Optional[str]:
-        data_dir = metadata.get("data_dir")
-        file_name = metadata.get("file_name")
-        return f"{files_base_url}/{data_dir}/{file_name}"
-
-    @classmethod
-    def from_source_node(cls, source_node: NodeWithScore):
-        metadata = source_node.node.metadata
-        url = cls.get_url_from_metadata(metadata)
-
-        return cls(
-            id=source_node.node.node_id,
-            metadata=metadata,
-            score=source_node.score,
-            text=source_node.node.text,  # type: ignore
-            url=url,
-        )
-
-    @classmethod
-    def from_source_nodes(cls, source_nodes: List[NodeWithScore]):
-        return [cls.from_source_node(node) for node in source_nodes]
-
-    @classmethod
-    def from_call_tool_result(
-        cls, result: CallToolResult, tool_id: str, tool_name: str, tool_kwargs: Dict[str, Any]
-    ):
-        return [
-            cls(
-                text=content.text,
-                id=tool_id,
-                metadata={
-                    "source_type": "mcp",
-                    "tool_name": tool_name,
-                    "tool_kwargs": tool_kwargs,
-                    "file_name": f"{tool_name}/mcp",
-                },
-                score=0,
-                url=f"{tool_call_base_url}/{tool_name}",
-            )
-            for content in result.content
-            if isinstance(content, TextContent)
-        ]
-
-
 class QueryResult(BaseModel):
     answer: str
-    sources: List[SourceNodes]
+    sources: List[SourceNode]
 
 
 class FileUploadRequest(BaseModel):

@@ -1,12 +1,13 @@
 "use client";
 
 import { UseChatHelpers } from "@ai-sdk/react";
+import { Message } from "@llamaindex/chat-ui";
 import { createContext, useContext } from "react";
 
-const ChatContext = createContext<UseChatHelpers | null>(null);
+const ChatContext = createContext<UseChatHelpers<Message> | null>(null);
 
 interface ChatProviderProps {
-  chat: UseChatHelpers;
+  chat: UseChatHelpers<Message>;
 }
 
 export function ChatProvider({ chat, children }: React.PropsWithChildren<ChatProviderProps>) {
