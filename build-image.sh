@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if [ -z "$version" ]; then
+    git checkout main
     version=0.3.0
 else
     git checkout v$version
