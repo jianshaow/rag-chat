@@ -2,20 +2,9 @@
 
 Demo a RAG besed Q&A system.
 
-## build react frontend
-~~~shell
-# install dependencies
-docker run -v $PWD/frontend:/home/node/frontend \
-       --rm jianshao/node-dev:lts \
-       npm --prefix /home/node/frontend install
-# build package
-docker run -v $PWD/frontend:/home/node/frontend \
-       --rm jianshao/node-dev:lts \
-       npm --prefix /home/node/frontend run build
-~~~
-
 ## buld docker
 ~~~shell
+# export version=0.2.0
 ./build-image.sh
 ~~~
 
