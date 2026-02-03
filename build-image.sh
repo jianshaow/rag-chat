@@ -11,11 +11,11 @@ echo "Building version: ${version}"
 
 docker run -v $PWD/frontend:/home/node/frontend \
        --rm jianshao/node-dev:lts \
-       npm --prefix /home/node/frontend install
+       pnpm --prefix /home/node/frontend install
 
 docker run -v $PWD/frontend:/home/node/frontend \
        --rm jianshao/node-dev:lts \
-       npm --prefix /home/node/frontend run build
+       pnpm --prefix /home/node/frontend run build
 
 base_image=jianshao/li-app-base
 docker pull ${base_image}:latest
