@@ -138,17 +138,27 @@ class VercelStreamingResponse(StreamingResponse):
         cls, response: WorkflowHandler, messages: ChatMessages | None
     ):
         final_response = ""
+        text_started = False
         async for event in response.stream_events():
             if isinstance(event, AgentStream):
+                if not text_started:
+                    text_started = True
+                    yield cls.to_text_start()
                 final_response = event.response
                 yield cls.to_text(event.delta)
             elif isinstance(event, ToolCall):
+                if text_started:
+                    text_started = False
+                    yield cls.to_text_end()
                 if event.tool_name == DEFAULT_NAME:
                     title = f"Retrieving context for query: '{event.tool_kwargs}'"
                 else:
                     title = f"Calling tool: '{event.tool_name}' with args: '{event.tool_kwargs}'"
                 yield cls.to_event_data(title)
             elif isinstance(event, ToolCallResult):
+                if text_started:
+                    text_started = False
+                    yield cls.to_text_end()
                 raw_output = event.tool_output.raw_output
                 if isinstance(raw_output, List):
                     yield cls.to_sources_data(SourceNode.from_source_nodes(raw_output))
@@ -167,6 +177,9 @@ class VercelStreamingResponse(StreamingResponse):
                     title = f"Tool '{event.tool_name}' returned"
                 yield cls.to_event_data(title)
             else:
+                if text_started:
+                    text_started = False
+                    yield cls.to_text_end()
                 logger.debug("Unhandled event: %s", event.__class__)
         if messages:
             yield await cls.to_suggested_questions_data(messages, final_response)
@@ -196,16 +209,23 @@ class VercelStreamingResponse(StreamingResponse):
         )
 
     @classmethod
+    def to_text_start(cls):
+        return f"data: {json.dumps({'type':'text-start','id':'0'})}\n\n"
+
+    @classmethod
+    def to_text_end(cls):
+        return f"data: {json.dumps({'type':'text-end','id':'0'})}\n\n"
+
+    @classmethod
     def to_text(cls, token: str):
-        token = json.dumps(token)
-        return f"{cls.TEXT_PREFIX}{token}\n"
+        return f"data: {json.dumps({'type':'text-delta','id':'0','delta':token})}\n\n"
 
     @classmethod
     def to_data(cls, data: dict):
         data_str = json.dumps(data)
-        return f"{cls.DATA_PREFIX}[{data_str}]\n"
+        return f"data: {data_str}\n\n"
 
     @classmethod
     def to_error(cls, error: str):
         error_str = json.dumps(error)
-        return f"{cls.ERROR_PREFIX}{error_str}\n"
+        return f"data: {error_str}\n\n"
