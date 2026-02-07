@@ -118,7 +118,7 @@ __model_configs: Dict[str, Dict[str, ModelSpec]] = {
     "google": {
         "embed": ModelSpec(
             model_class=GoogleGenAIEmbedding,
-            model_args={"model": GOOGLE_EMBED_MODEL},
+            model_args={"model_name": GOOGLE_EMBED_MODEL},
             models_func=google_embed_models,
         ),
         "chat": ModelSpec(

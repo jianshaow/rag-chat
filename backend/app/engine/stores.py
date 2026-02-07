@@ -17,7 +17,6 @@ def get_docstore(storage_dir: str) -> SimpleDocumentStore:
 
 def get_vector_store(data_dir: str) -> ChromaVectorStore:
     chroma_collection = vectordb.get_collection(data_dir)
-    ChromaVectorStore.from_collection(chroma_collection)
     return ChromaVectorStore.from_collection(chroma_collection)
 
 
