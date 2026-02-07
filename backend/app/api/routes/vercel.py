@@ -145,7 +145,7 @@ class VercelStreamingResponse(StreamingResponse):
                     text_started = True
                     yield cls.to_text_start()
                 final_response = event.response
-                yield cls.to_text(event.delta)
+                yield cls.to_text_delta(event.delta)
             elif isinstance(event, ToolCall):
                 if text_started:
                     text_started = False
@@ -161,9 +161,12 @@ class VercelStreamingResponse(StreamingResponse):
                     yield cls.to_text_end()
                 raw_output = event.tool_output.raw_output
                 if isinstance(raw_output, List):
-                    yield cls.to_sources_data(SourceNode.from_source_nodes(raw_output))
                     title = f"Retrieved {len(raw_output)} sources to use as context for the query"
+                    yield cls.to_event_data(title)
+                    yield cls.to_sources_data(SourceNode.from_source_nodes(raw_output))
                 elif isinstance(raw_output, CallToolResult):
+                    title = f"Tool '{event.tool_name}' returned: {len(raw_output.content)} sources"
+                    yield cls.to_event_data(title)
                     yield cls.to_sources_data(
                         SourceNode.from_call_tool_result(
                             raw_output,
@@ -172,10 +175,9 @@ class VercelStreamingResponse(StreamingResponse):
                             event.tool_kwargs,
                         )
                     )
-                    title = f"Tool '{event.tool_name}' returned: {len(raw_output.content)} sources"
                 else:
                     title = f"Tool '{event.tool_name}' returned"
-                yield cls.to_event_data(title)
+                    yield cls.to_event_data(title)
             else:
                 if text_started:
                     text_started = False
@@ -217,8 +219,12 @@ class VercelStreamingResponse(StreamingResponse):
         return f"data: {json.dumps({'type':'text-end','id':'0'})}\n\n"
 
     @classmethod
-    def to_text(cls, token: str):
+    def to_text_delta(cls, token: str):
         return f"data: {json.dumps({'type':'text-delta','id':'0','delta':token})}\n\n"
+
+    @classmethod
+    def to_text(cls, token: str):
+        return f"data: {json.dumps({'type':'text','text':token})}\n\n"
 
     @classmethod
     def to_data(cls, data: dict):

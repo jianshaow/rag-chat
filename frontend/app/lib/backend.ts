@@ -1,4 +1,5 @@
-import { DataPart, EventPartType, SourcesPartType } from "@llamaindex/chat-ui";
+import { TextDeltaPart, TextDeltaPartType } from '@/types/message';
+import { EventPart, EventPartType, MessagePart, SourcesPart, SourcesPartType, TextPart, TextPartType } from "@llamaindex/chat-ui";
 import { ChatEvent, SourceData, SourceNode } from "@llamaindex/chat-ui/widgets";
 
 export function storeBeBaseUrl(beBaseUrl: string) {
@@ -125,32 +126,37 @@ export async function streamQuery(query: string, agentic: boolean, onTextProcess
         if (done) break;
 
         const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
+        const lines = chunk.split('\n\n');
         lines.forEach(line => {
             if (line.length === 0) return;
             const index = line.indexOf(':');
             if (index !== -1) {
-                const streamTypePart = line.substring(0, index);
                 const streamContextPart = line.substring(index + 1);
-                const streamContext = JSON.parse(streamContextPart);
-                if (streamTypePart === '0') {
-                    accumulatedText += streamContext;
+                const streamContext = JSON.parse(streamContextPart) as MessagePart;
+                if (streamContext.type === TextPartType) {
+                    const textPart = streamContext as TextPart;
+                    accumulatedText += textPart.text;
                     onTextProcess(accumulatedText)
-                } else if (streamTypePart === '8') {
-                    const dataParts: DataPart[] = streamContext as DataPart[]
-                    dataParts.forEach(dataPart => {
-                        if (dataPart.type === EventPartType) {
-                            const eventData = dataPart.data as ChatEvent;
-                            onEventsProcess(eventData.title)
-                        }
-                        if (dataPart.type === SourcesPartType) {
-                            const sourceData = dataPart.data as SourceData;
-                            onSoucesProcess(sourceData.nodes)
-                        }
-                    });
+                } else if (streamContext.type === TextDeltaPartType) {
+                    const textDeltaPart = streamContext as TextDeltaPart;
+                    accumulatedText += textDeltaPart.delta;
+                    onTextProcess(accumulatedText)
+                } else if (streamContext.type === EventPartType) {
+                    const eventPart = streamContext as EventPart;
+                    const eventData = eventPart.data as ChatEvent;
+                    onEventsProcess(eventData.title)
+                }
+                else if (streamContext.type === SourcesPartType) {
+                    const sourcesPart = streamContext as SourcesPart;
+                    const sourceData = sourcesPart.data as SourceData;
+                    onSoucesProcess(sourceData.nodes)
+                }
+                else {
+                    console.log('Unknown stream type:', streamContext.type);
                 }
             }
-        });
+        }
+        );
     }
 }
 

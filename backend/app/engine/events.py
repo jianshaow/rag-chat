@@ -44,7 +44,7 @@ class CallbackEvent:
                 )
                 msg = f"Retrieving context for query: '{query_str}'"
             return {
-                "type": "events",
+                "type": "data-event",
                 "data": {"title": msg},
             }
         else:
@@ -59,7 +59,7 @@ class CallbackEvent:
             if tool is None:
                 return None
             return {
-                "type": "events",
+                "type": "data-event",
                 "data": {
                     "title": f"Calling tool: {tool.name} with inputs: {func_call_args}",
                 },
