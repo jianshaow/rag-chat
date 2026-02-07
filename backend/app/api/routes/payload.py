@@ -1,125 +1,24 @@
 import logging
-import os
-from typing import Any, Dict, List, Optional
+from typing import (
+    Annotated,
+    Any,
+    Dict,
+    Generic,
+    List,
+    Literal,
+    Optional,
+    TypeVar,
+    Union,
+)
 
 from llama_index.core.llms import ChatMessage, MessageRole
 from llama_index.core.schema import NodeWithScore
 from mcp.types import CallToolResult, TextContent
 from pydantic import BaseModel, Field
-from pydantic.alias_generators import to_camel
 
 from app.api import files_base_url, tool_call_base_url
-from app.api.services.files import DocumentFile
 
 logger = logging.getLogger(__name__)
-
-
-class AnnotationFileData(BaseModel):
-    files: List[DocumentFile] = Field(
-        default=[],
-        description="List of files",
-    )
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "files": [
-                    {
-                        "content": "data:text/plain;base64,aGVsbG8gd29ybGQK=",
-                        "name": "example.txt",
-                    }
-                ]
-            }
-        }
-        alias_generator = to_camel
-
-    @staticmethod
-    def _get_url_llm_content(file: DocumentFile) -> Optional[str]:
-        url_prefix = os.getenv("FILESERVER_URL_PREFIX")
-        if url_prefix:
-            if file.url is not None:
-                return f"File URL: {file.url}\n"
-            else:
-                return f"File URL (instruction: do not update this file URL yourself): {url_prefix}/output/uploaded/{file.name}\n"
-        else:
-            print(
-                "Warning: FILESERVER_URL_PREFIX not set in environment variables. Can't use file server"
-            )
-            return None
-
-    @classmethod
-    def _get_file_content(cls, file: DocumentFile) -> str:
-        """
-        Construct content for LLM from the file metadata
-        """
-        default_content = f"=====File: {file.name}=====\n"
-        # Include file URL if it's available
-        url_content = cls._get_url_llm_content(file)
-        if url_content:
-            default_content += url_content
-        # Include document IDs if it's available
-        if file.refs is not None:
-            default_content += f"Document IDs: {file.refs}\n"
-        # file path
-        sandbox_file_path = f"/tmp/{file.name}"
-        local_file_path = f"output/uploaded/{file.name}"
-        default_content += f"Sandbox file path (instruction: only use sandbox path for artifact or code interpreter tool): {sandbox_file_path}\n"
-        default_content += f"Local file path (instruction: Use for local tools: form filling, extractor): {local_file_path}\n"
-        return default_content
-
-    def to_llm_content(self) -> Optional[str]:
-        file_contents = [self._get_file_content(file) for file in self.files]
-        if len(file_contents) == 0:
-            return None
-        return "Use data from following files content\n" + "\n".join(file_contents)
-
-
-class AgentAnnotation(BaseModel):
-    agent: str
-    text: str
-
-
-class ArtifactAnnotation(BaseModel):
-    toolCall: Dict[str, Any]
-    toolOutput: Dict[str, Any]
-
-
-class Annotation(BaseModel):
-    id: str | None = None
-    type: str
-    data: AnnotationFileData | List[str] | AgentAnnotation | ArtifactAnnotation
-
-    def to_content(self) -> Optional[str]:
-        if self.type == "document_file" and isinstance(self.data, AnnotationFileData):
-            return self.data.to_llm_content()
-        elif self.type == "image":
-            raise NotImplementedError("Use image file is not supported yet!")
-        else:
-            print(
-                f"The annotation {self.type} is not supported for generating context content"
-            )
-        return None
-
-
-class TextPart(BaseModel):
-    type: str = "text"
-    text: str
-
-
-class DataPart(BaseModel):
-    id: str | None = None
-    type: str
-
-
-class FileData(BaseModel):
-    filename: str
-    media_type: str
-    url: str
-
-
-class FilePart(DataPart):
-    type: str = "data-file"
-    data: FileData
 
 
 class SourceNode(BaseModel):
@@ -178,16 +77,47 @@ class SourceNode(BaseModel):
         ]
 
 
+class TextPart(BaseModel):
+    type: Literal["text"]
+    text: str
+
+
+class FileData(BaseModel):
+    filename: str
+    media_type: str = Field(alias="mediaType")
+    url: str
+    model_config = {"populate_by_name": True}
+
+
 class SourceData(BaseModel):
     nodes: List[SourceNode]
 
 
-class SourcesPart(BaseModel):
-    type: str = "data-sources"
-    data: SourceData
+T = TypeVar("T")
 
 
-type MessagePart = TextPart | DataPart | SourcesPart
+class DataPart(BaseModel, Generic[T]):
+    id: str | None = None
+    type: str
+    data: T
+
+
+class FilePart(DataPart[FileData]):
+    type: Literal["data-file"]
+
+
+class SourcesPart(DataPart[SourceData]):
+    type: Literal["data-sources"]
+
+
+MessagePart = Annotated[
+    Union[
+        TextPart,
+        FilePart,
+        SourcesPart,
+    ],
+    Field(discriminator="type"),
+]
 
 
 class Message(BaseModel):
@@ -234,23 +164,14 @@ class ChatMessages(BaseModel):
         ]
         return chat_messages
 
-    def get_chat_document_ids(self) -> List[str]:
-        document_ids: List[str] = []
-        uploaded_files = self.get_document_files()
-        for _file in uploaded_files:
-            refs = getattr(_file, "refs", None)
-            if refs is not None:
-                document_ids.extend(refs)
-        return list(set(document_ids))
-
-    def get_document_files(self) -> List[DocumentFile]:
-        uploaded_files = []
+    def get_document_files(self) -> List[FileData]:
+        doc_files: List[FileData] = []
         for message in self.messages:
             if message.role == MessageRole.USER and message.parts is not None:
                 for part in message.parts:
-                    if part.type == "data-file":
-                        uploaded_files.extend(part)
-        return uploaded_files
+                    if isinstance(part, FilePart):
+                        doc_files.append(part.data)
+        return doc_files
 
     def __str__(self) -> str:
         return str(
@@ -264,12 +185,25 @@ class ChatMessages(BaseModel):
         return str(self.messages)
 
 
-class QueryResult(BaseModel):
-    answer: str
-    sources: List[SourceNode]
+class DocumentFile(BaseModel):
+    id: str
+    name: str
+    type: str
+    size: int
+    url: str
+    path: Optional[str] = Field(
+        None,
+        exclude=True,
+    )
+    refs: Optional[List[str]] = Field(None)
 
 
 class FileUploadRequest(BaseModel):
     base64: str
     name: str
     params: Any = None
+
+
+class QueryResult(BaseModel):
+    answer: str
+    sources: List[SourceNode]

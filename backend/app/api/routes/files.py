@@ -8,25 +8,12 @@ from typing import List, Optional, Tuple
 
 from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import Document
-from pydantic import BaseModel, Field
 
 from app.api import files_base_url
+from app.api.routes.payload import DocumentFile
 from app.engine import UPLOADED_DATA_DIR, indexes, loaders, setting, utils
 
 logger = logging.getLogger(__name__)
-
-
-class DocumentFile(BaseModel):
-    id: str
-    name: str
-    type: str
-    size: int
-    url: str
-    path: Optional[str] = Field(
-        None,
-        exclude=True,
-    )
-    refs: Optional[List[str]] = Field(None)
 
 
 def process_file(
@@ -108,6 +95,7 @@ def _load_file_to_documents(file: DocumentFile) -> List[Document]:
     for doc in documents:
         doc.metadata["private"] = "true"
         doc.metadata["data_dir"] = UPLOADED_DATA_DIR
+        doc.metadata["file_name"] = file.name
     return documents
 
 

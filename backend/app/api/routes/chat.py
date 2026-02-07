@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from app.api.routes.filters import generate_filters
 from app.api.routes.payload import ChatMessages, FileUploadRequest
 from app.api.routes.vercel import VercelStreamingResponse
-from app.api.services.files import DocumentFile, process_file
+from app.api.routes.files import DocumentFile, process_file
 from app.engine import agents, data_store, setting, tools
 
 logger = logging.getLogger(__name__)
@@ -32,8 +32,8 @@ async def chat(chat_messages: ChatMessages):
     """
     Chat with agent based on data.
     """
-    doc_ids = chat_messages.get_chat_document_ids()
-    data, filters = generate_filters(doc_ids)
+    doc_files = [f.filename for f in chat_messages.get_document_files()]
+    data, filters = generate_filters(doc_files)
     agent = await agents.get_agent(data, filters)
     response = agent.run(chat_messages.last_content, chat_messages.history)
     return VercelStreamingResponse.from_agent_response(response, chat_messages)
