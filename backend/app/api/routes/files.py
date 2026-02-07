@@ -95,7 +95,6 @@ def _load_file_to_documents(file: DocumentFile) -> List[Document]:
     for doc in documents:
         doc.metadata["private"] = "true"
         doc.metadata["data_dir"] = UPLOADED_DATA_DIR
-        doc.metadata["file_name"] = file.name
     return documents
 
 
