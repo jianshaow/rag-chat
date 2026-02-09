@@ -134,12 +134,13 @@ def __retrieve_data(data_dir: str):
     index = get_index(data_dir)
     print("-" * 80)
     print("embed model:", models.get_embed_model_name())
-    print("Question: ", question)
+    print("question:", question)
     retriever = index.as_retriever()
     nodes = retriever.retrieve(question)
     for node in nodes:
-        print("-" * 80)
+        print("-" * 70)
         print(node)
+    print("-" * 80)
 
 
 def _main():

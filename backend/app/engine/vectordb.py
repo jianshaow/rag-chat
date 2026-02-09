@@ -46,7 +46,10 @@ def __delete_data_collection(data_dir):
 
 
 def __show_db():
-    collections = get_db_client().list_collections()
+    print("=" * 80)
+    client = get_db_client()
+    collections = client.list_collections()
+    print("database:", client.get_settings().persist_directory)
     print("collections size:", len(collections))
     print("=" * 80)
     for collection in collections:
@@ -64,12 +67,12 @@ def __show_collection(collection: Collection, top_k: int = 2):
     documents = result["documents"] if result["documents"] else []
     print("top", len(metadatas), "results")
     for i, metadatas in enumerate(metadatas):
-        print("=" * 80)
+        print("-" * 70)
         print("id:", ids[i])
         __show_metadata(metadatas)
         __show_embeddings(embeddings[i])  # type: ignore
         __show_document(documents[i])
-    print("+" * 80)
+    print("-" * 80)
 
 
 def __show_metadata(metadata: Metadata):
