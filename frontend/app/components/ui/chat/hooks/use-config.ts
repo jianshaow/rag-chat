@@ -11,6 +11,7 @@ function getBackendOrigin(): string {
   } else {
     if (typeof window !== "undefined") {
       // Use BASE_URL from window.ENV
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return (window as any).ENV?.BASE_URL || "";
     }
     return "";
