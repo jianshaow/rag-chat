@@ -59,11 +59,11 @@
 }
 
 .source-item label {
-  @apply w-56 text-base;
+  @apply text-base;
 }
 
 .source-item button {
-  @apply cursor-pointer border-none bg-transparent p-1;
+  @apply flex-shrink-0 cursor-pointer border-none bg-transparent p-1;
 }
 
 .source-popover {

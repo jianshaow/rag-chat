@@ -48,7 +48,9 @@ export default function Sources() {
         {sources.map((source) => (
           <li key={source.id} className="gap-2">
             <div className="source-item">
-              <label>{source.metadata["file_name"] as string}</label>
+              <label title={source.metadata["file_name"] as string}>
+                {source.metadata["file_name"] as string}
+              </label>
               <Popover.Root>
                 <Popover.Trigger asChild>
                   <button title="Show chunk">
