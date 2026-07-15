@@ -63,7 +63,7 @@
 }
 
 .source-item button {
-  @apply flex-shrink-0 cursor-pointer border-none bg-transparent p-1;
+  @apply shrink-0 cursor-pointer border-none bg-transparent p-1;
 }
 
 .source-popover {
