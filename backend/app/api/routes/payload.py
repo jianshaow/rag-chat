@@ -1,3 +1,5 @@
+import base64
+import json
 import logging
 from typing import (
     Annotated,
@@ -59,6 +61,9 @@ class SourceNode(BaseModel):
         tool_name: str,
         tool_kwargs: Dict[str, Any],
     ):
+        tool_kwargs_base64 = base64.urlsafe_b64encode(
+            json.dumps(tool_kwargs).encode("utf-8")
+        ).decode("utf-8")
         return [
             cls(
                 text=content.text,
@@ -70,7 +75,7 @@ class SourceNode(BaseModel):
                     "file_name": f"{tool_name}/mcp",
                 },
                 score=0,
-                url=f"{tool_call_base_url}/{tool_name}",
+                url=f"{tool_call_base_url}/{tool_name}?tool_kwargs={tool_kwargs_base64}",
             )
             for content in result.content
             if isinstance(content, TextContent)
