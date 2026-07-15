@@ -75,7 +75,7 @@ class SourceNode(BaseModel):
                     "file_name": f"{tool_name}/mcp",
                 },
                 score=0,
-                url=f"{tool_call_base_url}/{tool_name}?tool_kwargs={tool_kwargs_base64}",
+                url=f"{tool_call_base_url}/{tool_name}/{tool_kwargs_base64}",
             )
             for content in result.content
             if isinstance(content, TextContent)
