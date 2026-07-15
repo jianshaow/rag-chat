@@ -13,31 +13,7 @@ export default function Sources() {
     text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 
   const viewFull = async (source: SourceNode) => {
-    const metadata = source.metadata;
-    const sourceType = metadata["source_type"] as string;
-    // const fileName = metadata["file_name"] as string;
     const url = source.url || "";
-    if ("mcp" === sourceType) {
-      const args = metadata["tool_kwargs"];
-      const newWindow = window.open("", "_blank");
-      if (!newWindow) {
-        alert("Popup blocked! Please allow popups for this site.");
-        return;
-      }
-      newWindow.document.body.innerText = "Loading...";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(args),
-      });
-      const text = await res.text();
-      const blob = new Blob([text], { type: "text/plain" });
-      const blobUrl = URL.createObjectURL(blob);
-      newWindow.location.href = blobUrl;
-      return
-    }
     window.open(url);
   };
 
