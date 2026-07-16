@@ -126,10 +126,8 @@ async def get_tools(*args, **kwargs) -> Dict[str, BaseTool]:
 
 
 async def get_tool(tool_name: str, *args, **kwargs) -> BaseTool | None:
-    tool_set = get_tool_set()
-    if tool_set:
-        tools = await tool_set.get_tools(*args, **kwargs)
-        return tools.get(tool_name)
+    tools = await get_tools(*args, **kwargs)
+    return tools.get(tool_name)
 
 
 async def call_tool(tool_name: str, *args, **kwargs):
