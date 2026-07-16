@@ -10,7 +10,7 @@ from llama_index.tools.mcp import BasicMCPClient, McpToolSpec
 from mcp.types import CallToolResult, TextContent
 from pydantic import BaseModel, RootModel, TypeAdapter
 
-from app.engine import indexes, setting
+from app.engine import caches, indexes, setting
 
 
 class MCPServer(BaseModel):
@@ -114,22 +114,33 @@ def get_tool_set():
     return __tool_sets.get(setting.get_tool_set())
 
 
-async def call_tool(tool_name: str, *args, **kwargs):
+async def get_tools(*args, **kwargs) -> Dict[str, BaseTool]:
     tool_set = get_tool_set()
     if tool_set:
-        tools = await tool_set.get_tools()
-        _tool = tools.get(tool_name)
-        if _tool:
-            output: ToolOutput = _tool(*args, **kwargs)
-            result: CallToolResult = output.raw_output
-            text = "\n".join(
-                [
-                    block.text
-                    for block in result.content
-                    if isinstance(block, TextContent)
-                ]
-            )
-            return text
+        cache_key = f"{tool_set.name}"
+        cached_tools = await caches.get_tools(
+            lambda: tool_set.get_tools(*args, **kwargs), cache_key
+        )
+        return cached_tools
+    return {}
+
+
+async def get_tool(tool_name: str, *args, **kwargs) -> BaseTool | None:
+    tool_set = get_tool_set()
+    if tool_set:
+        tools = await tool_set.get_tools(*args, **kwargs)
+        return tools.get(tool_name)
+
+
+async def call_tool(tool_name: str, *args, **kwargs):
+    _tool = await get_tool(tool_name)
+    if _tool:
+        output: ToolOutput = _tool(*args, **kwargs)
+        result: CallToolResult = output.raw_output
+        text = "\n".join(
+            [block.text for block in result.content if isinstance(block, TextContent)]
+        )
+        return text
 
 
 def get_mcp_servers():

@@ -1,12 +1,12 @@
-from typing import Any, Callable, Type, TypeVar
-
+from typing import Any, Callable, Coroutine, Dict, Type, TypeVar
+from llama_index.core.tools import BaseTool
 from llama_index.core import VectorStoreIndex
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
 
 from app.engine import setting
 
-T = TypeVar("T", BaseEmbedding, LLM, VectorStoreIndex)
+T = TypeVar("T", BaseEmbedding, LLM, VectorStoreIndex, Dict[str, BaseTool])
 
 __cache: dict[str, dict[str, Any]] = {}
 
@@ -23,12 +23,30 @@ def get_index(builder: Callable[..., VectorStoreIndex], key: str) -> VectorStore
     return get_from_cache(VectorStoreIndex, builder, key=key)
 
 
+async def get_tools(
+    builder: Callable[..., Coroutine[Any, Any, Dict[str, BaseTool]]], key: str
+) -> Dict[str, BaseTool]:
+    return await aget_from_cache(Dict[str, BaseTool], builder, key=key)
+
+
 def get_from_cache(cls: Type[T], builder: Callable[..., T], key: str = "") -> T:
     cache_bucket = get_cache_bucket()
     cache_key = f"{key}@{cls.__name__}"
     cache_item = cache_bucket.get(cache_key)
     if cache_item is None:
         cache_item = builder()
+        cache_bucket[cache_key] = cache_item
+    return cache_item
+
+
+async def aget_from_cache(
+    cls: Type[T], builder: Callable[..., Coroutine[Any, Any, T]], key: str = ""
+) -> T:
+    cache_bucket = get_cache_bucket()
+    cache_key = f"{key}@{cls.__name__}"
+    cache_item = cache_bucket.get(cache_key)
+    if cache_item is None:
+        cache_item = await builder()
         cache_bucket[cache_key] = cache_item
     return cache_item
 
@@ -41,5 +59,19 @@ def get_cache_bucket() -> dict[str, Any]:
     return cache_bucket
 
 
+def invalidate_tools(key: str):
+    invalidate_cache(Dict[str, BaseTool], key)
+
+
+def invalidate_cache(cls: Type[T], key: str):
+    cache_bucket = get_cache_bucket()
+    cache_key = f"{key}@{cls.__name__}"
+    cache_bucket.pop(cache_key, None)
+
+
 def invalidate(model_provider: str):
     __cache.pop(model_provider, None)
+
+
+def invalidate_all():
+    __cache.clear()
