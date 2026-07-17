@@ -1,6 +1,7 @@
 import logging
 import logging.config
 import os
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
@@ -8,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api import files_url_prefix
 from app.api.routes import api_router
-from app.engine import events, indexes, setting
+from app.engine import events, indexes, setting, tools
 
 logging_conf = os.getenv("LOGGING_CONF", "logging.conf")
 logging.config.fileConfig(logging_conf, disable_existing_loggers=False)
@@ -18,7 +19,16 @@ logger = logging.getLogger(__name__)
 frontend = os.path.abspath(os.path.join("../frontend", "out"))
 frontend = os.getenv("FRONTEND_DIR", frontend)
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    try:
+        yield
+    finally:
+        await tools.close_mcp_session()
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.middleware("http")

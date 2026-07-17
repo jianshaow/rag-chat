@@ -1,12 +1,12 @@
-from typing import Any, Callable, Coroutine, Dict, Type, TypeVar
-from llama_index.core.tools import BaseTool
+from typing import Any, Callable, Coroutine, Type, TypeVar
+
 from llama_index.core import VectorStoreIndex
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
 
 from app.engine import setting
 
-T = TypeVar("T", BaseEmbedding, LLM, VectorStoreIndex, Dict[str, BaseTool])
+T = TypeVar("T", BaseEmbedding, LLM, VectorStoreIndex)
 
 __cache: dict[str, dict[str, Any]] = {}
 
@@ -21,12 +21,6 @@ def get_chat_model(builder: Callable[..., LLM]) -> LLM:
 
 def get_index(builder: Callable[..., VectorStoreIndex], key: str) -> VectorStoreIndex:
     return get_from_cache(VectorStoreIndex, builder, key=key)
-
-
-async def get_tools(
-    builder: Callable[..., Coroutine[Any, Any, Dict[str, BaseTool]]], key: str
-) -> Dict[str, BaseTool]:
-    return await aget_from_cache(Dict[str, BaseTool], builder, key=key)
 
 
 def get_from_cache(cls: Type[T], builder: Callable[..., T], key: str = "") -> T:
@@ -57,10 +51,6 @@ def get_cache_bucket() -> dict[str, Any]:
     if cache_bucket is None:
         __cache[model_provider] = cache_bucket = {}
     return cache_bucket
-
-
-def invalidate_tools(key: str):
-    invalidate_cache(Dict[str, BaseTool], key)
 
 
 def invalidate_cache(cls: Type[T], key: str):

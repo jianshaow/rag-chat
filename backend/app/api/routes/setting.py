@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from app.engine import setting, caches
+from app.engine import setting, tools
 from app.engine.setting import Setting
 
 setting_router = r = APIRouter()
@@ -13,5 +13,7 @@ async def get_config() -> Setting:
 
 @r.put("", tags=["setting"], status_code=status.HTTP_204_NO_CONTENT)
 async def update_config(new_setting: Setting):
+    if new_setting.tool_set == "mcp_tools":
+        await tools.replace_mcp_session(new_setting.mcp_server)
+
     setting.update_config(new_setting)
-    caches.invalidate_tools(new_setting.tool_set)
