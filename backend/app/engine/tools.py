@@ -307,8 +307,6 @@ async def close_mcp_session() -> None:
 
 
 if __name__ == "__main__":
-    import asyncio
-
     mcp_tools = asyncio.run(get_mcp_tools())
     for tool in mcp_tools.values():
         print("tool name:", tool.metadata.name)
