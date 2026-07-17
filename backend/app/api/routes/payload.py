@@ -75,7 +75,7 @@ class SourceNode(BaseModel):
                     "file_name": f"{tool_name}/mcp",
                 },
                 score=0,
-                url=f"{tool_call_base_url}/{tool_name}/{tool_kwargs_base64}",
+                url=f"{tool_call_base_url}/{tool_name}/{tool_kwargs_base64}/mcp.call",
             )
             for content in result.content
             if isinstance(content, TextContent)
@@ -85,6 +85,10 @@ class SourceNode(BaseModel):
 class TextPart(BaseModel):
     type: Literal["text"]
     text: str
+
+
+class EventData(BaseModel):
+    title: str
 
 
 class FileData(BaseModel):
@@ -107,6 +111,10 @@ class DataPart(BaseModel, Generic[T]):
     data: T
 
 
+class EventPart(DataPart[EventData]):
+    type: Literal["data-event"]
+
+
 class FilePart(DataPart[FileData]):
     type: Literal["data-file"]
 
@@ -115,11 +123,17 @@ class SourcesPart(DataPart[SourceData]):
     type: Literal["data-sources"]
 
 
+class SuggestionPart(DataPart[List[str]]):
+    type: Literal["data-suggested_questions"]
+
+
 MessagePart = Annotated[
     Union[
         TextPart,
+        EventPart,
         FilePart,
         SourcesPart,
+        SuggestionPart,
     ],
     Field(discriminator="type"),
 ]
